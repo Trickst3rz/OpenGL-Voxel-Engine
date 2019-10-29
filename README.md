@@ -20,7 +20,7 @@ Give examples
 
 * [29/10/2019] - Setup IDE, linked glfw 3.3 successfully with Visual Studio 2017(IDE), 
 using the static library version of glfw(can be changed to Dynamic Link Library if needed in the future) and used legacy glfw 1.1 to draw a simple triangle to screen.
-*[Next] - Setup Modern OpenGL to then render triangles to screen.
+* [Next] - Setup Modern OpenGL to then render triangles to screen.
 
 ### Installing
 
