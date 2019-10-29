@@ -1,0 +1,1 @@
+glfw.dll file is here incase you want to change to dynamic link library (dll) from static at anytime without any errors of missing .dll files
