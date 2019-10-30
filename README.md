@@ -20,8 +20,9 @@ Give examples
 
 * [29/10/2019] - Setup IDE, linked glfw 3.3 successfully with Visual Studio 2017(IDE), 
 using the static library version of glfw(can be changed to Dynamic Link Library if needed in the future) and used legacy glfw 1.1 to draw a simple triangle to screen.
-* [Next] - Setup Modern OpenGL to then render triangles to screen.
-
+* [30/10/2019] - I have successfully linked glew 2.1.0 which links all the declariations and points to the functions in the GPU Driver, which is where the latest version of OpenGL is stored, since we use the GPU, the manufacturer
+has is the one that has modern OpenGl 4.6(My Version Nvidia) and GLEW is a library that links all those toghether to be able to use modern OpenGl, since the lastest version on windows is OpenGl 1.1(Legacy).
+*[Next] -  Start rendering 2d shapes to the screen from scratch.
 ### Installing
 
 A step by step series of examples that tell you how to get a development env running
