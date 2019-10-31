@@ -22,6 +22,7 @@ Give examples
 using the static library version of glfw(can be changed to Dynamic Link Library if needed in the future) and used legacy glfw 1.1 to draw a simple triangle to screen.
 * [30/10/2019] - I have successfully linked glew 2.1.0 which links all the declariations and points to the functions in the GPU Driver, which is where the latest version of OpenGL is stored, since we use the GPU, the manufacturer
 has is the one that has modern OpenGl 4.6(My Version Nvidia) and GLEW is a library that links all those toghether to be able to use modern OpenGl, since the lastest version on windows is OpenGl 1.1(Legacy).
+*[31/10/2019] - Linked support of OpenGL with both Win32(32bit) and x64(64bit) and added new project(Genesis Engine).
 *[Next] -  Start rendering 2d shapes to the screen from scratch.
 ### Installing
 
