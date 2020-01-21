@@ -1,4 +1,4 @@
-# Component-Based 3D Graphics Renderer Engine
+# Procedural Terrain - 3D Voxel Engine
 
 One Paragraph of project description goes here
 
