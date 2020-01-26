@@ -1,8 +1,6 @@
 # Procedural Terrain - 3D Voxel Engine
 
-One Paragraph of project description goes here
-
-## This is my final year project that I have decided to do, creating a 3D Graphics Renderer from scratch using OpenGL.
+## This is my final year project that I have decided to do, creating a Procedural Generation of Voxel Terrain from scratch using OpenGL.
 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
@@ -12,9 +10,6 @@ Visual Studio 2017/19
 Included with Project:
 glfw3.3 library
 
-```
-Give examples
-```
 ## Development Documentation
 Project Management - https://procedural-generation-of-voxel-terrain.monday.com/boards/438700509 
 
