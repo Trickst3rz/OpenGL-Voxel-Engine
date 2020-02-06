@@ -17,6 +17,19 @@
 mono_crash.*
 
 # Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
 [Bb]in/Debug-Win32/Procedural-Terrain/
 [Bb]in/Debug-Win32/Voxel-Engine/
 [Bb]in/Debug-x64/Procedural-Terrain/
@@ -30,6 +43,8 @@ mono_crash.*
 [Bb]in-Intermediate Files/Debug-x64/Procedural-Terrain/
 [Bb]in-Intermediate Files/Debug-x64/Voxel-Engine/
 [Bb]in-Intermediate Files/Release-Win32/Procedural-Terrain/
+[Bb]in-Intermediate Files/Release-Win32/Procedural-Terrain/Procedural-Terrain.log
+[Bb]in-Intermediate Files/Release-Win32/Procedural-Terrain/Procedur.EB3354D2.tlog/
 [Bb]in-Intermediate Files/Release-Win32/Voxel-Engine/
 [Bb]in-Intermediate Files/Release-x64/Procedural-Terrain/
 [Bb]in-Intermediate Files/Release-x64/Voxel-Engine/
