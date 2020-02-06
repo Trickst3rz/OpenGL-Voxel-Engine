@@ -17,19 +17,16 @@
 mono_crash.*
 
 # Build results
-[Dd]ebug/
-[Dd]ebugPublic/
-[Rr]elease/
-[Rr]eleases/
-x64/
-x86/
-[Aa][Rr][Mm]/
-[Aa][Rr][Mm]64/
-bld/
 [Bb]in/
-[Oo]bj/
-[Ll]og/
-[Ll]ogs/
+Debug-Win32/
+Debug-x64/
+Release-Win32/
+Release-x64/
+[Bb]in-Intermediate Files/
+Debug-Win32/
+Debug-x64/
+Release-Win32/
+Release-x64/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/

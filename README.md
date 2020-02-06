@@ -15,6 +15,12 @@ Project Management - https://app.clickup.com/2486084/v/b/li/15017012?pr=2556368
 
 Weekly Timetable Plan - https://liveteesac-my.sharepoint.com/:x:/g/personal/s6099298_live_tees_ac_uk/ETa8nrw_5RRCouLaw_GlA_cBaqXsIdxXXlt-Yb8eyrPjDw?e=0Xmgor
 
+OpenGL Documentation - http://docs.gl/
+
+GLM API Documentation - https://glm.g-truc.net/0.9.9/api/modules.html
+
+Rendering Voxels Article - https://dev.to/superfola/lets-render-chunks-of-voxels-with-opengl--47g9
+
 ## DevLog
 
 * [29/10/2019] - Setup IDE, linked glfw 3.3 successfully with Visual Studio 2017(IDE), 
@@ -22,7 +28,7 @@ using the static library version of glfw(can be changed to Dynamic Link Library 
 * [30/10/2019] - I have successfully linked glew 2.1.0 which links all the declariations and points to the functions in the GPU Driver, which is where the latest version of OpenGL is stored, since we use the GPU, the manufacturer
 has is the one that has modern OpenGl 4.6(My Version Nvidia) and GLEW is a library that links all those toghether to be able to use modern OpenGl, since the lastest version on windows is OpenGl 1.1(Legacy).
 *[31/10/2019] - Linked support of OpenGL with both Win32(32bit) and x64(64bit) and added new project(Genesis Engine).
-*[Next] -  Start rendering 2d shapes to the screen from scratch.
+*[06/02/2020] - Started implementing basic 2d rendering with modern OpenGL e.g. triangles, squares etc.
 ### Installing
 
 A step by step series of examples that tell you how to get a development env running
