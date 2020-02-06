@@ -17,16 +17,14 @@
 mono_crash.*
 
 # Build results
-[Bb]in/
-Debug-Win32/
-Debug-x64/
-Release-Win32/
-Release-x64/
-[Bb]in-Intermediate Files/
-Debug-Win32/
-Debug-x64/
-Release-Win32/
-Release-x64/
+[Bb]in/Debug-Win32/
+[Bb]in/Debug-x64/
+[Bb]in/Release-Win32/
+[Bb]in/Release-x64/
+[Bb]in-Intermediate Files/Debug-Win32/
+[Bb]in-Intermediate Files/Debug-x64/
+[Bb]in-Intermediate Files/Release-Win32/
+[Bb]in-Intermediate Files/Release-x64/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
