@@ -17,18 +17,22 @@
 mono_crash.*
 
 # Build results
-[Bb]in/Debug-Win32/
-[Bb]in/Debug-x64/
-[Bb]in/Release-Win32/
-[Bb]in/Release-x64/
-[Bb]in-Intermediate Files/Debug-Win32/Procedural-Terrain
-[Bb]in-Intermediate Files/Debug-Win32/Voxel-Engine
-[Bb]in-Intermediate Files/Debug-x64/Procedural-Terrain
-[Bb]in-Intermediate Files/Debug-x64/Voxel-Engine
-[Bb]in-Intermediate Files/Release-Win32/Procedural-Terrain
-[Bb]in-Intermediate Files/Release-Win32/Voxel-Engine
-[Bb]in-Intermediate Files/Release-x64/Procedural-Terrain
-[Bb]in-Intermediate Files/Release-x64/Voxel-Engine
+[Bb]in/Debug-Win32/Procedural-Terrain/
+[Bb]in/Debug-Win32/Voxel-Engine/
+[Bb]in/Debug-x64/Procedural-Terrain/
+[Bb]in/Debug-x64/Voxel-Engine/
+[Bb]in/Release-Win32/Procedural-Terrain/
+[Bb]in/Release-Win32/Voxel-Engine/
+[Bb]in/Release-x64/Procedural-Terrain/
+[Bb]in/Release-x64/Voxel-Engine/
+[Bb]in-Intermediate Files/Debug-Win32/Procedural-Terrain/
+[Bb]in-Intermediate Files/Debug-Win32/Voxel-Engine/
+[Bb]in-Intermediate Files/Debug-x64/Procedural-Terrain/
+[Bb]in-Intermediate Files/Debug-x64/Voxel-Engine/
+[Bb]in-Intermediate Files/Release-Win32/Procedural-Terrain/
+[Bb]in-Intermediate Files/Release-Win32/Voxel-Engine/
+[Bb]in-Intermediate Files/Release-x64/Procedural-Terrain/
+[Bb]in-Intermediate Files/Release-x64/Voxel-Engine/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/Voxel-Engine/v16/
