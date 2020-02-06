@@ -1,0 +1,3 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\Microsoft.Common.CurrentVersion.targets(1875,5): warning : The referenced project '..\Genesis\Genesis.vcxproj' does not exist.
+  Application.cpp
+  Procedural-Terrain.vcxproj -> C:\Users\s6099298\Source\Voxel-Engine\bin\Debug-x64\Procedural-Terrain\Procedural-Terrain.exe

@@ -21,10 +21,10 @@ mono_crash.*
 [Bb]in/Debug-x64/
 [Bb]in/Release-Win32/
 [Bb]in/Release-x64/
-[Bb]in-Intermediate Files/Debug-Win32/
-[Bb]in-Intermediate Files/Debug-x64/
-[Bb]in-Intermediate Files/Release-Win32/
-[Bb]in-Intermediate Files/Release-x64/
+[Bb]in-Intermediate-Files/Debug-Win32/
+[Bb]in-Intermediate-Files/Debug-x64/
+[Bb]in-Intermediate-Files/Release-Win32/
+[Bb]in-Intermediate-Files/Release-x64/
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/Voxel-Engine/v16
