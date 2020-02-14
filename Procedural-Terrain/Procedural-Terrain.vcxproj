@@ -151,8 +151,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="src\Block.cpp" />
-    <ClCompile Include="src\Chunk.cpp" />
     <ClCompile Include="src\Application.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -161,11 +161,11 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\Block.h" />
-    <ClInclude Include="src\Chunk.h" />
+    <None Include="resources\shaders\Basic.shader" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\shaders\Basic.shader" />
+    <ClInclude Include="Chunk.h" />
+    <ClInclude Include="src\Block.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
