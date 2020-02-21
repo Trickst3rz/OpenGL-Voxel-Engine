@@ -157,7 +157,7 @@ int main(void)
 		GLCall(glGenVertexArrays(1, &vao));
 		GLCall(glBindVertexArray(vao));
 
-		VertexBuffer vertexBuffer(positions, 4 * 2 * sizeof(float));
+		GLCall(VertexBuffer vertexBuffer(positions, 4 * 2 * sizeof(float)));
 
 		GLCall(glEnableVertexAttribArray(0));
 		GLCall(glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(float) * 2, 0));
@@ -177,7 +177,6 @@ int main(void)
 
 		GLCall(glUniform4f(location, r, 0.3f, 0.8f, 1.0f));
 		GLCall(glBindVertexArray(vao));
-
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
