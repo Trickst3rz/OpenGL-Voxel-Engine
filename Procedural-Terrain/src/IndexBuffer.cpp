@@ -1,5 +1,5 @@
 #include "IndexBuffer.h"
-#include "Renderer.h"
+#include "GLErrorManager.h"
 
 
 IndexBuffer::IndexBuffer(const unsigned short* data, unsigned short count)
