@@ -1,10 +1,4 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\Microsoft.Common.CurrentVersion.targets(1875,5): warning : The referenced project '..\Genesis\Genesis.vcxproj' does not exist.
   Application.cpp
 C:\Users\Michael\Documents\GitHub\Voxel-Engine\Procedural-Terrain\src\Renderer.h(14,2): warning C4091: 'static ': ignored on left of 'Renderer' when no variable is declared
-  Renderer.cpp
-C:\Users\Michael\Documents\GitHub\Voxel-Engine\Procedural-Terrain\src\Renderer.h(14,2): warning C4091: 'static ': ignored on left of 'Renderer' when no variable is declared
-  VertexArray.cpp
-C:\Users\Michael\Documents\GitHub\Voxel-Engine\Procedural-Terrain\src\Renderer.h(14,2): warning C4091: 'static ': ignored on left of 'Renderer' when no variable is declared
-C:\Users\Michael\Documents\GitHub\Voxel-Engine\Procedural-Terrain\src\VertexArray.cpp(24,3): warning C4312: 'type cast': conversion from 'unsigned int' to 'const void *' of greater size
-  Generating Code...
   Procedural-Terrain.vcxproj -> C:\Users\Michael\Documents\GitHub\Voxel-Engine\bin\Debug-x64\Procedural-Terrain\Procedural-Terrain.exe

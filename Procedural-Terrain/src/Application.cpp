@@ -1,5 +1,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #include <iostream>
 #include <fstream>
@@ -21,7 +23,7 @@ int main(void)
 	/* Initialize the library */
 	if (!glfwInit())
 		return -1;
-
+	
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -61,8 +63,8 @@ int main(void)
 
 		float positions[] = {
 			-0.5f, -0.5f,	//0
-				0.5f, -0.5f,	//1
-				0.5f,  0.5f,	//2
+			 0.5f, -0.5f,	//1
+			 0.5f,  0.5f,	//2
 			-0.5f,  0.5f,	//3
 		};
 
@@ -78,11 +80,14 @@ int main(void)
 		layout.Push<float>(2);
 		vertexArray.AddBuffer(vertexBuffer, layout);
 
-		IndexBuffer indexBuffer(indices, 6 * sizeof(unsigned short));
+		IndexBuffer indexBuffer(indices, 6);
+
+		glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
 
 		Shader shader("resources/shaders/Basic.shader");
 		shader.Bind();
 		shader.SetUniform4f("u_Colour", 0.8f, 0.3f, 0.8f, 1.0f);
+		shader.SetUniformMat4f("u_MVP", proj);
 
 		vertexArray.Unbind();
 		vertexBuffer.Unbind();
