@@ -97,6 +97,9 @@ int main(void)
 		float r = 0.05f;
 		float increment = 0.05f;
 
+		double previousTime = glfwGetTime();
+		int frameCount = 0;
+
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
 		{
@@ -108,6 +111,16 @@ int main(void)
 
 			Renderer::Draw(vertexArray, indexBuffer, shader);
 
+			double currentTime = glfwGetTime();
+			frameCount++;
+
+			if (currentTime - previousTime >= 1.0)
+			{
+				std::cout << frameCount << std::endl;
+
+				frameCount = 0;
+				previousTime = currentTime;
+			}
 			if (r > 1.0f)
 				increment = -0.05f;
 			else if (r < 0.0f)
