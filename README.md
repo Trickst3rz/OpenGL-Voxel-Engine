@@ -75,7 +75,8 @@ Add additional notes about how to deploy this on a live system
 
 * [Visual Studio](https://visualstudio.microsoft.com/vs/) - The Intergrated Developer Enviroment(IDE) Used for this Project
 * [glfw 3.3](https://www.glfw.org/) - The Library used for this Project
-
+* [glm 0.9.9](https://glm.g-truc.net/0.9.9/index.html) - The maths library that is based on OpenGL
+* [ImGui](https://github.com/ocornut/imgui) - Graphics interface for OpenGL
 
 ## Author
 

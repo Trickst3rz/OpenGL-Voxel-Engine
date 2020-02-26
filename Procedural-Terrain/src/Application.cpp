@@ -16,14 +16,39 @@
 #include "VertexArray.h"
 #include "Shader.h"
 
+#include "imgui/imgui.h"
+#include <imgui/imgui_impl_opengl3.h>
+#include <imgui\imgui_impl_glfw.h>
+
 int main(void)
 {
 	GLFWwindow* window;
+
+	bool show_demo_window = true;
+	bool show_another_window = false;
+	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 
 	/* Initialize the library */
 	if (!glfwInit())
 		return -1;
 	
+	// Decide GL+GLSL versions
+#if __APPLE__
+	// GL 3.2 + GLSL 150
+	const char* glsl_version = "#version 150";
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
+#else
+	// GL 3.0 + GLSL 130
+	const char* glsl_version = "#version 130";
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
+	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
+#endif
+
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
@@ -43,7 +68,7 @@ int main(void)
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
 
-	glfwSwapInterval(1);
+	glfwSwapInterval(1); // vsync = 0(off) 1(on)
 	
 	if (glewInit() != GLEW_OK)
 		std::cout << "glewInit failed something is wrong";
@@ -62,10 +87,10 @@ int main(void)
 		}
 
 		float positions[] = {
-			-0.5f, -0.5f,	//0
-			 0.5f, -0.5f,	//1
-			 0.5f,  0.5f,	//2
-			-0.5f,  0.5f,	//3
+			-50.0f, -50.0f,	//0
+			 50.0f, -50.0f,	//1
+			 50.0f,  50.0f,	//2
+			-50.0f,  50.0f,	//3
 		};
 
 		unsigned short indices[] = {
@@ -82,23 +107,28 @@ int main(void)
 
 		IndexBuffer indexBuffer(indices, 6);
 
-		glm::mat4 proj = glm::ortho(-2.0f, 2.0f, -1.5f, 1.5f, -1.0f, 1.0f);
+		glm::mat4 proj = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, -1.0f, 1.0f);
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
 
 		Shader shader("resources/shaders/Basic.shader");
 		shader.Bind();
 		shader.SetUniform4f("u_Colour", 0.8f, 0.3f, 0.8f, 1.0f);
-		shader.SetUniformMat4f("u_MVP", proj);
 
 		vertexArray.Unbind();
 		vertexBuffer.Unbind();
 		indexBuffer.Unbind();
 		shader.Unbind();
 
+		ImGui::CreateContext();
+		ImGui_ImplGlfw_InitForOpenGL(window, true);
+		ImGui_ImplOpenGL3_Init(glsl_version);
+		ImGui::StyleColorsDark();
+
+		glm::vec3 translationA(200, 200, 0);
+		glm::vec3 translationB(400, 200, 0);
+
 		float r = 0.05f;
 		float increment = 0.05f;
-
-		double previousTime = glfwGetTime();
-		int frameCount = 0;
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
@@ -106,21 +136,31 @@ int main(void)
 			/* Render here */
 			Renderer::Clear();
 
-			shader.Bind();
-			shader.SetUniform4f("u_Colour", r, 0.3f, 0.8f, 1.0f);
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui_ImplGlfw_NewFrame();
+			ImGui::NewFrame();
 
-			Renderer::Draw(vertexArray, indexBuffer, shader);
 
-			double currentTime = glfwGetTime();
-			frameCount++;
-
-			if (currentTime - previousTime >= 1.0)
 			{
-				std::cout << frameCount << std::endl;
+				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
+				glm::mat4 mvp = proj * view * model;
+				shader.Bind();
+				shader.SetUniform4f("u_Colour", r, 0.3f, 0.8f, 1.0f);
+				shader.SetUniformMat4f("u_MVP", mvp);
 
-				frameCount = 0;
-				previousTime = currentTime;
+				Renderer::Draw(vertexArray, indexBuffer, shader);
 			}
+
+			{
+				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
+				glm::mat4 mvp = proj * view * model;
+				shader.Bind();
+				shader.SetUniform4f("u_Colour", r, 0.3f, 0.8f, 1.0f);
+				shader.SetUniformMat4f("u_MVP", mvp);
+
+				Renderer::Draw(vertexArray, indexBuffer, shader);
+			}
+
 			if (r > 1.0f)
 				increment = -0.05f;
 			else if (r < 0.0f)
@@ -128,13 +168,28 @@ int main(void)
 
 			r += increment;
 
+			{
+				ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 1280.0f); 
+				ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 1280.0f);
+				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+			}
+
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
 			GLCall(glfwSwapBuffers(window));
 
 			/* Poll for and process events */
 			GLCall(glfwPollEvents());
+
 		}
 	}
 	
+	// Cleanup
+	ImGui_ImplOpenGL3_Shutdown();
+	ImGui_ImplGlfw_Shutdown();
+	ImGui::DestroyContext();
+
 	glfwTerminate();
 	return 0;
 }
