@@ -2,11 +2,13 @@
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <sstream>
+#include <cstdlib>
 
 #include "Renderer.h"
 
@@ -75,6 +77,8 @@ int main(void)
 	
 	std::cout << glGetString(GL_VERSION) << std::endl;
 
+	GLCall(glEnable(GL_DEPTH_TEST));
+
 	{
 
 		if (flags && GL_CONTEXT_FLAG_DEBUG_BIT)
@@ -86,29 +90,63 @@ int main(void)
 			GLCall(glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE));
 		}
 
-		float positions[] = {
-			-50.0f, -50.0f,	//0
-			 50.0f, -50.0f,	//1
-			 50.0f,  50.0f,	//2
-			-50.0f,  50.0f,	//3
+		glm::vec3 cubePositions[] = {
+		  glm::vec3( 0.0f,  0.0f,  0.0f),
+		  glm::vec3( 2.0f,  5.0f, -15.0f),
+		  glm::vec3(-1.5f, -2.2f, -2.5f),
+		  glm::vec3(-3.8f, -2.0f, -12.3f),
+		  glm::vec3( 2.4f, -0.4f, -3.5f),
+		  glm::vec3(-1.7f,  3.0f, -7.5f),
+		  glm::vec3( 1.3f, -2.0f, -2.5f),
+		  glm::vec3( 1.5f,  2.0f, -2.5f),
+		  glm::vec3( 1.5f,  0.2f, -1.5f),
+		  glm::vec3(-8.3f,  1.0f, -1.5f)
+		};
+
+		float vertices[] = {
+			//positions
+			-0.5f, -0.5f, -0.5f,	//0
+			 0.5f, -0.5f, -0.5f,	//1
+			 0.5f,  0.5f, -0.5f,	//2		
+			-0.5f,  0.5f, -0.5f,	//3
+
+			-0.5f, -0.5f,  0.5f,	//4
+			 0.5f, -0.5f,  0.5f,	//5
+			 0.5f,  0.5f,  0.5f,	//6
+			-0.5f,  0.5f,  0.5f,	//7
 		};
 
 		unsigned short indices[] = {
 			0, 1, 2,
-			2, 3, 0
+			2, 3, 0,
+
+			4, 5, 6,
+			6 ,7, 4,
+
+			7, 3, 0,
+			0, 4, 7,
+
+			6, 2, 1,
+			1, 5, 6,
+
+			0, 1, 5,
+			5, 4, 0,
+
+			3, 2, 6,
+			6, 7, 3
 		};
 
 		VertexArray vertexArray;
-		VertexBuffer vertexBuffer(positions, 4 * 2 * sizeof(float));
+		VertexBuffer vertexBuffer(vertices, 12 * 6 * sizeof(float));
 
 		VertexBufferLayout layout;
-		layout.Push<float>(2);
+		layout.Push<float>(3);
 		vertexArray.AddBuffer(vertexBuffer, layout);
 
-		IndexBuffer indexBuffer(indices, 6);
+		IndexBuffer indexBuffer(indices, 36);
 
-		glm::mat4 proj = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, -1.0f, 1.0f);
-		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0, 0, 0));
+		glm::mat4 proj = glm::perspective(glm::radians(90.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
+		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
 
 		Shader shader("resources/shaders/Basic.shader");
 		shader.Bind();
@@ -140,21 +178,14 @@ int main(void)
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
+			shader.Bind();
 
+			for(unsigned int i = 0; i < 10; i++)
 			{
-				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationA);
+				glm::mat4 model = glm::translate(glm::mat4(1.0f), cubePositions[i]);
+				float angle = 20.0f * i;
+				model = glm::rotate(model, (float)glfwGetTime() * glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
 				glm::mat4 mvp = proj * view * model;
-				shader.Bind();
-				shader.SetUniform4f("u_Colour", r, 0.3f, 0.8f, 1.0f);
-				shader.SetUniformMat4f("u_MVP", mvp);
-
-				Renderer::Draw(vertexArray, indexBuffer, shader);
-			}
-
-			{
-				glm::mat4 model = glm::translate(glm::mat4(1.0f), translationB);
-				glm::mat4 mvp = proj * view * model;
-				shader.Bind();
 				shader.SetUniform4f("u_Colour", r, 0.3f, 0.8f, 1.0f);
 				shader.SetUniformMat4f("u_MVP", mvp);
 
@@ -170,7 +201,7 @@ int main(void)
 
 			{
 				ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 1280.0f); 
-				ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 1280.0f);
+				//ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 1280.0f);
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			}
 
