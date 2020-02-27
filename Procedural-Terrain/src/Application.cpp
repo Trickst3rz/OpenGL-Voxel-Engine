@@ -17,6 +17,7 @@
 #include "IndexBuffer.h"
 #include "VertexArray.h"
 #include "Shader.h"
+#include "Texture.h"
 
 #include "imgui/imgui.h"
 #include <imgui/imgui_impl_opengl3.h>
@@ -104,16 +105,80 @@ int main(void)
 		};
 
 		float vertices[] = {
-			//positions
-			-0.5f, -0.5f, -0.5f,	//0
-			 0.5f, -0.5f, -0.5f,	//1
-			 0.5f,  0.5f, -0.5f,	//2		
-			-0.5f,  0.5f, -0.5f,	//3
+			//positions			//textures
+			-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, //0
+			 0.5f, -0.5f, -0.5f, 1.0f, 0.0f, //1
+			 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, //2		
+			-0.5f,  0.5f, -0.5f, 0.0f, 1.0f, //3
 
-			-0.5f, -0.5f,  0.5f,	//4
-			 0.5f, -0.5f,  0.5f,	//5
-			 0.5f,  0.5f,  0.5f,	//6
-			-0.5f,  0.5f,  0.5f,	//7
+			-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, //4
+			 0.5f, -0.5f,  0.5f, 1.0f, 0.0f, //5
+			 0.5f,  0.5f,  0.5f, 1.0f, 1.0f, //6
+			-0.5f,  0.5f,  0.5f, 0.0f, 1.0f	 //7
+		};
+
+		float TestTexturesVertices[] = {
+	   -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+	   -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+	   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+	   -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+	   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+	   -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	   -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+	   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+	   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	   -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+	   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+	   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+	   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+	   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+	   -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+	   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+		};
+
+		unsigned short TestTextureIndices[] = {
+			0, 1, 2,
+			3, 4, 5,
+
+			6, 7, 8,
+			9 ,10, 11,
+
+			12, 13, 14,
+			15, 16, 17,
+
+			18, 19, 20,
+			21, 22, 23,
+
+			24, 25, 26,
+			27, 28, 29,
+
+			30, 31, 32,
+			33, 34, 35
 		};
 
 		unsigned short indices[] = {
@@ -137,20 +202,25 @@ int main(void)
 		};
 
 		VertexArray vertexArray;
-		VertexBuffer vertexBuffer(vertices, 12 * 6 * sizeof(float));
-
+		VertexBuffer vertexBuffer(TestTexturesVertices, sizeof(TestTexturesVertices));
+		
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
+		layout.Push<float>(2);
 		vertexArray.AddBuffer(vertexBuffer, layout);
 
-		IndexBuffer indexBuffer(indices, 36);
+		IndexBuffer indexBuffer(TestTextureIndices, 36);
 
-		glm::mat4 proj = glm::perspective(glm::radians(90.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
+		glm::mat4 proj = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
 		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
 
 		Shader shader("resources/shaders/Basic.shader");
 		shader.Bind();
 		shader.SetUniform4f("u_Colour", 0.8f, 0.3f, 0.8f, 1.0f);
+
+		Texture texture("resources/textures/Crate.png");
+		texture.Bind();
+		shader.SetUniform1i("u_Texture", 0);
 
 		vertexArray.Unbind();
 		vertexBuffer.Unbind();
@@ -200,7 +270,7 @@ int main(void)
 			r += increment;
 
 			{
-				ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 1280.0f); 
+				//ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 1280.0f); 
 				//ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 1280.0f);
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			}
