@@ -23,6 +23,10 @@
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui\imgui_impl_glfw.h>
 
+namespace Chunk {
+	std::size_t Width = 16, Height = 16, Depth = 16;
+}
+
 int main(void)
 {
 	GLFWwindow* window;
@@ -45,17 +49,13 @@ int main(void)
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // Required on Mac
 #else
 	// GL 3.0 + GLSL 130
-	const char* glsl_version = "#version 130";
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-	//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);  // 3.2+ only
-	//glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            // 3.0+ only
-#endif
-
+	const char* glsl_version = "#version 330";
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GL_TRUE);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE); 
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);            
+#endif
 
 	GLint flags;
 	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
@@ -105,111 +105,63 @@ int main(void)
 		};
 
 		float vertices[] = {
-			//positions			//textures
-			-0.5f, -0.5f, -0.5f, 0.0f, 0.0f, //0
-			 0.5f, -0.5f, -0.5f, 1.0f, 0.0f, //1
-			 0.5f,  0.5f, -0.5f, 1.0f, 1.0f, //2		
-			-0.5f,  0.5f, -0.5f, 0.0f, 1.0f, //3
+		//positions			 //texCoord
+	   -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, //0
+		0.5f, -0.5f, -0.5f,  1.0f, 0.0f, //1
+		0.5f,  0.5f, -0.5f,  1.0f, 1.0f, //2
+	   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, //3
 
-			-0.5f, -0.5f,  0.5f, 0.0f, 0.0f, //4
-			 0.5f, -0.5f,  0.5f, 1.0f, 0.0f, //5
-			 0.5f,  0.5f,  0.5f, 1.0f, 1.0f, //6
-			-0.5f,  0.5f,  0.5f, 0.0f, 1.0f	 //7
-		};
+	   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f, //4
+		0.5f, -0.5f,  0.5f,  1.0f, 0.0f, //5
+		0.5f,  0.5f,  0.5f,  1.0f, 1.0f, //6
+	   -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, //7
 
-		float TestTexturesVertices[] = {
-	   -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-		0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-	   -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	   -0.5f,  0.5f,  0.5f,  1.0f, 0.0f, //8
+	   -0.5f,  0.5f, -0.5f,  1.0f, 1.0f, //9
+	   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f, //10 
+		0.5f,  0.5f,  0.5f,  1.0f, 0.0f, //11
 
-	   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-	   -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-	   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-	   -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	   -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-	   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-	   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	   -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-	   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-	   -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-	   -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-	   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-	   -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-	   -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-		};
-
-		unsigned short TestTextureIndices[] = {
-			0, 1, 2,
-			3, 4, 5,
-
-			6, 7, 8,
-			9 ,10, 11,
-
-			12, 13, 14,
-			15, 16, 17,
-
-			18, 19, 20,
-			21, 22, 23,
-
-			24, 25, 26,
-			27, 28, 29,
-
-			30, 31, 32,
-			33, 34, 35
+		0.5f, -0.5f, -0.5f,  0.0f, 1.0f, //12
+		0.5f, -0.5f,  0.5f,  0.0f, 0.0f, //13
+		0.5f, -0.5f, -0.5f,  1.0f, 1.0f, //14
+	   -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, //15
 		};
 
 		unsigned short indices[] = {
-			0, 1, 2,
+			//Front //Check when free movement camera is in check which side is which
+			0, 1, 2, 
 			2, 3, 0,
 
+			//Back
 			4, 5, 6,
-			6 ,7, 4,
+			6, 7, 4,
 
-			7, 3, 0,
-			0, 4, 7,
+			//Left
+			8, 9, 10,
+			10, 4, 8,
 
-			6, 2, 1,
-			1, 5, 6,
+			//Right
+			11, 2, 12,
+			12, 13, 11,
 
-			0, 1, 5,
-			5, 4, 0,
+			//Bottom
+			10, 14, 5,
+			5, 4, 10,
 
-			3, 2, 6,
-			6, 7, 3
+			//Top
+			3, 2, 11,
+			11, 15, 3
 		};
 
 		VertexArray vertexArray;
-		VertexBuffer vertexBuffer(TestTexturesVertices, sizeof(TestTexturesVertices));
+		VertexBuffer vertexBuffer(vertices, sizeof(vertices));
 		
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
 		layout.Push<float>(2);
 		vertexArray.AddBuffer(vertexBuffer, layout);
 
-		IndexBuffer indexBuffer(TestTextureIndices, 36);
+		IndexBuffer indexBuffer(indices, 36);
 
 		glm::mat4 proj = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 0.1f, 100.0f);
 		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));

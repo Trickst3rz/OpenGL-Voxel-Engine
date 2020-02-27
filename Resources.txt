@@ -1,0 +1,32 @@
+Ideas for Final Year Project/Resources
+Bring MacBook laptop to show off performance and cross platform
+OpenGL Programming Guide Book: Flour 1(006.663 OGL/KES)
+
+Generate noise use lib noise look up
+OpenGL triangle face merging - render technique algorithm 
+
+
+https://learnopengl.com
+
+https://www.learncpp.com
+
+docs.gl
+
+http://www.opengl-tutorial.org
+
+https://github.com/JamesRandall/SimpleVoxelEngine
+
+https://medium.com/retronator-magazine/pixels-and-voxels-the-long-answer-5889ecc18190
+
+
+https://medium.com/@fogleman/voxel-rendering-techniques-fa8d869457ca - rendering techniques
+
+https://medium.com/@calebleak/quads-all-the-way-down-simple-voxel-rendering-fea1e4488e26
+
+https://sites.google.com/site/letsmakeavoxelengine/ - lets make a voxel engine
+
+
+https://0fps.net/category/programming/voxels/
+
+
+http://blog.tuxedolabs.com/  - Dennis Gustafsson programmer blog
