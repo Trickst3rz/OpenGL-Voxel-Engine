@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DEFECTS>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\s6099298\source\OpenGL-Voxel-Engine\OpenGL-Voxel-Engine\Procedural-Terrain\src\vendor\imgui\</FILEPATH>
+      <FILENAME>imgui.h</FILENAME>
+      <LINE>1555</LINE>
+      <COLUMN>0</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'ImGuiSizeCallbackData::UserData' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>ImGuiSizeCallbackData::{ctor}</FUNCTION>
+    <DECORATED>??0ImGuiSizeCallbackData@@QEAA@XZ</DECORATED>
+    <FUNCLINE>1555</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>ImGuiSizeCallbackData::UserData</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\s6099298\source\OpenGL-Voxel-Engine\OpenGL-Voxel-Engine\Procedural-Terrain\src\vendor\imgui\</FILEPATH>
+      <FILENAME>imgui.cpp</FILENAME>
+      <LINE>5983</LINE>
+      <COLUMN>112</COLUMN>
+    </SFA>
+    <DEFECTCODE>26451</DEFECTCODE>
+    <DESCRIPTION>Arithmetic overflow: Using operator '-' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '-' to avoid overflow (io.2).</DESCRIPTION>
+    <FUNCTION>ImGui::BringWindowToFocusFront</FUNCTION>
+    <DECORATED>?BringWindowToFocusFront@ImGui@@YAXPEAUImGuiWindow@@@Z</DECORATED>
+    <FUNCLINE>5975</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\s6099298\source\OpenGL-Voxel-Engine\OpenGL-Voxel-Engine\Procedural-Terrain\src\vendor\imgui\</FILEPATH>
+      <FILENAME>imgui.cpp</FILENAME>
+      <LINE>5983</LINE>
+      <COLUMN>108</COLUMN>
+    </SFA>
+    <DEFECTCODE>26451</DEFECTCODE>
+    <DESCRIPTION>Arithmetic overflow: Using operator '-' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '-' to avoid overflow (io.2).</DESCRIPTION>
+    <FUNCTION>ImGui::BringWindowToFocusFront</FUNCTION>
+    <DECORATED>?BringWindowToFocusFront@ImGui@@YAXPEAUImGuiWindow@@@Z</DECORATED>
+    <FUNCLINE>5975</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\s6099298\source\OpenGL-Voxel-Engine\OpenGL-Voxel-Engine\Procedural-Terrain\src\vendor\imgui\</FILEPATH>
+      <FILENAME>imgui.cpp</FILENAME>
+      <LINE>5998</LINE>
+      <COLUMN>82</COLUMN>
+    </SFA>
+    <DEFECTCODE>26451</DEFECTCODE>
+    <DESCRIPTION>Arithmetic overflow: Using operator '-' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '-' to avoid overflow (io.2).</DESCRIPTION>
+    <FUNCTION>ImGui::BringWindowToDisplayFront</FUNCTION>
+    <DECORATED>?BringWindowToDisplayFront@ImGui@@YAXPEAUImGuiWindow@@@Z</DECORATED>
+    <FUNCLINE>5989</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\s6099298\source\OpenGL-Voxel-Engine\OpenGL-Voxel-Engine\Procedural-Terrain\src\vendor\imgui\</FILEPATH>
+      <FILENAME>imgui.cpp</FILENAME>
+      <LINE>5998</LINE>
+      <COLUMN>78</COLUMN>
+    </SFA>
+    <DEFECTCODE>26451</DEFECTCODE>
+    <DESCRIPTION>Arithmetic overflow: Using operator '-' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '-' to avoid overflow (io.2).</DESCRIPTION>
+    <FUNCTION>ImGui::BringWindowToDisplayFront</FUNCTION>
+    <DECORATED>?BringWindowToDisplayFront@ImGui@@YAXPEAUImGuiWindow@@@Z</DECORATED>
+    <FUNCLINE>5989</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\s6099298\source\OpenGL-Voxel-Engine\OpenGL-Voxel-Engine\Procedural-Terrain\src\vendor\imgui\</FILEPATH>
+      <FILENAME>imgui_internal.h</FILENAME>
+      <LINE>709</LINE>
+      <COLUMN>0</COLUMN>
+    </SFA>
+    <DEFECTCODE>26495</DEFECTCODE>
+    <DESCRIPTION>Variable 'ImGuiColorMod::Col' is uninitialized. Always initialize a member variable (type.6).</DESCRIPTION>
+    <FUNCTION>ImGuiColorMod::{ctor}</FUNCTION>
+    <DECORATED>??0ImGuiColorMod@@QEAA@XZ</DECORATED>
+    <FUNCLINE>709</FUNCLINE>
+    <ADDITIONALINFO>
+      <targetSymbol>ImGuiColorMod::Col</targetSymbol>
+    </ADDITIONALINFO>
+    <PATH></PATH>
+  </DEFECT>
+  <DEFECT>
+    <SFA>
+      <FILEPATH>C:\Users\s6099298\source\OpenGL-Voxel-Engine\OpenGL-Voxel-Engine\Procedural-Terrain\src\vendor\imgui\</FILEPATH>
+      <FILENAME>imgui.cpp</FILENAME>
+      <LINE>10032</LINE>
+      <COLUMN>87</COLUMN>
+    </SFA>
+    <DEFECTCODE>26451</DEFECTCODE>
+    <DESCRIPTION>Arithmetic overflow: Using operator '-' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '-' to avoid overflow (io.2).</DESCRIPTION>
+    <FUNCTION>ImGui::ShowMetricsWindow::Funcs::NodeColumns</FUNCTION>
+    <DECORATED>?NodeColumns@Funcs@?1??ShowMetricsWindow@ImGui@@YAXPEA_N@Z@SAXPEBUImGuiColumns@@@Z</DECORATED>
+    <FUNCLINE>10028</FUNCLINE>
+    <PATH></PATH>
+  </DEFECT>
+</DEFECTS>
