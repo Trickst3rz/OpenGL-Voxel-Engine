@@ -18,6 +18,7 @@
 #include "VertexArray.h"
 #include "Shader.h"
 #include "Texture.h"
+#include "Camera.h"
 
 #include "imgui/imgui.h"
 #include <imgui/imgui_impl_opengl3.h>
@@ -170,7 +171,7 @@ int main(void)
 
 		Shader shader("resources/shaders/Basic.shader");
 		shader.Bind();
-		shader.SetUniform4f("u_Colour", 0.8f, 0.3f, 0.8f, 1.0f);
+		//shader.SetUniform4f("u_Colour", 0.8f, 0.3f, 0.8f, 1.0f);
 
 		Texture texture("resources/textures/Crate.png");
 		texture.Bind();
@@ -186,6 +187,8 @@ int main(void)
 		ImGui_ImplOpenGL3_Init(glsl_version);
 		ImGui::StyleColorsDark();
 
+		Camera camera;
+
 		glm::vec3 translationA(200, 200, 0);
 		glm::vec3 translationB(400, 200, 0);
 
@@ -197,12 +200,16 @@ int main(void)
 		{
 			/* Render here */
 			Renderer::Clear();
-
+			
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
 			shader.Bind();
+
+			camera.processInput(window);
+			//glm::mat4 view;
+			view = glm::lookAt(camera.GetCameraPosition(), camera.GetCameraPosition() + camera.GetCameraForward(), camera.GetCameraUp());
 
 			for(int x = 0; x < Chunk::Width; x++)
 			{
@@ -211,7 +218,7 @@ int main(void)
 					for (int z = 0; z < Chunk::Depth; z++)
 					{
 						glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y ,z));
-						float angle = 20.0f;
+						float angle = 0.0f;
 						model = glm::rotate(model, /*(float)glfwGetTime() */ glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
 						glm::mat4 mvp = proj * view * model;
 						shader.SetUniform4f("u_Colour", r, 0.3f, 0.8f, 1.0f);
