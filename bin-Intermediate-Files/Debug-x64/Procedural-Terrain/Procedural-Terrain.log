@@ -1,28 +1,2 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\Microsoft.Common.CurrentVersion.targets(1875,5): warning : The referenced project '..\Genesis\Genesis.vcxproj' does not exist.
-  Chunk.cpp
-  GLErrorManager.cpp
-  IndexBuffer.cpp
-  Renderer.cpp
-C:\Users\Michael\Documents\GitHub\Voxel-Engine\Procedural-Terrain\src\Renderer.h(12,2): warning C4091: 'static ': ignored on left of 'Renderer' when no variable is declared
-  Block.cpp
-  Application.cpp
-C:\Users\Michael\Documents\GitHub\Voxel-Engine\Procedural-Terrain\src\Renderer.h(12,2): warning C4091: 'static ': ignored on left of 'Renderer' when no variable is declared
-  Shader.cpp
-  Texture.cpp
-  glm.cpp
-  imgui.cpp
-  imgui_demo.cpp
-  imgui_draw.cpp
-  imgui_impl_glfw.cpp
-  imgui_impl_opengl3.cpp
-  imgui_widgets.cpp
-  stb_image.cpp
-  VertexArray.cpp
-C:\Users\Michael\Documents\GitHub\Voxel-Engine\Procedural-Terrain\src\Renderer.h(12,2): warning C4091: 'static ': ignored on left of 'Renderer' when no variable is declared
-C:\Users\Michael\Documents\GitHub\Voxel-Engine\Procedural-Terrain\src\VertexArray.cpp(24,3): warning C4312: 'type cast': conversion from 'unsigned int' to 'const void *' of greater size
-  VertexBuffer.cpp
-  Generating Code...
-LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-glew32s.lib(glew.obj) : warning LNK4099: PDB 'vc120.pdb' was not found with 'glew32s.lib(glew.obj)' or at 'C:\Users\Michael\Documents\GitHub\Voxel-Engine\bin\Debug-x64\Procedural-Terrain\vc120.pdb'; linking object as if no debug info
   Procedural-Terrain.vcxproj -> C:\Users\Michael\Documents\GitHub\Voxel-Engine\bin\Debug-x64\Procedural-Terrain\Procedural-Terrain.exe
