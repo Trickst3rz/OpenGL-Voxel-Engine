@@ -24,8 +24,48 @@
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui\imgui_impl_glfw.h>
 
+//Mouse initial offset
+float m_lastX = 640, m_lastY = 360;
+//Yaw, pitch
+float m_yaw = -90.0f, m_pitch = 0.0f;
+bool m_firstMouse = true;
+
 namespace Chunk {
-	const std::size_t Width = 16, Height = 16, Depth = 16;
+	const std::size_t Width = 4, Height = 4, Depth = 4;
+}
+
+void mouse_callback(GLFWwindow* window, double xPos, double yPos)
+{
+	if (m_firstMouse)
+	{
+		m_lastX = xPos;
+		m_lastY = yPos;
+		m_firstMouse = false;
+	}
+
+	float xOffset = xPos - m_lastX;
+	float yOffset = m_lastY - yPos; //Reset since y coordinates range from bottom to top
+	m_lastX = xPos;
+	m_lastY = yPos;
+
+	const float sensitivity = 0.05f;
+	xOffset *= sensitivity;
+	yOffset *= sensitivity;
+
+	m_yaw += xOffset;
+	m_pitch += yOffset;
+
+	if (m_pitch > 89.0f)
+		m_pitch = 89.0f;
+	if (m_pitch < -89.0f)
+		m_pitch = -89.0f;
+
+	glm::vec3 direction;
+	direction.x = cos(glm::radians(m_yaw) * cos(glm::radians(m_pitch)));
+	direction.y = sin(glm::radians(m_pitch));
+	direction.z = sin(glm::radians(m_yaw) * cos(glm::radians(m_pitch)));
+	Camera::SetCameraForward(glm::normalize(direction));
+
 }
 
 int main(void)
@@ -73,7 +113,13 @@ int main(void)
 	glfwMakeContextCurrent(window);
 
 	glfwSwapInterval(1); // vsync = 0(off) 1(on)
-	
+
+	//Mouse input callback
+	glfwSetCursorPosCallback(window, Camera::mouse_callback);
+
+	//Tells GLFW where to capture the mouse
+	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
 	if (glewInit() != GLEW_OK)
 		std::cout << "glewInit failed something is wrong";
 	
@@ -187,8 +233,6 @@ int main(void)
 		ImGui_ImplOpenGL3_Init(glsl_version);
 		ImGui::StyleColorsDark();
 
-		Camera camera;
-
 		glm::vec3 translationA(200, 200, 0);
 		glm::vec3 translationB(400, 200, 0);
 
@@ -207,9 +251,8 @@ int main(void)
 
 			shader.Bind();
 
-			camera.processInput(window);
-			//glm::mat4 view;
-			view = glm::lookAt(camera.GetCameraPosition(), camera.GetCameraPosition() + camera.GetCameraForward(), camera.GetCameraUp());
+			Camera::processInput(window);
+			view = glm::lookAt(Camera::GetCameraPosition(), Camera::GetCameraPosition() + Camera::GetCameraFront(), Camera::GetCameraUp());
 
 			for(int x = 0; x < Chunk::Width; x++)
 			{
@@ -221,7 +264,7 @@ int main(void)
 						float angle = 0.0f;
 						model = glm::rotate(model, /*(float)glfwGetTime() */ glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
 						glm::mat4 mvp = proj * view * model;
-						shader.SetUniform4f("u_Colour", r, 0.3f, 0.8f, 1.0f);
+						//shader.SetUniform4f("u_Colour", r, 0.3f, 0.8f, 1.0f);
 						shader.SetUniformMat4f("u_MVP", mvp);
 
 						Renderer::Draw(vertexArray, indexBuffer, shader);

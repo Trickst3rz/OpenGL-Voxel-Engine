@@ -8,28 +8,38 @@ class Camera
 {
 public:
 
-	void processInput(GLFWwindow* window);
+	static void processInput(GLFWwindow* window);
 
-	glm::vec3 GetCameraPosition() { return m_cameraPos; }
+	static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
-	glm::vec3 GetCameraForward() { return m_cameraForward; }
+	static glm::vec3 GetCameraPosition() { return m_cameraPos; }
 
-	glm::vec3 GetCameraUp() { return m_cameraUp; }
+	static glm::vec3 GetCameraFront() { return m_cameraFront; }
+
+	static void SetCameraForward(glm::vec3 newCameraForward) { m_cameraFront = newCameraForward; }
+
+	static glm::vec3 GetCameraUp() { return m_cameraUp; }
 
 private:
 	//Camera Position
-	glm::vec3 m_cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-	glm::vec3 m_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+	static glm::vec3 m_cameraPos;
 	//Camera Direction
-	glm::vec3 m_cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
-	glm::vec3 m_cameraDirection = glm::normalize(m_cameraPos - m_cameraTarget);
+	static glm::vec3 m_cameraTarget;
+	static glm::vec3 m_cameraDirection;
 	//Right Axis
-	glm::vec3 m_up = glm::vec3(0.0f, 1.0f, 0.0f);
-	glm::vec3 m_cameraRight = glm::normalize(glm::cross(m_up, m_cameraDirection));
+	static glm::vec3 m_up;
+	static glm::vec3 m_cameraRight;
 	//Forward Axis
-	glm::vec3 m_cameraForward = glm::normalize(glm::cross(m_cameraRight, m_up));
+	static glm::vec3 m_cameraFront;
 	//Up Axis
-	glm::vec3 m_cameraUp = glm::cross(m_cameraDirection, m_cameraRight);
+	static glm::vec3 m_cameraUp;
 	//Camera Speed
-	float cameraSpeed = 0.05f;
+
+	static float m_cameraSpeed;
+	//Mouse initial offset
+	static float m_lastX, m_lastY;
+	//Yaw, pitch
+	static float m_yaw, m_pitch;
+	static bool m_firstMouse;
+
 };
