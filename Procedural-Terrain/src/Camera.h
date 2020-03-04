@@ -8,7 +8,7 @@ class Camera
 {
 public:
 
-	static void processInput(GLFWwindow* window);
+	static void processInput(GLFWwindow* window, float deltaTime);
 
 	static void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 

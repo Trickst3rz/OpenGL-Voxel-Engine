@@ -31,7 +31,8 @@ float m_yaw = -90.0f, m_pitch = 0.0f;
 bool m_firstMouse = true;
 
 namespace Chunk {
-	const std::size_t Width = 4, Height = 4, Depth = 4;
+	const std::size_t Width = 8, Height = 8, Depth = 8;
+	const int size = Width * Height* Depth;
 }
 
 void mouse_callback(GLFWwindow* window, double xPos, double yPos)
@@ -112,7 +113,7 @@ int main(void)
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
 
-	glfwSwapInterval(1); // vsync = 0(off) 1(on)
+	glfwSwapInterval(0); // vsync = 0(off) 1(on)
 
 	//Mouse input callback
 	glfwSetCursorPosCallback(window, Camera::mouse_callback);
@@ -137,19 +138,6 @@ int main(void)
 			GLCall(glDebugMessageCallback(glDebugOutput, nullptr));
 			GLCall(glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE));
 		}
-
-		glm::vec3 cubePositions[] = {
-		  glm::vec3( 0.0f,  0.0f,  0.0f),
-		  glm::vec3( 2.0f,  5.0f, -15.0f),
-		  glm::vec3(-1.5f, -2.2f, -2.5f),
-		  glm::vec3(-3.8f, -2.0f, -12.3f),
-		  glm::vec3( 2.4f, -0.4f, -3.5f),
-		  glm::vec3(-1.7f,  3.0f, -7.5f),
-		  glm::vec3( 1.3f, -2.0f, -2.5f),
-		  glm::vec3( 1.5f,  2.0f, -2.5f),
-		  glm::vec3( 1.5f,  0.2f, -1.5f),
-		  glm::vec3(-8.3f,  1.0f, -1.5f)
-		};
 
 		float vertices[] = {
 		//positions			 //TexCoord
@@ -219,9 +207,22 @@ int main(void)
 		shader.Bind();
 		//shader.SetUniform4f("u_Colour", 0.8f, 0.3f, 0.8f, 1.0f);
 
+		std::cout << Chunk::size << std::endl;
+
 		Texture texture("resources/textures/Crate.png");
 		texture.Bind();
 		shader.SetUniform1i("u_Texture", 0);
+		glm::vec3 offsetTranslation[Chunk::size];
+		shader.SetOffsetArray(offsetTranslation, Chunk::Width);
+
+		for (int i = 0; i < Chunk::size; i++)
+		{
+			std::stringstream ss;
+			std::string index;
+			ss << i;
+			index = ss.str();
+			shader.SetUniform4f("u_offsets[" + index + "]", offsetTranslation[i].x, offsetTranslation[i].y, offsetTranslation[i].z, 0);
+		}
 
 		vertexArray.Unbind();
 		vertexBuffer.Unbind();
@@ -236,12 +237,19 @@ int main(void)
 		glm::vec3 translationA(200, 200, 0);
 		glm::vec3 translationB(400, 200, 0);
 
-		float r = 0.05f;
-		float increment = 0.05f;
+		float deltaTime = 0.0f;
+		float lastFrame = 0.0f;
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
 		{
+			//Delta Time of game loop
+			float currentFrame = glfwGetTime();
+			deltaTime = currentFrame - lastFrame;
+			lastFrame = currentFrame;
+
+			Camera::processInput(window, deltaTime);
+
 			/* Render here */
 			Renderer::Clear();
 			
@@ -251,34 +259,17 @@ int main(void)
 
 			shader.Bind();
 
-			Camera::processInput(window);
 			view = glm::lookAt(Camera::GetCameraPosition(), Camera::GetCameraPosition() + Camera::GetCameraFront(), Camera::GetCameraUp());
 
-			for(int x = 0; x < Chunk::Width; x++)
-			{
-				for (int y = 0; y < Chunk::Height; y++)
-				{
-					for (int z = 0; z < Chunk::Depth; z++)
-					{
-						glm::mat4 model = glm::translate(glm::mat4(1.0f), glm::vec3(x, y ,z));
-						float angle = 0.0f;
-						model = glm::rotate(model, /*(float)glfwGetTime() */ glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-						glm::mat4 mvp = proj * view * model;
-						//shader.SetUniform4f("u_Colour", r, 0.3f, 0.8f, 1.0f);
-						shader.SetUniformMat4f("u_MVP", mvp);
+			glm::mat4 model = glm::mat4(1.0f);
+			float angle = 0.0f;
+			model = glm::rotate(model, /*(float)glfwGetTime() */ glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+			glm::mat4 mvp = proj * view * model;
+			//shader.SetUniform4f("u_Colour", r, 0.3f, 0.8f, 1.0f);
+			shader.SetUniformMat4f("u_MVP", mvp);
 
-						Renderer::Draw(vertexArray, indexBuffer, shader);
-					}
-				}
-			}
+			Renderer::Draw(vertexArray, indexBuffer, shader, Chunk::size);
 
-			if (r > 1.0f)
-				increment = -0.05f;
-			else if (r < 0.0f)
-				increment = 0.05f;
-
-			r += increment;
-			//int count = Renderer::GetDrawCalls();
 			{
 				//ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 1280.0f); 
 				//ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 1280.0f);

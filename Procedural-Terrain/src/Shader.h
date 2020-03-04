@@ -26,9 +26,19 @@ public:
 
 	//Set uniforms
 	void SetUniform1i(const std::string& name, int value);
+	void SetUniform1iv(const std::string& name, signed int count, const int* value);
 	void SetUniform1f(const std::string& name, float value);
+	void SetUniform2f(const std::string& name, float v0, float v1);
+	void SetUniform3f(const std::string& name, float v0, float v1, float v2);
 	void SetUniform4f(const std::string& name, float v0, float v1, float v2, float v3);
+	void SetUniform2i(const std::string& name, int v0, int v1);
+	void SetUniform3i(const std::string& name, int v0, int v1, int v2);
+	void SetUniform4i(const std::string& name, int v0, int v1, int v2, int v3);
+	void SetUniform3iv(const std::string& name, signed int count, const int* value);
 	void SetUniformMat4f(const std::string& name, const glm::mat4& matrix);
+
+	//Set offset array
+	void SetOffsetArray(glm::vec3 offsets[], int chunkSize);
 private:
 	ShaderProgramSource ParseShader(const std::string& filepath);
 	unsigned int CompileShader(unsigned int type, const std::string& source);

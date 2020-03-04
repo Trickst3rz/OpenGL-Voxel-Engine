@@ -12,7 +12,7 @@ glm::vec3 Camera::m_cameraFront = glm::normalize(glm::cross(Camera::m_cameraRigh
 //Up Axis
 glm::vec3 Camera::m_cameraUp = glm::cross(Camera::m_cameraDirection, Camera::m_cameraRight);
 //Camera Speed
-float Camera::m_cameraSpeed = 0.05f;
+float Camera::m_cameraSpeed = 5.5f;
 
 float Camera::m_lastX = 640;
 float Camera::m_lastY = 360;
@@ -20,17 +20,10 @@ float Camera::m_yaw = -90.0f;
 float Camera::m_pitch = 0.0f;
 bool Camera::m_firstMouse = true;
 
-void Camera::processInput(GLFWwindow* window)
+void Camera::processInput(GLFWwindow* window, float deltaTime)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
-
-	float deltaTime = 0.0f;
-	float lastFrame = 0.0f;
-
-	float currentFrame = glfwGetTime();
-	deltaTime = currentFrame - lastFrame;
-	lastFrame = currentFrame;
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		m_cameraPos += m_cameraFront * (m_cameraSpeed * deltaTime);
@@ -41,9 +34,9 @@ void Camera::processInput(GLFWwindow* window)
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		m_cameraPos += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * (m_cameraSpeed * deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-		m_cameraSpeed = 0.06f;
+		m_cameraSpeed = 10.5f;
 	else
-		m_cameraSpeed = 0.03f;
+		m_cameraSpeed = 5.5f;
 }
 
 void Camera::mouse_callback(GLFWwindow* window, double xPos, double yPos)
