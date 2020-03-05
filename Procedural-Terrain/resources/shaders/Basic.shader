@@ -3,8 +3,9 @@
 
 layout(location = 0) in vec4 position;
 layout(location = 1) in vec2 texCoord;
+layout(location = 2) in vec3 normal;
 //Make sure the offset is the last layout location and the location matches InstanceBuffer
-layout(location = 2) in vec4 offset;
+layout(location = 3) in vec4 offset;
 
 uniform mat4 u_MVP;
 

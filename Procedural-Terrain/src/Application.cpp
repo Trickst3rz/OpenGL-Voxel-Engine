@@ -37,8 +37,8 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 namespace Chunk {
-	std::size_t Width = 128, Height = 128, Depth = 128;
-	int size = Width * Height* Depth;
+	const std::size_t Size = 16;
+	const std::size_t TotalSize = Size * Size * Size;
 }
 
 void mouse_callback(GLFWwindow* window, double xPos, double yPos)
@@ -195,13 +195,13 @@ int main(void)
 			11, 15, 3
 		};
 
-		glm::vec3* offsetTranslation = new glm::vec3[Chunk::size];
+		glm::vec3* offsetTranslation = new glm::vec3[Chunk::TotalSize];
 		int index = 0;
-		for (int x = 0; x < Chunk::Width; x++)
+		for (int x = 0; x < Chunk::Size; x++)
 		{
-			for (int y = 0; y < Chunk::Height; y++)
+			for (int y = 0; y < Chunk::Size; y++)
 			{
-				for (int z = 0; z < Chunk::Depth; z++)
+				for (int z = 0; z < Chunk::Size; z++)
 				{
 					glm::vec3 translation = glm::vec3(x, y, z);
 					offsetTranslation[index++] = translation;
@@ -212,7 +212,7 @@ int main(void)
 		VertexArray vertexArray;
 		VertexBuffer vertexBuffer(&vertices, sizeof(vertices));
 		
-		VertexBuffer instanceVBO(&offsetTranslation[0], sizeof(glm::vec3)* Chunk::size);
+		VertexBuffer instanceVBO(&offsetTranslation[0], sizeof(glm::vec3)* Chunk::TotalSize);
 	
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
@@ -222,8 +222,8 @@ int main(void)
 
 		VertexBufferLayout InstanceLayout;
 		InstanceLayout.Push<float>(3);
-		vertexArray.AddInstanceBuffer(instanceVBO, InstanceLayout, 2);
-
+		vertexArray.AddInstanceBuffer(instanceVBO, InstanceLayout, 3);
+		
 		IndexBuffer indexBuffer(indices, 36);
 
 		glm::mat4 proj = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 1.0f, 150.0f);
@@ -296,11 +296,11 @@ int main(void)
 				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
 				glm::mat4 mvp = proj * view * model;
 				shader.SetUniformMat4f("u_MVP", mvp);
-				Renderer::Draw(vertexArray, indexBuffer, shader, Chunk::size);
+				Renderer::Draw(vertexArray, indexBuffer, shader, Chunk::TotalSize);
 			}
 			else
 			{
-				for (int i = 0; i < Chunk::size; i++)
+				for (int i = 0; i < Chunk::TotalSize; i++)
 				{
 					glm::mat4 model = glm::translate(glm::mat4(1.0f), offsetTranslation[i] / 2.0f);
 					float angle = 0.0;

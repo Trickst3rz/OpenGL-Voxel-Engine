@@ -21,6 +21,8 @@ GLM API Documentation - https://glm.g-truc.net/0.9.9/api/modules.html
 
 Rendering Voxels Article - https://dev.to/superfola/lets-render-chunks-of-voxels-with-opengl--47g9
 
+Creating a Voxel Engine Documentation - https://sites.google.com/site/letsmakeavoxelengine/home
+
 ## DevLog
 
 * [29/10/2019] - Setup IDE, linked glfw 3.3 successfully with Visual Studio 2017(IDE), 
