@@ -12,6 +12,8 @@ public:
 
 	void AddBuffer(const VertexBuffer& vb, const VertexBufferLayout& layout);
 
+	void AddInstanceBuffer(const VertexBuffer& instanceVB, const VertexBufferLayout& layout, int index);
+
 	void Bind() const;
 	void Unbind() const;
 private:

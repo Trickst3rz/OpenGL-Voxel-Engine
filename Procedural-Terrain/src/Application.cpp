@@ -24,15 +24,21 @@
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui\imgui_impl_glfw.h>
 
+#include "tests/DebugGUI.h"
+
 //Mouse initial offset
 float m_lastX = 640, m_lastY = 360;
 //Yaw, pitch
 float m_yaw = -90.0f, m_pitch = 0.0f;
 bool m_firstMouse = true;
 
+bool instanceToggle = true;
+float deltaTime = 0.0f;
+float lastFrame = 0.0f;
+
 namespace Chunk {
-	const std::size_t Width = 8, Height = 8, Depth = 8;
-	const int size = Width * Height* Depth;
+	std::size_t Width = 16, Height = 16, Depth = 16;
+	int size = Width * Height* Depth;
 }
 
 void mouse_callback(GLFWwindow* window, double xPos, double yPos)
@@ -188,15 +194,34 @@ int main(void)
 			11, 15, 3
 		};
 
-		int blocks[Chunk::Width][Chunk::Height][Chunk::Depth];
+		glm::vec3* offsetTranslation = new glm::vec3[Chunk::size];
+		int index = 0;
+		for (int x = 0; x < Chunk::Width; x++)
+		{
+			for (int y = 0; y < Chunk::Height; y++)
+			{
+				for (int z = 0; z < Chunk::Depth; z++)
+				{
+					glm::vec3 translation = glm::vec3(x, y, z);
+					offsetTranslation[index++] = translation;
+				}
+			}
+		}
 
 		VertexArray vertexArray;
-		VertexBuffer vertexBuffer(vertices, sizeof(vertices));
+		VertexBuffer vertexBuffer(&vertices, sizeof(vertices));
 		
+		VertexBuffer instanceVBO(&offsetTranslation[0], sizeof(glm::vec3)* Chunk::size);
+	
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
 		layout.Push<float>(2);
+		vertexArray.Bind();
 		vertexArray.AddBuffer(vertexBuffer, layout);
+
+		VertexBufferLayout InstanceLayout;
+		InstanceLayout.Push<float>(3);
+		vertexArray.AddInstanceBuffer(instanceVBO, InstanceLayout, 2);
 
 		IndexBuffer indexBuffer(indices, 36);
 
@@ -207,25 +232,11 @@ int main(void)
 		shader.Bind();
 		//shader.SetUniform4f("u_Colour", 0.8f, 0.3f, 0.8f, 1.0f);
 
-		std::cout << Chunk::size << std::endl;
-
 		Texture texture("resources/textures/Crate.png");
 		texture.Bind();
 		shader.SetUniform1i("u_Texture", 0);
-		glm::vec3 offsetTranslation[Chunk::size];
-		shader.SetOffsetArray(offsetTranslation, Chunk::Width);
-
-		for (int i = 0; i < Chunk::size; i++)
-		{
-			std::stringstream ss;
-			std::string index;
-			ss << i;
-			index = ss.str();
-			shader.SetUniform4f("u_offsets[" + index + "]", offsetTranslation[i].x, offsetTranslation[i].y, offsetTranslation[i].z, 0);
-		}
 
 		vertexArray.Unbind();
-		vertexBuffer.Unbind();
 		indexBuffer.Unbind();
 		shader.Unbind();
 
@@ -234,11 +245,11 @@ int main(void)
 		ImGui_ImplOpenGL3_Init(glsl_version);
 		ImGui::StyleColorsDark();
 
-		glm::vec3 translationA(200, 200, 0);
-		glm::vec3 translationB(400, 200, 0);
+		test::Test* currentTest = nullptr;
+		test::TestMenu* testMenu = new test::TestMenu(currentTest);
+		currentTest = testMenu;
 
-		float deltaTime = 0.0f;
-		float lastFrame = 0.0f;
+		testMenu->RegisterTest<test::TestClearColour>("Clear Colour");
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
@@ -253,32 +264,54 @@ int main(void)
 			/* Render here */
 			Renderer::Clear();
 			
-			ImGui_ImplOpenGL3_NewFrame();
-			ImGui_ImplGlfw_NewFrame();
-			ImGui::NewFrame();
+			test::DebugGUI::GetInstance().OnUpdate(deltaTime);
+			test::DebugGUI::GetInstance().OnRender();
+
+			test::DebugGUI::GetInstance().NewFrame();
+
+			//For changing menu with button
+			/*if (currentTest)
+			{
+				currentTest->OnUpdate(deltaTime);
+				currentTest->OnRender();
+				ImGui::Begin("Test");
+				if (currentTest != testMenu && ImGui::Button("<-"))
+				{
+					delete currentTest;
+					currentTest = testMenu;
+				}
+				currentTest->OnImGuiRender();
+				ImGui::End();
+			}*/
 
 			shader.Bind();
 
 			view = glm::lookAt(Camera::GetCameraPosition(), Camera::GetCameraPosition() + Camera::GetCameraFront(), Camera::GetCameraUp());
 
-			glm::mat4 model = glm::mat4(1.0f);
-			float angle = 0.0f;
-			model = glm::rotate(model, /*(float)glfwGetTime() */ glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-			glm::mat4 mvp = proj * view * model;
-			//shader.SetUniform4f("u_Colour", r, 0.3f, 0.8f, 1.0f);
-			shader.SetUniformMat4f("u_MVP", mvp);
-
-			Renderer::Draw(vertexArray, indexBuffer, shader, Chunk::size);
-
+			if (instanceToggle)
 			{
-				//ImGui::SliderFloat3("Translation A", &translationA.x, 0.0f, 1280.0f); 
-				//ImGui::SliderFloat3("Translation B", &translationB.x, 0.0f, 1280.0f);
-				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-				ImGui::Text("Draw Calls: %d", Renderer::GetDrawCalls());
+				glm::mat4 model = glm::mat4(1.0f);
+				float angle = 0.0;
+				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+				glm::mat4 mvp = proj * view * model;
+				shader.SetUniformMat4f("u_MVP", mvp);
+				Renderer::Draw(vertexArray, indexBuffer, shader, Chunk::size);
+			}
+			else
+			{
+				for (int i = 0; i < Chunk::size; i++)
+				{
+					glm::mat4 model = glm::translate(glm::mat4(1.0f), offsetTranslation[i] / 2.0f);
+					float angle = 0.0;
+					model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+					glm::mat4 mvp = proj * view * model;
+					shader.SetUniformMat4f("u_MVP", mvp);
+					Renderer::Draw(vertexArray, indexBuffer, shader);
+				}	
 			}
 
-			ImGui::Render();
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			test::DebugGUI::GetInstance().OnImGuiRender(instanceToggle);
+
 			Renderer::SetDrawCalls(0);
 			GLCall(glfwSwapBuffers(window));
 
@@ -286,12 +319,14 @@ int main(void)
 			GLCall(glfwPollEvents());
 
 		}
+		delete[] offsetTranslation;
+		delete currentTest;
+		if (currentTest != testMenu)
+			delete testMenu;
 	}
 	
 	// Cleanup
-	ImGui_ImplOpenGL3_Shutdown();
-	ImGui_ImplGlfw_Shutdown();
-	ImGui::DestroyContext();
+	test::DebugGUI::GetInstance().NewFrame();
 
 	glfwTerminate();
 	return 0;

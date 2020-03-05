@@ -37,8 +37,6 @@ public:
 	void SetUniform3iv(const std::string& name, signed int count, const int* value);
 	void SetUniformMat4f(const std::string& name, const glm::mat4& matrix);
 
-	//Set offset array
-	void SetOffsetArray(glm::vec3 offsets[], int chunkSize);
 private:
 	ShaderProgramSource ParseShader(const std::string& filepath);
 	unsigned int CompileShader(unsigned int type, const std::string& source);

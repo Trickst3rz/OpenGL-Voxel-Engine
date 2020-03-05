@@ -20,13 +20,29 @@ float Camera::m_yaw = -90.0f;
 float Camera::m_pitch = 0.0f;
 bool Camera::m_firstMouse = true;
 
+
 void Camera::processInput(GLFWwindow* window, float deltaTime)
 {
 	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, true);
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+	{
+		glfwSetCursorPosCallback(window, NULL);
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+	if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+	{
+		glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+		m_firstMouse = true;
+		glfwSetCursorPosCallback(window, mouse_callback);
+	}
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		m_cameraPos += m_cameraFront * (m_cameraSpeed * deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+		m_cameraPos -= m_cameraUp * (m_cameraSpeed * deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+		m_cameraPos += m_cameraUp * (m_cameraSpeed * deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		m_cameraPos -= m_cameraFront * (m_cameraSpeed * deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
@@ -50,8 +66,8 @@ void Camera::mouse_callback(GLFWwindow* window, double xPos, double yPos)
 
 	float xOffset = xPos - m_lastX;
 	float yOffset = m_lastY - yPos; //Reset since y coordinates range from bottom to top
-	m_lastX = xPos;
-	m_lastY = yPos;
+	m_lastX = (float)xPos;
+	m_lastY = (float)yPos;
 
 	const float sensitivity = 0.05f;
 	xOffset *= sensitivity;

@@ -5,6 +5,7 @@
 #include <fstream>
 #include <string>
 #include <sstream>
+#include "glm/glm.hpp"
 
 #if VOXEL_DEBUG == 1
 #define ASSERT(x) if (!(x)) __debugbreak();

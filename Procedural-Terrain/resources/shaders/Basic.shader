@@ -3,16 +3,15 @@
 
 layout(location = 0) in vec4 position;
 layout(location = 1) in vec2 texCoord;
+//Make sure the offset is the last layout location and the location matches InstanceBuffer
+layout(location = 2) in vec4 offset;
 
 uniform mat4 u_MVP;
-
-uniform vec4 u_offsets[512];
 
 out vec2 v_TexCoord;
 
 void main()
 {
-	vec4 offset = u_offsets[gl_InstanceID];
 	gl_Position = u_MVP * (position + offset);
 	v_TexCoord = texCoord;
 };

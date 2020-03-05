@@ -150,6 +150,12 @@ void Shader::SetUniform3i(const std::string& name, int v0, int v1, int v2)
 	GLCall(glUniform3i(GetUniformLocation(name), v0, v1, v2));
 }
 
+void Shader::SetUniform4i(const std::string& name, int v0, int v1, int v2, int v3)
+{
+	GLCall(glUniform4i(GetUniformLocation(name), v0, v1, v2, v3));
+}
+
+
 void Shader::SetUniform3iv(const std::string& name, signed int count, const int* value)
 {
 	GLCall(glUniform3iv(GetUniformLocation(name), count, value));
@@ -171,20 +177,4 @@ int Shader::GetUniformLocation(const std::string& name)
 
 	m_UniformLocationCache[name] = location;
 	return location;
-}
-
-void Shader::SetOffsetArray(glm::vec3 offsets[], int chunkSize)
-{
-	int index = 0;
-	for (int x = 0; x < chunkSize; x++)
-	{
-		for (int y = 0; y < chunkSize; y++)
-		{
-			for (int z = 0; z < chunkSize; z++)
-			{
-				glm::vec3 translation = glm::vec3(x, y, z);
-				offsets[index++] = translation;
-			}
-		}
-	}
 }
