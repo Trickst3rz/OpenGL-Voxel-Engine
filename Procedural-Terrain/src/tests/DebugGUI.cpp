@@ -22,6 +22,7 @@ namespace test {
 			ImGui::Begin("Debug");
 			test.OnImGuiRender();
 			ImGui::Checkbox("Instance Rendering", &instanceToggle);
+			ImGui::Checkbox("Toggle WireFrame", &isWireFrame);
 			if (ImGui::Button("Render Distance:")) //When I do frustum culling add this feature to change render distance
 			{
 				if (chunks == 32)
@@ -34,9 +35,21 @@ namespace test {
 			ImGui::Text("Draw Calls: %d", Renderer::GetDrawCalls());
 			ImGui::End();
 		}
-
+		WireFrame();
 		ImGui::Render();
 		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+	}
+
+	void DebugGUI::WireFrame()
+	{
+		if (isWireFrame)
+		{
+			GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL))
+		}
+		else
+		{
+			GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE))
+		}
 	}
 
 	void DebugGUI::NewFrame()

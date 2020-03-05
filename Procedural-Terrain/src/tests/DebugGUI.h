@@ -21,6 +21,8 @@ namespace test {
 
 		void OnImGuiRender(bool &instanceToggle);
 
+		void WireFrame();
+
 		void NewFrame();
 
 		void ImGuiCleanUp();
@@ -29,5 +31,6 @@ namespace test {
 			DebugGUI() {};
 			TestClearColour test;
 			int chunks = 8;
+			bool isWireFrame = true;
 	};
 }

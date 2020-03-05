@@ -37,7 +37,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 namespace Chunk {
-	std::size_t Width = 16, Height = 16, Depth = 16;
+	std::size_t Width = 128, Height = 128, Depth = 128;
 	int size = Width * Height* Depth;
 }
 
@@ -133,6 +133,7 @@ int main(void)
 	std::cout << glGetString(GL_VERSION) << std::endl;
 
 	GLCall(glEnable(GL_DEPTH_TEST));
+	GLCall(glDepthFunc(GL_LESS));
 
 	{
 
