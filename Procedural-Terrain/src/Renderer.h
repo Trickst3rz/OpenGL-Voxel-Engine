@@ -15,6 +15,15 @@ public:
 	static short GetDrawCalls() { return m_DrawCalls; }
 	static void SetDrawCalls(int reset) { m_DrawCalls = reset; }
 
+	//Indice Faces
+	//Maybe in future change from array to vector to remove and add blocks
+	static std::vector<unsigned short> IndicesFront;
+	static std::vector<unsigned short> IndicesBack;
+	static std::vector<unsigned short> IndicesRight;
+	static std::vector<unsigned short> IndicesLeft;
+	static std::vector<unsigned short> IndicesBottom;
+	static std::vector<unsigned short> IndicesTop;
+
 private:
 	static short m_DrawCalls;
 };

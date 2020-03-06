@@ -19,6 +19,7 @@
 #include "Shader.h"
 #include "Texture.h"
 #include "Camera.h"
+#include "Chunk.h"
 
 #include "imgui/imgui.h"
 #include <imgui/imgui_impl_opengl3.h>
@@ -36,8 +37,8 @@ bool instanceToggle = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-namespace Chunk {
-	const std::size_t Size = 16;
+namespace testChunk {
+	const std::size_t Size = 128;
 	const std::size_t TotalSize = Size * Size * Size;
 }
 
@@ -146,6 +147,12 @@ int main(void)
 			GLCall(glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE));
 		}
 
+		struct Vertex
+		{
+			float position[3];
+			float Texture[2];
+		};
+
 		float vertices[] = {
 		//positions			 //TexCoord
 	   -0.5f, -0.5f, -0.5f,  0.0f, 0.0f, //0
@@ -166,11 +173,11 @@ int main(void)
 		0.5f, -0.5f, -0.5f,  0.0f, 1.0f, //12
 		0.5f, -0.5f,  0.5f,  0.0f, 0.0f, //13
 		0.5f, -0.5f, -0.5f,  1.0f, 1.0f, //14
-	   -0.5f,  0.5f,  0.5f,  0.0f, 0.0f, //15
+	   -0.5f,  0.5f,  0.5f,  0.0f, 0.0f  //15
 		};
 
 		unsigned short indices[] = {
-			//Front //Check when free movement camera is in check which side is which
+			//Front 
 			0, 1, 2, 
 			2, 3, 0,
 
@@ -178,11 +185,11 @@ int main(void)
 			4, 5, 6,
 			6, 7, 4,
 
-			//Left
+			//Right
 			8, 9, 10,
 			10, 4, 8,
 
-			//Right
+			//Left
 			11, 2, 12,
 			12, 13, 11,
 
@@ -195,13 +202,13 @@ int main(void)
 			11, 15, 3
 		};
 
-		glm::vec3* offsetTranslation = new glm::vec3[Chunk::TotalSize];
+		glm::vec3* offsetTranslation = new glm::vec3[testChunk::TotalSize];
 		int index = 0;
-		for (int x = 0; x < Chunk::Size; x++)
+		for (int x = 0; x < testChunk::Size; x++)
 		{
-			for (int y = 0; y < Chunk::Size; y++)
+			for (int y = 0; y < testChunk::Size; y++)
 			{
-				for (int z = 0; z < Chunk::Size; z++)
+				for (int z = 0; z < testChunk::Size; z++)
 				{
 					glm::vec3 translation = glm::vec3(x, y, z);
 					offsetTranslation[index++] = translation;
@@ -209,10 +216,13 @@ int main(void)
 			}
 		}
 
+		Chunk chunk;
+
+
 		VertexArray vertexArray;
 		VertexBuffer vertexBuffer(&vertices, sizeof(vertices));
 		
-		VertexBuffer instanceVBO(&offsetTranslation[0], sizeof(glm::vec3)* Chunk::TotalSize);
+		VertexBuffer instanceVBO(&offsetTranslation[0], sizeof(glm::vec3)* testChunk::TotalSize);
 	
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
@@ -226,12 +236,14 @@ int main(void)
 		
 		IndexBuffer indexBuffer(indices, 36);
 
+		chunk.CreateMesh(vertexBuffer, indexBuffer);
+
 		glm::mat4 proj = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 1.0f, 150.0f);
 		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -40.0f));
 
 		Shader shader("resources/shaders/Basic.shader");
 		shader.Bind();
-		//shader.SetUniform4f("u_Colour", 0.8f, 0.3f, 0.8f, 1.0f);
+		//shader.SetUniform4f("u_Colour", 1.0f, 0.0f, 0.0f, 1.0f);
 
 		Texture texture("resources/textures/Crate.png");
 		texture.Bind();
@@ -296,11 +308,11 @@ int main(void)
 				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
 				glm::mat4 mvp = proj * view * model;
 				shader.SetUniformMat4f("u_MVP", mvp);
-				Renderer::Draw(vertexArray, indexBuffer, shader, Chunk::TotalSize);
+				Renderer::Draw(vertexArray, indexBuffer, shader, testChunk::TotalSize);
 			}
 			else
 			{
-				for (int i = 0; i < Chunk::TotalSize; i++)
+				for (int i = 0; i < testChunk::TotalSize; i++)
 				{
 					glm::mat4 model = glm::translate(glm::mat4(1.0f), offsetTranslation[i] / 2.0f);
 					float angle = 0.0;
@@ -308,7 +320,7 @@ int main(void)
 					glm::mat4 mvp = proj * view * model;
 					shader.SetUniformMat4f("u_MVP", mvp);
 					Renderer::Draw(vertexArray, indexBuffer, shader);
-				}	
+				}
 			}
 
 			test::DebugGUI::GetInstance().OnImGuiRender(instanceToggle);

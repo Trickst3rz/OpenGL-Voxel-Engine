@@ -1,4 +1,5 @@
 #include "Chunk.h"
+#include "Renderer.h"
 
 Chunk::Chunk()
 {
@@ -15,7 +16,7 @@ Chunk::Chunk()
 }
 
 Chunk::~Chunk()
-{
+{//Delete the blocks
 	for (int x = 0; x < ChunkSize; x++)
 	{
 		for (int y = 0; y < ChunkSize; y++)
@@ -32,7 +33,118 @@ void Chunk::Update(float deltaTime)
 	//Update removing and adding chunks use a displayList or VBO?
 }
 
-void Chunk::Render()
+
+void Chunk::CreateMesh(VertexBuffer& vb, IndexBuffer& ib) //Might not be const?
 {
 	//Render the chunk
+	//Check if you can see triangle if not don't render it
+	//If neighboring side is true meaning there is a cube there then don't render that side
+	for (int x = 0; x < ChunkSize; x++)
+	{
+		for (int y = 0; y < ChunkSize; y++)
+		{
+			for (int z = 0; z < ChunkSize; z++)
+			{
+				if (m_Blocks[x][y][z].isActive() == false)
+					continue;
+
+				bool lXNegative = true;
+				if (x > 0)
+					lXNegative = m_Blocks[x - 1][y][z].isActive();
+
+				bool lXPositive = true;
+				if (x < ChunkSize - 1)
+					lXPositive = m_Blocks[x + 1][y][z].isActive();
+				bool lYNegative = true;
+				if (y > 0)
+					lYNegative = m_Blocks[x][y - 1][z].isActive();
+				bool lYPositive = true;
+				if (y < ChunkSize - 1)
+					lYPositive = m_Blocks[x][y + 1][z].isActive();
+
+				bool lZNegative = true;
+				if (z > 0)
+					lZNegative = m_Blocks[x][y][z - 1].isActive();
+
+				bool lZPositive = true;
+				if (z < ChunkSize - 1)
+					lZPositive = m_Blocks[x][y][z + 1].isActive();
+
+				/*if (x > 0 && m_Blocks[x - 1][y][z].isActive() == false)
+				{
+					m_indices.push_back(11);
+					m_indices.push_back(2);
+					m_indices.push_back(12);
+					m_indices.push_back(12);
+					m_indices.push_back(13);
+					m_indices.push_back(11);
+				}
+				
+				if (x < ChunkSize - 1 && m_Blocks[x + 1][y][z].isActive() == false)
+				{
+					m_indices.push_back(8);
+					m_indices.push_back(9);
+					m_indices.push_back(10);
+					m_indices.push_back(10);
+					m_indices.push_back(4);
+					m_indices.push_back(8);
+				}
+				
+				if (y > 0 && m_Blocks[x][y - 1][z].isActive() == false)
+				{
+					m_indices.push_back(10);
+					m_indices.push_back(14);
+					m_indices.push_back(5);
+					m_indices.push_back(5);
+					m_indices.push_back(4);
+					m_indices.push_back(10);
+				}
+				
+				if (y < ChunkSize - 1 && m_Blocks[x][y + 1][z].isActive() == false)
+				{
+					m_indices.push_back(3);
+					m_indices.push_back(2);
+					m_indices.push_back(11);
+					m_indices.push_back(11);
+					m_indices.push_back(15);
+					m_indices.push_back(3);
+				}
+				
+				if (z > 0 && m_Blocks[x][y][z - 1].isActive() == false)
+				{
+					m_indices.push_back(0);
+					m_indices.push_back(1);
+					m_indices.push_back(2);
+					m_indices.push_back(2);
+					m_indices.push_back(3);
+					m_indices.push_back(0);
+				}
+				bool test = z > 0 && m_Blocks[x][y][z - 1].isActive();
+				
+				if (z < ChunkSize - 1 && m_Blocks[x][y][z + 1].isActive() == false)
+				{
+					m_indices.push_back(4);
+					m_indices.push_back(5);
+					m_indices.push_back(6);
+					m_indices.push_back(6);
+					m_indices.push_back(7);
+					m_indices.push_back(4);
+				}*/
+
+			}
+		}
+	}
+				//Render Call and pass in NegativeX PositiveX NegativeY PositiveY NegativeZ PositiveZ
+				CreateVoxel(vb, ib);
+}
+
+void Chunk::CreateVoxel(VertexBuffer& vb, IndexBuffer& ib)
+{
+	/*m_indices.push_back(0);
+	m_indices.push_back(1);
+	m_indices.push_back(2);
+	m_indices.push_back(2);
+	m_indices.push_back(3);
+	m_indices.push_back(0);
+	ib.Modify(&m_indices,6);*/
 }
