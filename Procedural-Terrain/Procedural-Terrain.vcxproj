@@ -156,6 +156,7 @@
     <ClCompile Include="src\ChunkManager.cpp" />
     <ClCompile Include="src\GLErrorManager.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
+    <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\Block.cpp" />
     <ClCompile Include="src\Application.cpp" />
@@ -323,6 +324,7 @@
     <ClInclude Include="src\ChunkManager.h" />
     <ClInclude Include="src\GLErrorManager.h" />
     <ClInclude Include="src\IndexBuffer.h" />
+    <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Renderer.h" />
     <ClInclude Include="src\Block.h" />
     <ClInclude Include="src\Shader.h" />

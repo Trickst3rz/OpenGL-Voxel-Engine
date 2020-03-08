@@ -4,6 +4,7 @@
 #include "Block.h"
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
+#include "Mesh.h"
 
 #include <vector>
 
@@ -17,7 +18,7 @@ public:
 
 	void Update(float deltaTime);
 
-	void CreateMesh(VertexBuffer& vb, IndexBuffer& ib);
+	void CreateMesh(Mesh* meshes[]);
 
 	void CreateVoxel(VertexBuffer& vb, IndexBuffer& ib);
 

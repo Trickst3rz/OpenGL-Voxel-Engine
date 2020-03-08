@@ -17,12 +17,12 @@ public:
 
 	//Indice Faces
 	//Maybe in future change from array to vector to remove and add blocks
-	static std::vector<unsigned short> IndicesFront;
-	static std::vector<unsigned short> IndicesBack;
-	static std::vector<unsigned short> IndicesRight;
-	static std::vector<unsigned short> IndicesLeft;
-	static std::vector<unsigned short> IndicesBottom;
-	static std::vector<unsigned short> IndicesTop;
+	static unsigned short IndicesFront[];
+	static unsigned short IndicesBack[];
+	static unsigned short IndicesRight[];
+	static unsigned short IndicesLeft[];
+	static unsigned short IndicesBottom[];
+	static unsigned short IndicesTop[];
 
 private:
 	static short m_DrawCalls;

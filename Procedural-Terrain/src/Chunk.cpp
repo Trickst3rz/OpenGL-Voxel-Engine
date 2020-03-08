@@ -34,7 +34,7 @@ void Chunk::Update(float deltaTime)
 }
 
 
-void Chunk::CreateMesh(VertexBuffer& vb, IndexBuffer& ib) //Might not be const?
+void Chunk::CreateMesh(Mesh* meshes[]) //Might not be const?
 {
 	//Render the chunk
 	//Check if you can see triangle if not don't render it
@@ -46,7 +46,7 @@ void Chunk::CreateMesh(VertexBuffer& vb, IndexBuffer& ib) //Might not be const?
 			for (int z = 0; z < ChunkSize; z++)
 			{
 				if (m_Blocks[x][y][z].isActive() == false)
-					continue;
+ 					continue;
 
 				bool lXNegative = true;
 				if (x > 0)
@@ -69,82 +69,19 @@ void Chunk::CreateMesh(VertexBuffer& vb, IndexBuffer& ib) //Might not be const?
 				bool lZPositive = true;
 				if (z < ChunkSize - 1)
 					lZPositive = m_Blocks[x][y][z + 1].isActive();
-
-				/*if (x > 0 && m_Blocks[x - 1][y][z].isActive() == false)
-				{
-					m_indices.push_back(11);
-					m_indices.push_back(2);
-					m_indices.push_back(12);
-					m_indices.push_back(12);
-					m_indices.push_back(13);
-					m_indices.push_back(11);
-				}
 				
-				if (x < ChunkSize - 1 && m_Blocks[x + 1][y][z].isActive() == false)
+				if (lXPositive == false || lYPositive == false || lZPositive == false || lXNegative == false || lYNegative == false || lZNegative == false)
 				{
-					m_indices.push_back(8);
-					m_indices.push_back(9);
-					m_indices.push_back(10);
-					m_indices.push_back(10);
-					m_indices.push_back(4);
-					m_indices.push_back(8);
+					lZPositive = lXPositive;
 				}
-				
-				if (y > 0 && m_Blocks[x][y - 1][z].isActive() == false)
-				{
-					m_indices.push_back(10);
-					m_indices.push_back(14);
-					m_indices.push_back(5);
-					m_indices.push_back(5);
-					m_indices.push_back(4);
-					m_indices.push_back(10);
-				}
-				
-				if (y < ChunkSize - 1 && m_Blocks[x][y + 1][z].isActive() == false)
-				{
-					m_indices.push_back(3);
-					m_indices.push_back(2);
-					m_indices.push_back(11);
-					m_indices.push_back(11);
-					m_indices.push_back(15);
-					m_indices.push_back(3);
-				}
-				
-				if (z > 0 && m_Blocks[x][y][z - 1].isActive() == false)
-				{
-					m_indices.push_back(0);
-					m_indices.push_back(1);
-					m_indices.push_back(2);
-					m_indices.push_back(2);
-					m_indices.push_back(3);
-					m_indices.push_back(0);
-				}
-				bool test = z > 0 && m_Blocks[x][y][z - 1].isActive();
-				
-				if (z < ChunkSize - 1 && m_Blocks[x][y][z + 1].isActive() == false)
-				{
-					m_indices.push_back(4);
-					m_indices.push_back(5);
-					m_indices.push_back(6);
-					m_indices.push_back(6);
-					m_indices.push_back(7);
-					m_indices.push_back(4);
-				}*/
-
+				//CreateVoxel();
 			}
 		}
 	}
 				//Render Call and pass in NegativeX PositiveX NegativeY PositiveY NegativeZ PositiveZ
-				CreateVoxel(vb, ib);
 }
 
 void Chunk::CreateVoxel(VertexBuffer& vb, IndexBuffer& ib)
 {
-	/*m_indices.push_back(0);
-	m_indices.push_back(1);
-	m_indices.push_back(2);
-	m_indices.push_back(2);
-	m_indices.push_back(3);
-	m_indices.push_back(0);
-	ib.Modify(&m_indices,6);*/
+	
 }

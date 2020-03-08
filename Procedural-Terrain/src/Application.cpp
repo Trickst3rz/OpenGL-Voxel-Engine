@@ -20,6 +20,7 @@
 #include "Texture.h"
 #include "Camera.h"
 #include "Chunk.h"
+#include "Mesh.h"
 
 #include "imgui/imgui.h"
 #include <imgui/imgui_impl_opengl3.h>
@@ -27,53 +28,13 @@
 
 #include "tests/DebugGUI.h"
 
-//Mouse initial offset
-float m_lastX = 640, m_lastY = 360;
-//Yaw, pitch
-float m_yaw = -90.0f, m_pitch = 0.0f;
-bool m_firstMouse = true;
-
-bool instanceToggle = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
+bool instanceToggle = true;
 
 namespace testChunk {
-	const std::size_t Size = 128;
+	const std::size_t Size = 16;
 	const std::size_t TotalSize = Size * Size * Size;
-}
-
-void mouse_callback(GLFWwindow* window, double xPos, double yPos)
-{
-	if (m_firstMouse)
-	{
-		m_lastX = xPos;
-		m_lastY = yPos;
-		m_firstMouse = false;
-	}
-
-	float xOffset = xPos - m_lastX;
-	float yOffset = m_lastY - yPos; //Reset since y coordinates range from bottom to top
-	m_lastX = xPos;
-	m_lastY = yPos;
-
-	const float sensitivity = 0.05f;
-	xOffset *= sensitivity;
-	yOffset *= sensitivity;
-
-	m_yaw += xOffset;
-	m_pitch += yOffset;
-
-	if (m_pitch > 89.0f)
-		m_pitch = 89.0f;
-	if (m_pitch < -89.0f)
-		m_pitch = -89.0f;
-
-	glm::vec3 direction;
-	direction.x = cos(glm::radians(m_yaw) * cos(glm::radians(m_pitch)));
-	direction.y = sin(glm::radians(m_pitch));
-	direction.z = sin(glm::radians(m_yaw) * cos(glm::radians(m_pitch)));
-	Camera::SetCameraForward(glm::normalize(direction));
-
 }
 
 int main(void)
@@ -202,6 +163,13 @@ int main(void)
 			11, 15, 3
 		};
 
+		Chunk chunk;
+
+		Mesh* meshes = new Mesh[testChunk::TotalSize];
+		memcpy(meshes, vertices, sizeof(vertices));
+
+		chunk.CreateMesh(&meshes);
+
 		glm::vec3* offsetTranslation = new glm::vec3[testChunk::TotalSize];
 		int index = 0;
 		for (int x = 0; x < testChunk::Size; x++)
@@ -216,14 +184,14 @@ int main(void)
 			}
 		}
 
-		Chunk chunk;
+		//Chunk chunk;
 
 
 		VertexArray vertexArray;
 		VertexBuffer vertexBuffer(&vertices, sizeof(vertices));
 		
 		VertexBuffer instanceVBO(&offsetTranslation[0], sizeof(glm::vec3)* testChunk::TotalSize);
-	
+
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
 		layout.Push<float>(2);
@@ -233,10 +201,11 @@ int main(void)
 		VertexBufferLayout InstanceLayout;
 		InstanceLayout.Push<float>(3);
 		vertexArray.AddInstanceBuffer(instanceVBO, InstanceLayout, 3);
-		
-		IndexBuffer indexBuffer(indices, 36);
+		/*VertexBufferLayout visibilityLayout;
+		visibilityLayout.Push<bool>(1);
+		vertexArray.AddInstanceBuffer(visibilityVBO, visibilityLayout, 3);*/
 
-		chunk.CreateMesh(vertexBuffer, indexBuffer);
+		IndexBuffer indexBuffer(indices, 36);
 
 		glm::mat4 proj = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 1.0f, 150.0f);
 		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -40.0f));

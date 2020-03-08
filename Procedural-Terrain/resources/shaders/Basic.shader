@@ -6,6 +6,7 @@ layout(location = 1) in vec2 texCoord;
 layout(location = 2) in vec3 normal;
 //Make sure the offset is the last layout location and the location matches InstanceBuffer
 layout(location = 3) in vec4 offset;
+//layout(location = 4) in bool isVisable; //This causes an error in the shader? Need to figure out how to not send vertice data you don't want to render
 
 uniform mat4 u_MVP;
 
