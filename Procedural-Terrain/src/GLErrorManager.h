@@ -7,14 +7,14 @@
 #include <sstream>
 #include "glm/glm.hpp"
 
-#if VOXEL_DEBUG == 1
+#ifdef VOXEL_DEBUG
 #define ASSERT(x) if (!(x)) __debugbreak();
 #define GLCall(x) GLClearError();\
 	x;\
 	ASSERT(GLLogCall(#x, __FILE__, __LINE__))
 #elif defined(VOXEL_RELEASE)
-#define ASSERT(x)
-#define GLCall(x)
+#define ASSERT(x) x;
+#define GLCall(x) x;
 #endif
 
 	void GLClearError();

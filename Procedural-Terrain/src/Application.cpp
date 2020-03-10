@@ -52,7 +52,7 @@ int main(void)
 	/* Initialize the library */
 	if (!glfwInit())
 		return -1;
-	
+
 	// Decide GL+GLSL versions
 #if __APPLE__
 	// GL 3.2 + GLSL 150
