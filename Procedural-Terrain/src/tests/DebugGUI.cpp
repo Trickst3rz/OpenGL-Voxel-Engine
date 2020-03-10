@@ -44,11 +44,11 @@ namespace test {
 	{
 		if (isWireFrame)
 		{
-			GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL))
+			GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE))
 		}
 		else
 		{
-			GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE))
+			GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_FILL))
 		}
 	}
 

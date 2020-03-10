@@ -176,15 +176,15 @@ int main(void)
 			}
 		}
 		
-		Chunk chunk;
+		Chunk* chunk = new Chunk;
 		//chunk.SetupSphere(); //SetupLandscape here for procedural generation
-		chunk.SetupAll();
-		chunk.CreateMesh();
+		chunk->SetupAll();
+		chunk->CreateMesh();
 		
 		VertexArray InstanceVertexArray;
 		VertexArray BatchVertexArray;
 		VertexBuffer InstanceVertexBuffer(&vertices, sizeof(vertices));
-		VertexBuffer BatchVertexBuffer(chunk.GetVertex(), chunk.GetElementCount() * sizeof * chunk.GetVertex());
+		VertexBuffer BatchVertexBuffer(chunk->GetVertex(), chunk->GetElementCount() * sizeof * chunk->GetVertex());
 		VertexBuffer instanceVBO(&offsetTranslation[0], offsetIndex * sizeof * offsetTranslation);
 
 		VertexBufferLayout BatchLayout;
@@ -282,7 +282,7 @@ int main(void)
 				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
 				glm::mat4 mvp = proj * view * model;
 				shader.SetUniformMat4f("u_MVP", mvp);
-				Renderer::Draw(BatchVertexArray, shader, chunk.GetElementCount());
+				Renderer::Draw(BatchVertexArray, shader, chunk->GetElementCount());
 			}
 
 			test::DebugGUI::GetInstance().OnImGuiRender(instanceToggle);

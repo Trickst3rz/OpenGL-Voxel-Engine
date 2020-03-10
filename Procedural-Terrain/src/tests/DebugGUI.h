@@ -31,6 +31,6 @@ namespace test {
 			DebugGUI() {};
 			TestClearColour test;
 			int chunks = 8;
-			bool isWireFrame = true;
+			bool isWireFrame = false;
 	};
 }
