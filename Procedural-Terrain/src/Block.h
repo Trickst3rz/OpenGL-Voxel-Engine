@@ -5,11 +5,11 @@
 enum BlockType
 {
 	BLOCK_NONE  = 0,
-	BLOCK_WOOD  = 1,
-	BLOCK_GRASS = 2,
-	BLOCK_DIRT  = 3,
-	BLOCK_SAND  = 4,
-	BLOCK_GLASS = 5
+	BLOCK_WOOD,
+	BLOCK_GRASS,
+	BLOCK_DIRT,
+	BLOCK_SAND,
+	BLOCK_GLASS
 };
 
 class Block

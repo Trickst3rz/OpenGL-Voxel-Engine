@@ -4,5 +4,5 @@ class Mesh {
 public:
 
 	float vertices[80];
-	float indices[36];
+	unsigned short indices[6];
 };

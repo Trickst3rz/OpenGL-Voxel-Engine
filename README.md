@@ -80,6 +80,7 @@ Add additional notes about how to deploy this on a live system
 * [glm 0.9.9](https://glm.g-truc.net/0.9.9/index.html) - The maths library that is based on OpenGL
 * [ImGui](https://github.com/ocornut/imgui) - Graphics interface for OpenGL
 * [Stb image] (https://github.com/nothings/stb/blob/master/stb_image.h) - Header file used for textures to load in OpenGL
+* [LibNoise] (http://libnoise.sourceforge.net/index.html) - header files for generating a height map(perlin noise)
 
 ## Author
 

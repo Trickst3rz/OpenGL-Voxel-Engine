@@ -1,24 +1,25 @@
 #include "Renderer.h"
 
+
 void Renderer::Clear()
 {
 	GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
 	GLCall(glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT));
 }
 
-void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader, const int& InstanceCount)
+void Renderer::DrawInstanced(const VertexArray& va, const Shader& shader, const unsigned int& IndicesCount, const int& InstanceCount)
 {
 	shader.Bind();
 	va.Bind();
-	GLCall(glDrawElementsInstanced(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_SHORT, nullptr, InstanceCount));
+	GLCall(glDrawArraysInstanced(GL_TRIANGLES, 0, IndicesCount, InstanceCount));
 	m_DrawCalls++;
 }
 
-void Renderer::Draw(const VertexArray& va, const IndexBuffer& ib, const Shader& shader)
+void Renderer::Draw(const VertexArray& va, const Shader& shader, const int& count)
 {
 	shader.Bind();
 	va.Bind();
-	GLCall(glDrawElements(GL_TRIANGLES, ib.GetCount(), GL_UNSIGNED_SHORT, nullptr));
+	GLCall(glDrawArrays(GL_TRIANGLES, 0, count));
 	m_DrawCalls++;
 }
 
