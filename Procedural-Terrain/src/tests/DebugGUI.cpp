@@ -16,11 +16,12 @@ namespace test {
 		test.OnRender();
 	}
 
-	void DebugGUI::OnImGuiRender(bool &instanceToggle)
+	void DebugGUI::OnImGuiRender(bool &BatchToggle, bool &instanceToggle)
 	{
 		{
 			ImGui::Begin("Debug");
 			test.OnImGuiRender();
+			ImGui::Checkbox("Batch Rendering", &BatchToggle);
 			ImGui::Checkbox("Instance Rendering", &instanceToggle);
 			ImGui::Checkbox("Toggle WireFrame", &isWireFrame);
 			if (ImGui::Button("Render Distance:")) //When I do frustum culling add this feature to change render distance
@@ -30,6 +31,7 @@ namespace test {
 				else
 					chunks += 8;
 			}
+			ImGui::SameLine();
 			ImGui::Text("%d chunks", chunks);
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::Text("Draw Calls: %d", Renderer::GetDrawCalls());

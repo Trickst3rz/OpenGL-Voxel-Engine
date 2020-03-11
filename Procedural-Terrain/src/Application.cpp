@@ -32,12 +32,13 @@
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
-bool instanceToggle = true;
+bool BatchToggle = true;
+bool instanceToggle = false;
 
 typedef glm::tvec3<GLbyte> Byte3;
 
 namespace testChunk {
-	const std::size_t Width = 16, Height = 16, Depth = 16;
+	const std::size_t Width = 32, Height = 32, Depth = 32;
 	const std::size_t TotalSize = Width * Height * Depth;
 }
 
@@ -100,6 +101,8 @@ int main(void)
 
 	GLCall(glEnable(GL_DEPTH_TEST));
 	GLCall(glDepthFunc(GL_LESS));
+	GLCall(glEnable(GL_CULL_FACE));
+	GLCall(glCullFace(GL_BACK));
 
 	{
 
@@ -189,7 +192,8 @@ int main(void)
 
 		VertexBufferLayout BatchLayout;
 		BatchLayout.Push<GLbyte>(3);
-		BatchLayout.Push<GLbyte>(1);
+		BatchLayout.Push<GLbyte>(3);
+		//BatchLayout.Push<GLbyte>(1);
 		BatchVertexArray.Bind();
 		BatchVertexArray.AddBuffer(BatchVertexBuffer, BatchLayout);
 
@@ -201,7 +205,7 @@ int main(void)
 
 		VertexBufferLayout InstanceLayout;
 		InstanceLayout.Push<GLbyte>(3);
-		InstanceVertexArray.AddInstanceBuffer(instanceVBO, InstanceLayout, 2);
+		InstanceVertexArray.AddInstanceBuffer(instanceVBO, InstanceLayout, 3);
 
 		glm::mat4 proj = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 1.0f, 150.0f);
 		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -40.0f));
@@ -209,6 +213,7 @@ int main(void)
 		Shader shader("resources/shaders/Basic.shader");
 		shader.Bind();
 		shader.SetUniform4f("u_Colour", 1.0f, 0.5f, 0.5f, 1.0f);
+		shader.SetUniform3f("u_lightPos", 1.2f, 1.0f, 2.0f);
 
 		Texture texture("resources/textures/Crate.png");
 		texture.Bind();
@@ -266,16 +271,7 @@ int main(void)
 
 			view = glm::lookAt(Camera::GetCameraPosition(), Camera::GetCameraPosition() + Camera::GetCameraFront(), Camera::GetCameraUp());
 			int k = sizeof(vertices);
-			if (instanceToggle)
-			{
-				glm::mat4 model = glm::mat4(1.0f);
-				float angle = 0.0;
-				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-				glm::mat4 mvp = proj * view * model;
-				shader.SetUniformMat4f("u_MVP", mvp);
-				Renderer::DrawInstanced(InstanceVertexArray, shader, sizeof(vertices), testChunk::TotalSize);
-			}
-			else
+			if (BatchToggle)
 			{
 				glm::mat4 model = glm::mat4(1.0f);
 				float angle = 0.0;
@@ -284,8 +280,17 @@ int main(void)
 				shader.SetUniformMat4f("u_MVP", mvp);
 				Renderer::Draw(BatchVertexArray, shader, chunk->GetElementCount());
 			}
+			if(instanceToggle)
+			{
+				glm::mat4 model = glm::mat4(1.0f);
+				float angle = 0.0;
+				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+				glm::mat4 mvp = proj * view * model;
+				shader.SetUniformMat4f("u_MVP", mvp);
+				Renderer::DrawInstanced(InstanceVertexArray, shader, sizeof(vertices), testChunk::TotalSize);
+			}
 
-			test::DebugGUI::GetInstance().OnImGuiRender(instanceToggle);
+			test::DebugGUI::GetInstance().OnImGuiRender(BatchToggle, instanceToggle);
 
 			Renderer::SetDrawCalls(0);
 			GLCall(glfwSwapBuffers(window));

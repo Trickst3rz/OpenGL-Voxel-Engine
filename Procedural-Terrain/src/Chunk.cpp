@@ -47,12 +47,12 @@ void Chunk::Update(float deltaTime)
 
 void Chunk::CreateMesh() //Might not be const?
 {
-	//Render the chunk
+	//Create Mesh
 	//Check if you can see triangle if not don't render it
 	//If neighboring side is true meaning there is a cube there then don't render that side
 	int i = 0;
-	m_Blocks[0][0][0].SetActive(false);
-	vertex = new m_Byte4[ChunkSize * ChunkSize * ChunkSize * 6 * 6];
+
+	vertex = new Byte3[ChunkSize * ChunkSize * ChunkSize * 6 * 6];
 
 	for (int x = 0; x < ChunkSize; x++)
 	{
@@ -88,59 +88,59 @@ void Chunk::CreateMesh() //Might not be const?
 					lZPositive = m_Blocks[x][y][z + 1].isActive();
 				
 				if (!lXNegative)
-				{						//pos		//type fix in future 
-					vertex[i++] = m_Byte4(x, y, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x, y, z + 1, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x, y + 1, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x, y + 1, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x, y, z + 1, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x, y + 1, z + 1, m_Blocks[x][y][z].GetType());
+				{	//pos										//normal						//Add get type of brick in the future
+					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(-1, 0, 0),
+					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0),
+					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(-1, 0, 0),
+					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(-1, 0, 0),
+					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0),
+					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(-1, 0, 0);
 				}
 				if (!lXPositive)
-				{
-					vertex[i++] = m_Byte4(x + 1, y, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y + 1, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y, z + 1, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y + 1, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y + 1, z + 1, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y, z + 1, m_Blocks[x][y][z].GetType());
-				}
+				{	//pos										//normal						//Add get type of brick in the future
+					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(1, 0, 0),
+					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(1, 0, 0),
+					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(1, 0, 0),
+					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(1, 0, 0),
+					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(1, 0, 0),
+					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(1, 0, 0);
+				}												
 				if (!lYNegative)
-				{
-					vertex[i++] = m_Byte4(x, y, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y, z + 1, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y, z + 1, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x, y, z + 1, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x, y, z, m_Blocks[x][y][z].GetType());
-				}
+				{	//pos										//normal						//Add get type of brick in the future
+					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, -1, 0),
+					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, -1, 0),
+					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, -1, 0),
+					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, -1, 0),
+					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, -1, 0),
+					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, -1, 0);
+				}												
 				if (!lYPositive)
-				{
-					vertex[i++] = m_Byte4(x, y + 1, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x, y + 1, z + 1, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y + 1, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y + 1, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y + 1, z + 1, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y + 1, z, m_Blocks[x][y][z].GetType());
-				}
+				{	//pos										//normal						//Add get type of brick in the future
+					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 1, 0),
+					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 1, 0),
+					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(0, 1, 0),
+					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(0, 1, 0),
+					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 1, 0),
+					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 1, 0);
+				}												
 				if (!lZNegative)
-				{
-					vertex[i++] = m_Byte4(x, y, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x, y + 1, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x, y + 1, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y + 1, z, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y, z, m_Blocks[x][y][z].GetType());
-				}
+				{	//pos										//normal						//Add get type of brick in the future
+					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, 0, -1),
+					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 0, -1),
+					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, 0, -1),
+					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 0, -1),
+					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 0, -1),
+					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, 0, -1);
+				}												
 				if (!lZPositive)
-				{
-					vertex[i++] = m_Byte4(x + 1, y, z + 1, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y + 1, z + 1, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x, y, z + 1, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x + 1, y + 1, z + 1, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x, y + 1, z + 1, m_Blocks[x][y][z].GetType());
-					vertex[i++] = m_Byte4(x, y, z + 1, m_Blocks[x][y][z].GetType());
-				}
+				{	//pos										//normal						//Add get type of brick in the future
+					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, 0, 1),
+					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 0, 1),
+					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, 0, 1),
+					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 0, 1),
+					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(0, 0, 1),
+					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, 0, 1);
+				}												
 			}
 		}
 	}

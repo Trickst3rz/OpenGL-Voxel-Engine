@@ -19,7 +19,7 @@ namespace test {
 
 		void OnRender();
 
-		void OnImGuiRender(bool &instanceToggle);
+		void OnImGuiRender(bool &BatchToggle, bool& instanceToggle);
 
 		void WireFrame();
 
