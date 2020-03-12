@@ -51,7 +51,7 @@ void Chunk::CreateMesh() //Might not be const?
 	//Check if you can see triangle if not don't render it
 	//If neighboring side is true meaning there is a cube there then don't render that side
 	int i = 0;
-
+	
 	vertex = new Byte3[ChunkSize * ChunkSize * ChunkSize * 6 * 6];
 
 	for (int x = 0; x < ChunkSize; x++)

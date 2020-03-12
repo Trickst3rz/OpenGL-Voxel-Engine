@@ -4,6 +4,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include <noise/noise.h>
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -25,8 +27,6 @@
 #include "imgui/imgui.h"
 #include <imgui/imgui_impl_opengl3.h>
 #include <imgui\imgui_impl_glfw.h>
-
-#include "noise/noise.h"
 
 #include "tests/DebugGUI.h"
 
@@ -184,8 +184,11 @@ int main(void)
 		chunk->SetupAll();
 		chunk->CreateMesh();
 		
+		VertexArray LightingVAO;
 		VertexArray InstanceVertexArray;
 		VertexArray BatchVertexArray;
+
+		VertexBuffer LightingVBO(&vertices, sizeof(vertices));
 		VertexBuffer InstanceVertexBuffer(&vertices, sizeof(vertices));
 		VertexBuffer BatchVertexBuffer(chunk->GetVertex(), chunk->GetElementCount() * sizeof * chunk->GetVertex());
 		VertexBuffer instanceVBO(&offsetTranslation[0], offsetIndex * sizeof * offsetTranslation);
@@ -207,6 +210,9 @@ int main(void)
 		InstanceLayout.Push<GLbyte>(3);
 		InstanceVertexArray.AddInstanceBuffer(instanceVBO, InstanceLayout, 3);
 
+		LightingVAO.Bind();
+		LightingVAO.AddBuffer(LightingVBO, layout);
+
 		glm::mat4 proj = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 1.0f, 150.0f);
 		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -40.0f));
 
@@ -219,6 +225,7 @@ int main(void)
 		texture.Bind();
 		shader.SetUniform1i("u_Texture", 0);
 
+		LightingVAO.Unbind();
 		InstanceVertexArray.Unbind();
 		BatchVertexArray.Unbind();
 		shader.Unbind();
@@ -278,7 +285,10 @@ int main(void)
 				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
 				glm::mat4 mvp = proj * view * model;
 				shader.SetUniformMat4f("u_MVP", mvp);
+				shader.SetUniform4f("u_Colour", 1.0f, 0.5f, 0.5f, 1.0f);
 				Renderer::Draw(BatchVertexArray, shader, chunk->GetElementCount());
+				//shader.SetUniform4f("u_Colour", 1.0f, 0.5f, 0.31f, 1.0f);
+				//Renderer::Draw(LightingVAO, shader, sizeof(vertices));
 			}
 			if(instanceToggle)
 			{
