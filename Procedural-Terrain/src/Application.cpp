@@ -119,35 +119,35 @@ int main(void)
 			//positions	//TexCoord
 			//Front 
 			0,  0,  0,  0, 0, //0
-			1,  0,  0,  1, 0, //1
-			1,  1,  0,  1, 1, //2
-			1,  1,  0,  1, 1, //2
-			0,  1,  0,  0, 1, //3
-			0,  0,  0,  0, 0, //0
+			0,  1,  0,  1, 0, //1
+			1,  0,  0,  1, 1, //2
+			0,  1,  0,  1, 1, //2
+			1,  1,  0,  0, 1, //3
+			1,  0,  0,  0, 0, //0
 
 			//Back
-			0,  0,  1,  0, 0, //4
-			1,  0,  1,  1, 0, //5
-			1,  1,  1,  1, 1, //6
+			1,  0,  1,  0, 0, //4
+			1,  1,  1,  1, 0, //5
+			0,  0,  1,  1, 1, //6
 			1,  1,  1,  1, 1, //6
 			0,  1,  1,  0, 1, //7
 			0,  0,  1,  0, 0, //4
 
 			//Right
-			0,  1,  1,  1, 0, //8
-			0,  1,  0,  1, 1, //9
-			0,  0,  0,  0, 1, //10 
-			0,  0,  0,  0, 1, //10 
-			0,  0,  1,  0, 0, //4
-			0,  1,  1,  1, 0, //8
+			1,  0,  0,  1, 0, //8
+			1,  1,  0,  1, 1, //9
+			1,  0,  1,  0, 1, //10 
+			1,  1,  0,  0, 1, //10 
+			1,  1,  1,  0, 0, //4
+			1,  0,  1,  1, 0, //8
 
 			//Left
-			1,  1,  1,  1, 0, //11
-			1,  1,  0,  1, 1, //2
-			1,  0,  0,  0, 1, //12
-			1,  0,  0,  0, 1, //12
-			1,  0,  1,  0, 0, //13
-			1,  1,  1,  1, 0, //11
+			0,  0,  0,  1, 0, //11
+			0,  0,  1,  1, 1, //2
+			0,  1,  0,  0, 1, //12
+			0,  1,  0,  0, 1, //12
+			0,  0,  1,  0, 0, //13
+			0,  1,  1,  1, 0, //11
 
 			//Bottom
 			0,  0,  0,  0, 1, //10
@@ -158,12 +158,12 @@ int main(void)
 			0,  0,  0,  0, 1, //10 
 
 			//Top
-			0,  1,  0,  0, 1, //3
-			1,  1,  0,  1, 1, //2
-			1,  1,  1,  1, 0, //11
-			1,  1,  1,  1, 0, //11
-			0,  1,  1,  0, 0, //15
-			0,  1,  0,  0, 1, //3
+			1,  1,  0,  0, 1, //3
+			0,  1,  0,  1, 1, //2
+			0,  1,  1,  1, 0, //11
+			0,  1,  1,  1, 0, //11
+			1,  1,  1,  0, 0, //15
+			1,  1,  0,  0, 1, //3
 		};
 		
 		Byte3* offsetTranslation = new Byte3[testChunk::TotalSize];
@@ -218,8 +218,10 @@ int main(void)
 
 		Shader shader("resources/shaders/Basic.shader");
 		shader.Bind();
-		shader.SetUniform4f("u_Colour", 1.0f, 0.5f, 0.5f, 1.0f);
-		shader.SetUniform3f("u_lightPos", 1.2f, 1.0f, 2.0f);
+		shader.SetUniform3f("u_Colour", 1.0f, 0.5f, 0.5f);
+		shader.SetUniform3f("u_lightPos", 50.0f, 50.0f, 2.0f);
+		shader.SetUniform3f("u_lightColour", 1.0f, 1.0f, 1.0f);
+		shader.SetUniformMat4f("u_Projection", proj);
 
 		Texture texture("resources/textures/Crate.png");
 		texture.Bind();
@@ -283,9 +285,8 @@ int main(void)
 				glm::mat4 model = glm::mat4(1.0f);
 				float angle = 0.0;
 				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-				glm::mat4 mvp = proj * view * model;
-				shader.SetUniformMat4f("u_MVP", mvp);
-				shader.SetUniform4f("u_Colour", 1.0f, 0.5f, 0.5f, 1.0f);
+				shader.SetUniformMat4f("u_Model", model);
+				shader.SetUniformMat4f("u_View", view);
 				Renderer::Draw(BatchVertexArray, shader, chunk->GetElementCount());
 				//shader.SetUniform4f("u_Colour", 1.0f, 0.5f, 0.31f, 1.0f);
 				//Renderer::Draw(LightingVAO, shader, sizeof(vertices));
@@ -295,8 +296,8 @@ int main(void)
 				glm::mat4 model = glm::mat4(1.0f);
 				float angle = 0.0;
 				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-				glm::mat4 mvp = proj * view * model;
-				shader.SetUniformMat4f("u_MVP", mvp);
+				shader.SetUniformMat4f("u_Model", model);
+				shader.SetUniformMat4f("u_View", view);
 				Renderer::DrawInstanced(InstanceVertexArray, shader, sizeof(vertices), testChunk::TotalSize);
 			}
 

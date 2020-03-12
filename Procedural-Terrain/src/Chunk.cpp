@@ -51,7 +51,7 @@ void Chunk::CreateMesh() //Might not be const?
 	//Check if you can see triangle if not don't render it
 	//If neighboring side is true meaning there is a cube there then don't render that side
 	int i = 0;
-	
+
 	vertex = new Byte3[ChunkSize * ChunkSize * ChunkSize * 6 * 6];
 
 	for (int x = 0; x < ChunkSize; x++)
@@ -87,7 +87,7 @@ void Chunk::CreateMesh() //Might not be const?
 				if(z < ChunkSize - 1)
 					lZPositive = m_Blocks[x][y][z + 1].isActive();
 				
-				if (!lXNegative)
+				if (!lXNegative) //Left Face
 				{	//pos										//normal						//Add get type of brick in the future
 					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(-1, 0, 0),
 					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0),
@@ -96,7 +96,7 @@ void Chunk::CreateMesh() //Might not be const?
 					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0),
 					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(-1, 0, 0);
 				}
-				if (!lXPositive)
+				if (!lXPositive) //Right Face
 				{	//pos										//normal						//Add get type of brick in the future
 					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(1, 0, 0),
 					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(1, 0, 0),
@@ -105,7 +105,7 @@ void Chunk::CreateMesh() //Might not be const?
 					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(1, 0, 0),
 					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(1, 0, 0);
 				}												
-				if (!lYNegative)
+				if (!lYNegative) //Bottom Face
 				{	//pos										//normal						//Add get type of brick in the future
 					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, -1, 0),
 					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, -1, 0),
@@ -114,7 +114,7 @@ void Chunk::CreateMesh() //Might not be const?
 					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, -1, 0),
 					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, -1, 0);
 				}												
-				if (!lYPositive)
+				if (!lYPositive) //Top Face
 				{	//pos										//normal						//Add get type of brick in the future
 					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 1, 0),
 					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 1, 0),
@@ -123,7 +123,7 @@ void Chunk::CreateMesh() //Might not be const?
 					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 1, 0),
 					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 1, 0);
 				}												
-				if (!lZNegative)
+				if (!lZNegative) //Front Face
 				{	//pos										//normal						//Add get type of brick in the future
 					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, 0, -1),
 					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 0, -1),
@@ -132,7 +132,7 @@ void Chunk::CreateMesh() //Might not be const?
 					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 0, -1),
 					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, 0, -1);
 				}												
-				if (!lZPositive)
+				if (!lZPositive) //Back Face
 				{	//pos										//normal						//Add get type of brick in the future
 					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, 0, 1),
 					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 0, 1),
