@@ -1,4 +1,6 @@
 #include "Chunk.h"
+#include "noise/noise.h"
+#include "noise/noiseutils.h"
 
 Chunk::Chunk()
 {
@@ -180,6 +182,32 @@ void Chunk::SetupAll()
 
 void Chunk::SetupLandscape()
 {
+	module::Perlin PerlinModule;
+	utils::NoiseMap heightMap;
+	utils::NoiseMapBuilderPlane heightMapBuilder;
+	heightMapBuilder.SetSourceModule(PerlinModule);
+	heightMapBuilder.SetDestNoiseMap(heightMap);
+	heightMapBuilder.SetDestSize(256, 256);
+	heightMapBuilder.SetBounds(2.0, 6.0, 1.0, 5.0);
+	heightMapBuilder.Build();
 
+	utils::RendererImage renderer;
+	utils::Image image;
+	renderer.SetSourceNoiseMap(heightMap);
+	renderer.SetDestImage(image);
+	renderer.Render();
+
+	utils::WriterBMP writer;
+	writer.SetSourceImage(image);
+	writer.SetDestFilename("testHeightMap.bmp");
+	writer.WriteDestFile();
+
+	/*for (int x = 0; x < ChunkSize; x++)
+	{
+		for (int z = 0; z < ChunkSize; z++)
+		{
+
+		}
+	}*/
 }
 
