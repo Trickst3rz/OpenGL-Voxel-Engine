@@ -38,7 +38,7 @@ bool instanceToggle = false;
 typedef glm::tvec3<GLbyte> Byte3;
 
 namespace testChunk {
-	const std::size_t Width = 32, Height = 32, Depth = 32;
+	const std::size_t Width = 16, Height = 16, Depth = 16;
 	const std::size_t TotalSize = Width * Height * Depth;
 }
 
@@ -181,7 +181,8 @@ int main(void)
 		
 		Chunk* chunk = new Chunk;
 		//chunk.SetupSphere(); //SetupLandscape here for procedural generation
-		chunk->SetupAll();
+		chunk->SetupLandscape();
+		//chunk->SetupAll();
 		chunk->CreateMesh();
 		
 		VertexArray LightingVAO;

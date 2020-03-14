@@ -188,26 +188,45 @@ void Chunk::SetupLandscape()
 	heightMapBuilder.SetSourceModule(PerlinModule);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
 	heightMapBuilder.SetDestSize(256, 256);
-	heightMapBuilder.SetBounds(2.0, 6.0, 1.0, 5.0);
+	heightMapBuilder.SetBounds(6.0, 10.0, 1.0, 5.0);
 	heightMapBuilder.Build();
 
 	utils::RendererImage renderer;
 	utils::Image image;
 	renderer.SetSourceNoiseMap(heightMap);
 	renderer.SetDestImage(image);
+	//Change this depending on height to set different colour of voxels
+	renderer.ClearGradient();
+	renderer.AddGradientPoint(-1.0000, utils::Color(0, 0, 128, 255)); //Deep water
+	renderer.AddGradientPoint(-0.2500, utils::Color(0, 0, 255, 255)); //Shallow water
+	renderer.AddGradientPoint(0.0000, utils::Color(0, 128, 255, 255)); //Shore
+	renderer.AddGradientPoint(0.0625, utils::Color(240, 240, 64, 255)); //Sand
+	renderer.AddGradientPoint(0.1250, utils::Color(32, 160, 0, 255)); //Grass
+	renderer.AddGradientPoint(0.3750, utils::Color(224, 224, 0, 255)); //Dirt
+	renderer.AddGradientPoint(0.7500, utils::Color(128, 128, 128, 255)); //Rock
+	renderer.AddGradientPoint(1.0000, utils::Color(255, 255, 255, 255)); //Snow
+	renderer.EnableLight();
+	renderer.SetLightContrast(3.0); //Triple contrast
+	renderer.SetLightBrightness(2.0); // Double brightness
+	renderer.SetLightAzimuth(180.0); //Direction of light
+	renderer.SetLightElev(35.0);
 	renderer.Render();
 
 	utils::WriterBMP writer;
 	writer.SetSourceImage(image);
-	writer.SetDestFilename("testHeightMap.bmp");
+	writer.SetDestFilename("testHeightMap2.bmp");
 	writer.WriteDestFile();
 
-	/*for (int x = 0; x < ChunkSize; x++)
+	for (int x = 0; x < ChunkSize; x++)
 	{
 		for (int z = 0; z < ChunkSize; z++)
 		{
-
+			float height = heightMap.GetValue(x, z);
+			for (int y = 0; y < height; y++)
+			{
+				m_Blocks[x][y][z].SetActive(true);
+			}
 		}
-	}*/
+	}
 }
 
