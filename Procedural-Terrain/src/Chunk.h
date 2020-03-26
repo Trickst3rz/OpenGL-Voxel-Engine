@@ -28,7 +28,7 @@ public:
 
 	void SetupAll();
 
-	static const int ChunkSize = 16;
+	static const int ChunkSize = 32;
 
 	unsigned int GetVBO() { return vbo; }
 
