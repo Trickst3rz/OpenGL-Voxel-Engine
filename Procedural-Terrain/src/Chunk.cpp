@@ -191,7 +191,7 @@ void Chunk::SetupLandscape()
 	heightMapBuilder.SetSourceModule(PerlinModule);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
 	heightMapBuilder.SetDestSize(256, 256);
-	heightMapBuilder.SetBounds(0.0, 4.0, 0.0, 4.0);
+	heightMapBuilder.SetBounds(4.0, 8.0, 0.0, 4.0);
 	heightMapBuilder.Build();
 
 	utils::RendererImage renderer;
@@ -219,14 +219,15 @@ void Chunk::SetupLandscape()
 	writer.SetSourceImage(image);
 	writer.SetDestFilename("testHeightMap2.bmp");
 	writer.WriteDestFile();
+
+	double scale = ChunkSize;
 	for (int x = 0; x < ChunkSize; x++)
 	{
 		for (int z = 0; z < ChunkSize; z++)
 		{	//Figure out how to use utils or noise to generate procedural generation
-			float h = heightMap.GetHeight();
-			utils::Color colourGradient = image.GetValue(x, z);
-			double height = noise::ValueCoherentNoise3D(x, z, 0);
-			
+			double height = noise::ValueCoherentNoise3D(x * 0.1, 0, z * 0.1, 1);
+			height = height * 4 + 4;
+			double testHeight = heightMap.GetValue(x, z) * (double)(ChunkSize - 1);
 			for (int y = 0; y < height; y++)
 			{
 				m_Blocks[x][y][z].SetActive(true);
