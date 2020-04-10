@@ -40,7 +40,7 @@ private:
 	//Maybe in future change from array to vector to remove and add blocks, MAYBE CHANGE m_indices to 3d array? look at using blocks etc
 	//Add in placing at certain location for block later on if I do add and remove blocks
 	//VertexBuffer testVBO();
-	unsigned int vbo;
+	unsigned int vbo = 0;
 	int elements = 0;
 	Byte3* vertex;
 };

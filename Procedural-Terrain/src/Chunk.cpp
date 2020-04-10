@@ -1,6 +1,7 @@
 #include "Chunk.h"
 #include "noise/noise.h"
 #include "noise/noiseutils.h"
+#include <math.h>
 
 Chunk::Chunk()
 {
@@ -184,51 +185,53 @@ void Chunk::SetupLandscape()
 {
 	
 	module::Perlin PerlinModule;
-	double value = PerlinModule.GetValue(200.9, 100.4, 50.4);
-	std::cout << value << std::endl;
+	PerlinModule.SetSeed(1);
 	utils::NoiseMap heightMap;
 	utils::NoiseMapBuilderPlane heightMapBuilder;
 	heightMapBuilder.SetSourceModule(PerlinModule);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
 	heightMapBuilder.SetDestSize(256, 256);
-	heightMapBuilder.SetBounds(4.0, 8.0, 0.0, 4.0);
+	heightMapBuilder.SetBounds(0.0, 4.0, 0.0, 4.0);
 	heightMapBuilder.Build();
+	
+	//utils::RendererImage renderer;
+	//utils::Image image;
+	//renderer.SetSourceNoiseMap(heightMap);
+	//renderer.SetDestImage(image);
+	////Change this depending on height to set different colour of voxels
+	//renderer.ClearGradient();
+	//renderer.AddGradientPoint(-1.0000, utils::Color(0, 0, 128, 255)); //Deep water
+	//renderer.AddGradientPoint(-0.2500, utils::Color(0, 0, 255, 255)); //Shallow water
+	//renderer.AddGradientPoint(0.0000, utils::Color(0, 128, 255, 255)); //Shore
+	//renderer.AddGradientPoint(0.0625, utils::Color(240, 240, 64, 255)); //Sand
+	//renderer.AddGradientPoint(0.1250, utils::Color(32, 160, 0, 255)); //Grass
+	//renderer.AddGradientPoint(0.3750, utils::Color(224, 224, 0, 255)); //Dirt
+	//renderer.AddGradientPoint(0.7500, utils::Color(128, 128, 128, 255)); //Rock
+	//renderer.AddGradientPoint(1.0000, utils::Color(255, 255, 255, 255)); //Snow
+	//renderer.EnableLight();
+	//renderer.SetLightContrast(3.0); //Triple contrast
+	//renderer.SetLightBrightness(2.0); // Double brightness
+	//renderer.SetLightAzimuth(180.0); //Direction of light
+	//renderer.SetLightElev(35.0);
+	//renderer.Render();
 
-	utils::RendererImage renderer;
-	utils::Image image;
-	renderer.SetSourceNoiseMap(heightMap);
-	renderer.SetDestImage(image);
-	//Change this depending on height to set different colour of voxels
-	renderer.ClearGradient();
-	renderer.AddGradientPoint(-1.0000, utils::Color(0, 0, 128, 255)); //Deep water
-	renderer.AddGradientPoint(-0.2500, utils::Color(0, 0, 255, 255)); //Shallow water
-	renderer.AddGradientPoint(0.0000, utils::Color(0, 128, 255, 255)); //Shore
-	renderer.AddGradientPoint(0.0625, utils::Color(240, 240, 64, 255)); //Sand
-	renderer.AddGradientPoint(0.1250, utils::Color(32, 160, 0, 255)); //Grass
-	renderer.AddGradientPoint(0.3750, utils::Color(224, 224, 0, 255)); //Dirt
-	renderer.AddGradientPoint(0.7500, utils::Color(128, 128, 128, 255)); //Rock
-	renderer.AddGradientPoint(1.0000, utils::Color(255, 255, 255, 255)); //Snow
-	renderer.EnableLight();
-	renderer.SetLightContrast(3.0); //Triple contrast
-	renderer.SetLightBrightness(2.0); // Double brightness
-	renderer.SetLightAzimuth(180.0); //Direction of light
-	renderer.SetLightElev(35.0);
-	renderer.Render();
-
-	utils::WriterBMP writer;
-	writer.SetSourceImage(image);
-	writer.SetDestFilename("testHeightMap2.bmp");
-	writer.WriteDestFile();
-
-	double scale = ChunkSize;
+	//utils::WriterBMP writer;
+	//writer.SetSourceImage(image);
+	//writer.SetDestFilename("testHeightMap2.bmp");
+	//writer.WriteDestFile();
+	
 	for (int x = 0; x < ChunkSize; x++)
 	{
 		for (int z = 0; z < ChunkSize; z++)
 		{	//Figure out how to use utils or noise to generate procedural generation
-			double height = noise::ValueCoherentNoise3D(x * 0.1, 0, z * 0.1, 1);
-			height = height * 4 + 4;
-			double testHeight = heightMap.GetValue(x, z) * (double)(ChunkSize - 1);
-			for (int y = 0; y < height; y++)
+
+			double height = PerlinModule.GetValue(32, 32, 32);
+			
+			height = height * ((double)ChunkSize - 1);
+
+			double testHeight = heightMap.GetValue(x, z);
+			testHeight = (testHeight) * 31;
+			for (int y = 0; y < testHeight; y++)
 			{
 				m_Blocks[x][y][z].SetActive(true);
 			}
