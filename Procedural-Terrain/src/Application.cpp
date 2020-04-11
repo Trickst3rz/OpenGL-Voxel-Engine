@@ -22,6 +22,7 @@
 #include "Texture.h"
 #include "Camera.h"
 #include "Chunk.h"
+#include "ChunkManager.h"
 #include "Mesh.h"
 
 #include "imgui/imgui.h"
@@ -179,11 +180,14 @@ int main(void)
 			}
 		}
 		
-		Chunk* chunk = new Chunk;
+		//Chunk* chunk = new Chunk;
 		//chunk.SetupSphere(); //SetupLandscape here for procedural generation
-		chunk->SetupLandscape();
+		//chunk->SetupLandscape();
 		//chunk->SetupAll();
-		chunk->CreateMesh();
+		//chunk->CreateMesh();
+
+		ChunkManager* chunkManager = new ChunkManager;
+		chunkManager->SetupVAO();
 		
 		VertexArray LightingVAO;
 		VertexArray InstanceVertexArray;
@@ -191,15 +195,15 @@ int main(void)
 
 		VertexBuffer LightingVBO(&vertices, sizeof(vertices));
 		VertexBuffer InstanceVertexBuffer(&vertices, sizeof(vertices));
-		VertexBuffer BatchVertexBuffer(chunk->GetVertex(), chunk->GetElementCount() * sizeof * chunk->GetVertex());
+		//VertexBuffer BatchVertexBuffer(chunk->GetVertex(), chunk->GetElementCount() * sizeof * chunk->GetVertex());
 		VertexBuffer instanceVBO(&offsetTranslation[0], offsetIndex * sizeof * offsetTranslation);
 
-		VertexBufferLayout BatchLayout;
-		BatchLayout.Push<GLbyte>(3);
-		BatchLayout.Push<GLbyte>(3);
-		//BatchLayout.Push<GLbyte>(1);
-		BatchVertexArray.Bind();
-		BatchVertexArray.AddBuffer(BatchVertexBuffer, BatchLayout);
+		//VertexBufferLayout BatchLayout;
+		//BatchLayout.Push<GLbyte>(3);
+		//BatchLayout.Push<GLbyte>(3);
+		////BatchLayout.Push<GLbyte>(1);
+		//BatchVertexArray.Bind();
+		//BatchVertexArray.AddBuffer(BatchVertexBuffer, BatchLayout);
 
 		VertexBufferLayout layout;
 		layout.Push<GLbyte>(3);
@@ -288,7 +292,9 @@ int main(void)
 				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
 				shader.SetUniformMat4f("u_Model", model);
 				shader.SetUniformMat4f("u_View", view);
-				Renderer::Draw(BatchVertexArray, shader, chunk->GetElementCount());
+				//chunk->Render(BatchVertexArray, shader);
+				chunkManager->Render(shader);
+				//Renderer::Draw(BatchVertexArray, shader, chunk->GetElementCount());
 				//shader.SetUniform4f("u_Colour", 1.0f, 0.5f, 0.31f, 1.0f);
 				//Renderer::Draw(LightingVAO, shader, sizeof(vertices));
 			}

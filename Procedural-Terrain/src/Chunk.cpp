@@ -1,9 +1,9 @@
 #include "Chunk.h"
 #include "noise/noise.h"
 #include "noise/noiseutils.h"
-#include <math.h>
+#include "Renderer.h"
 
-Chunk::Chunk()
+Chunk::Chunk() : m_ChunkActive(false)
 {
 	//Creating the chunk with many blocks
 	m_Blocks = new Block**[ChunkSize];
@@ -31,15 +31,17 @@ Chunk::~Chunk()
 	delete[] vertex;
 }
 
-void Chunk::Render()
+void Chunk::Render(const VertexArray& va, const Shader& shader)
 {
 	if (!elements)
 		return;
 
-	GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo));
+	Renderer::Draw(va, shader, GetElementCount());
+
+	/*GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo));
 	GLCall(glEnableVertexAttribArray(0));
 	GLCall(glVertexAttribPointer(0, 3, GL_BYTE, GL_FALSE, 0, 0));
-	GLCall(glDrawArrays(GL_TRIANGLES, 0, elements));
+	GLCall(glDrawArrays(GL_TRIANGLES, 0, elements));*/
 }
 
 void Chunk::Update(float deltaTime)
@@ -48,7 +50,7 @@ void Chunk::Update(float deltaTime)
 }
 
 
-void Chunk::CreateMesh() //Might not be const?
+void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array instead of 3D array as it is alot faster 
 {
 	//Create Mesh
 	//Check if you can see triangle if not don't render it
@@ -181,57 +183,68 @@ void Chunk::SetupAll()
 	}
 }
 
-void Chunk::SetupLandscape()
+void Chunk::SetupLandscape(double x, double z)
 {
-	
 	module::Perlin PerlinModule;
-	PerlinModule.SetSeed(1);
+	PerlinModule.SetSeed(0); //In the future change value from a hard coded value to random each time or change with gizmos e.g. seed?
 	utils::NoiseMap heightMap;
 	utils::NoiseMapBuilderPlane heightMapBuilder;
 	heightMapBuilder.SetSourceModule(PerlinModule);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
-	heightMapBuilder.SetDestSize(256, 256);
-	heightMapBuilder.SetBounds(0.0, 4.0, 0.0, 4.0);
+	heightMapBuilder.SetDestSize(32, 32);
+	upperX = (x + 1.0) * 1.0;
+	upperZ = (z + 1.0) * 1.0;
+	lowerX = upperX - 1.0;
+	lowerZ = upperZ - 1.0;
+	//heightMapBuilder.SetBounds(x, x + 4, z, z + 4);
+	heightMapBuilder.SetBounds(lowerX, upperX, -upperZ, -lowerZ);
+	//heightMapBuilder.SetBounds(0, 4, 4, 8);
+	//heightMapBuilder.EnableSeamless();
 	heightMapBuilder.Build();
 	
-	//utils::RendererImage renderer;
-	//utils::Image image;
-	//renderer.SetSourceNoiseMap(heightMap);
-	//renderer.SetDestImage(image);
-	////Change this depending on height to set different colour of voxels
-	//renderer.ClearGradient();
-	//renderer.AddGradientPoint(-1.0000, utils::Color(0, 0, 128, 255)); //Deep water
-	//renderer.AddGradientPoint(-0.2500, utils::Color(0, 0, 255, 255)); //Shallow water
-	//renderer.AddGradientPoint(0.0000, utils::Color(0, 128, 255, 255)); //Shore
-	//renderer.AddGradientPoint(0.0625, utils::Color(240, 240, 64, 255)); //Sand
-	//renderer.AddGradientPoint(0.1250, utils::Color(32, 160, 0, 255)); //Grass
-	//renderer.AddGradientPoint(0.3750, utils::Color(224, 224, 0, 255)); //Dirt
-	//renderer.AddGradientPoint(0.7500, utils::Color(128, 128, 128, 255)); //Rock
-	//renderer.AddGradientPoint(1.0000, utils::Color(255, 255, 255, 255)); //Snow
-	//renderer.EnableLight();
-	//renderer.SetLightContrast(3.0); //Triple contrast
-	//renderer.SetLightBrightness(2.0); // Double brightness
-	//renderer.SetLightAzimuth(180.0); //Direction of light
-	//renderer.SetLightElev(35.0);
-	//renderer.Render();
+	utils::RendererImage renderer;
+	utils::Image image;
+	renderer.SetSourceNoiseMap(heightMap);
+	renderer.SetDestImage(image);
+	//Change this depending on height to set different colour of voxels
+	renderer.ClearGradient();
+	renderer.AddGradientPoint(-1.0000, utils::Color(0, 0, 128, 255)); //Deep water
+	renderer.AddGradientPoint(-0.2500, utils::Color(0, 0, 255, 255)); //Shallow water
+	renderer.AddGradientPoint(0.0000, utils::Color(0, 128, 255, 255)); //Shore
+	renderer.AddGradientPoint(0.0625, utils::Color(240, 240, 64, 255)); //Sand
+	renderer.AddGradientPoint(0.1250, utils::Color(32, 160, 0, 255)); //Grass
+	renderer.AddGradientPoint(0.3750, utils::Color(224, 224, 0, 255)); //Dirt
+	renderer.AddGradientPoint(0.7500, utils::Color(128, 128, 128, 255)); //Rock
+	renderer.AddGradientPoint(1.0000, utils::Color(255, 255, 255, 255)); //Snow
+	renderer.EnableLight();
+	renderer.SetLightContrast(3.0); //Triple contrast
+	renderer.SetLightBrightness(2.0); // Double brightness
+	renderer.SetLightAzimuth(180.0); //Direction of light
+	renderer.SetLightElev(35.0);
+	renderer.Render();
 
-	//utils::WriterBMP writer;
-	//writer.SetSourceImage(image);
-	//writer.SetDestFilename("testHeightMap2.bmp");
-	//writer.WriteDestFile();
+	const char test = x + z;
+
+	utils::WriterBMP writer;
+	writer.SetSourceImage(image);
+	writer.SetDestFilename(test + "testHeightMap2.bmp");
+	writer.WriteDestFile();
 	
 	for (int x = 0; x < ChunkSize; x++)
 	{
 		for (int z = 0; z < ChunkSize; z++)
-		{	//Figure out how to use utils or noise to generate procedural generation
+		{
+			float Height = (heightMap.GetValue(x, z) + 1.0f) * 0.5f; //Get the height map x, z coordinates then convert range from -1-1 to 0-1
+			Height = (Height * (ChunkSize - 1) * 1.0f) * 1.0f;
 
-			double height = PerlinModule.GetValue(32, 32, 32);
-			
-			height = height * ((double)ChunkSize - 1);
+			if (Height > 31.0f)
+				Height = 31.0f;
 
-			double testHeight = heightMap.GetValue(x, z);
-			testHeight = (testHeight) * 31;
-			for (int y = 0; y < testHeight; y++)
+			if (Height < 0.0f)
+				Height = 0.1f;
+			float testHeight = (heightMap.GetValue(300, 300) + 1.0f) * 0.5f;
+			float border = heightMap.GetBorderValue();
+			for (int y = 0; y < Height; y++)
 			{
 				m_Blocks[x][y][z].SetActive(true);
 			}

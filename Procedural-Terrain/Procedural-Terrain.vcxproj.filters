@@ -92,7 +92,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="resources\shaders\Basic.shader" />
     <None Include="src\vendor\glm\detail\func_common.inl">
       <Filter>Header Files</Filter>
     </None>
@@ -496,6 +495,8 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="resources\shaders\Lighting.shader" />
+    <None Include="resources\shaders\Instancing.shader" />
+    <None Include="resources\shaders\Basic.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Block.h">

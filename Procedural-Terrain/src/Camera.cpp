@@ -1,11 +1,11 @@
 #include "Camera.h"
 
-glm::vec3 Camera::m_cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+glm::vec3 Camera::m_cameraPos = glm::vec3(16.0f, 0.0f, 64.0f);
 //Camera Direction
 glm::vec3 Camera::m_cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 Camera::m_cameraDirection = glm::normalize(Camera::m_cameraPos - Camera::m_cameraTarget);
 //Right Axis
-glm::vec3 Camera::m_up = glm::vec3(0.0f, 1.0f, 0.0f);
+glm::vec3 Camera::m_up = glm::vec3(0.0f, 10.0f, 0.0f);
 glm::vec3 Camera::m_cameraRight = glm::normalize(glm::cross(Camera::m_up, Camera::m_cameraDirection));
 //Forward Axis
 glm::vec3 Camera::m_cameraFront = glm::normalize(glm::cross(Camera::m_cameraRight, Camera::m_up));

@@ -11,7 +11,6 @@ layout(location = 3) in vec4 offset;
 uniform mat4 u_Model;
 uniform mat4 u_View;
 uniform mat4 u_Projection;
-uniform vec3 u_offset;
 
 out vec2 v_TexCoord;
 out vec3 v_Normal;
@@ -19,10 +18,10 @@ out vec3 v_FragPos;
 
 void main()
 {
-	gl_Position = u_Projection * u_View * u_Model * (vec4(position.xyz + u_offset, 1.0f));
+	gl_Position = u_Projection * u_View * u_Model * (vec4(position.xyz + offset.xyz, 1.0f));
 	v_TexCoord = texCoord;
 	v_Normal = normal;
-	v_FragPos = vec3(u_Model * vec4(position.xyz + u_offset, 1.0f));
+	v_FragPos = vec3(u_Model * vec4(position.xyz + offset.xyz, 1.0f));
 };
 
 #shader fragment

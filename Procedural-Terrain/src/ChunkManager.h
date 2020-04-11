@@ -1,11 +1,13 @@
 #pragma once
 #include "Chunk.h"
+#include "Shader.h"
+#include <vector>
 
 class ChunkManager
 {
 public:
 
-	ChunkManager(int x, int z);
+	ChunkManager();
 
 	~ChunkManager();
 
@@ -20,10 +22,22 @@ public:
 	void UpdateVisibilityList(); //ADD CAMERA PARAMETER OR MAKE CAMERA A STATIC CLASS
 	//Update all the chunks in the list that could be rendered and seen by the camera 
 
-	void Render(); //Frustum culling, Occlusion culling 
+	void SetupVAO(); //Set up the vao, vbo
+
+	void Render(Shader& shader); //Frustum culling, Occlusion culling 
 
 	void Update(); //Updates all the lists
 
 private:
-	Chunk** chunks;
+	Chunk** m_chunks;
+	std::vector<Chunk>* m_LoadList;
+	std::vector<Chunk>* m_UnloadList;
+	std::vector<Chunk>* m_RebuildList;
+	std::vector<Chunk>* m_VisibilityList;
+	std::vector<Chunk>* m_RenderList;
+
+	static const int AmountOfChunks = 5; //Amount of chunks in every direction just a test temp variable atm to see if it works REMOVE LATER ON
+
+	//OpenGL
+	VertexArray* BatchVertexArray = new VertexArray[AmountOfChunks * AmountOfChunks];
 };
