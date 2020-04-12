@@ -191,7 +191,7 @@ void Chunk::SetupLandscape(double x, double z)
 	utils::NoiseMapBuilderPlane heightMapBuilder;
 	heightMapBuilder.SetSourceModule(PerlinModule);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
-	heightMapBuilder.SetDestSize(32, 32);
+	heightMapBuilder.SetDestSize(ChunkSize, ChunkSize);
 	upperX = (x + 1.0) * 1.0;
 	upperZ = (z + 1.0) * 1.0;
 	lowerX = upperX - 1.0;

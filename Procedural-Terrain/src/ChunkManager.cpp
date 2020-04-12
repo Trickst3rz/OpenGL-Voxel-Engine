@@ -68,7 +68,7 @@ void ChunkManager::Render(Shader& shader)
 		for (int z = 0; z < AmountOfChunks; z++)
 		{
 			shader.Bind();
-			shader.SetUniform3f("u_offset", x * m_chunks[x][z].ChunkSize, 0, z * m_chunks[x][z].ChunkSize);
+			shader.SetUniform3f("u_offset", x * m_chunks[x][z].ChunkSize, 0, -z * m_chunks[x][z].ChunkSize);
 			m_chunks[x][z].Render(BatchVertexArray[z + x * AmountOfChunks], shader);
 		}
 	}
