@@ -26,7 +26,9 @@ public:
 
 	void Render(Shader& shader); //Frustum culling, Occlusion culling 
 
-	void Update(); //Updates all the lists
+	void Update(Shader& shader); //Updates all the lists
+
+	void SetChunkDistance(int numOfChunks);
 
 private:
 	Chunk** m_chunks;
@@ -36,8 +38,10 @@ private:
 	std::vector<Chunk>* m_VisibilityList;
 	std::vector<Chunk>* m_RenderList;
 
-	static const int AmountOfChunks = 5; //Amount of chunks in every direction just a test temp variable atm to see if it works REMOVE LATER ON
+	int m_AmountOfChunks; //Amount of chunks in every direction just a test temp variable atm to see if it works REMOVE LATER ON MAYBE CHANGE TO STATIC?
+
+	static const int SizeOfChunk = 16;
 
 	//OpenGL
-	VertexArray* BatchVertexArray = new VertexArray[AmountOfChunks * AmountOfChunks];
+	VertexArray* BatchVertexArray = new VertexArray[m_AmountOfChunks * m_AmountOfChunks];
 };
