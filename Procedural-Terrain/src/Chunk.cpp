@@ -242,8 +242,7 @@ void Chunk::SetupLandscape(double x, double z)
 
 			if (Height < 0.0f)
 				Height = 0.1f;
-			float testHeight = (heightMap.GetValue(300, 300) + 1.0f) * 0.5f;
-			float border = heightMap.GetBorderValue();
+			
 			for (int y = 0; y < Height; y++)
 			{
 				m_Blocks[x][y][z].SetActive(true);

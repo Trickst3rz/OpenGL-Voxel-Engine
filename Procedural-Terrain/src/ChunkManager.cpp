@@ -1,7 +1,7 @@
 #include "ChunkManager.h"
 #include "Camera.h"
 
-ChunkManager::ChunkManager() : m_AmountOfChunks(6)
+ChunkManager::ChunkManager() : m_AmountOfChunks(8)
 {
 	m_chunks = new Chunk*[m_AmountOfChunks];
 
@@ -18,11 +18,13 @@ ChunkManager::~ChunkManager()
 
 void ChunkManager::UpdateAsync()
 {
-
+	
 }
 
 void ChunkManager::UpdateLoadList()
 {
+	int NumOfChunksLoaded = 0;
+	
 
 }
 
@@ -96,13 +98,22 @@ void ChunkManager::Update(Shader& shader)
 	//}
 
 	Render(shader);
-
-	
-
 }
 
 void ChunkManager::SetChunkDistance(int numOfChunks)
 {//Keep amount of chunks as a const value for now
+	//Maybe add a button to ImGui that you click to load the terrain again
+	for (int x = 0; x < m_AmountOfChunks; x++)
+		delete m_chunks[x];
+	delete[] m_chunks;
+
 	int size = numOfChunks + numOfChunks + 1;
 	m_AmountOfChunks = size * size;
+
+	m_chunks = new Chunk * [m_AmountOfChunks];
+
+	for (int x = 0; x < m_AmountOfChunks; x++)
+		m_chunks[x] = new Chunk[m_AmountOfChunks];
+
+	SetupVAO();
 }

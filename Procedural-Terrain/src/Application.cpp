@@ -308,7 +308,7 @@ int main(void)
 				Renderer::DrawInstanced(InstanceVertexArray, shader, sizeof(vertices), testChunk::TotalSize);
 			}
 
-			test::DebugGUI::GetInstance().OnImGuiRender(BatchToggle, instanceToggle);
+			test::DebugGUI::GetInstance().OnImGuiRender(BatchToggle, instanceToggle, *chunkManager);
 
 			Renderer::SetDrawCalls(0);
 			GLCall(glfwSwapBuffers(window));

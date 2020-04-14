@@ -32,6 +32,7 @@ public:
 
 private:
 	Chunk** m_chunks;
+	//std::unordered_map<glm::vec3, Chunk*> m_ChunkList;
 	std::vector<Chunk>* m_LoadList;
 	std::vector<Chunk>* m_UnloadList;
 	std::vector<Chunk>* m_RebuildList;

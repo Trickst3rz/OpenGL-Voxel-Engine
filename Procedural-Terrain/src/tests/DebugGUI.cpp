@@ -16,7 +16,7 @@ namespace test {
 		test.OnRender();
 	}
 
-	void DebugGUI::OnImGuiRender(bool &BatchToggle, bool &instanceToggle)
+	void DebugGUI::OnImGuiRender(bool &BatchToggle, bool &instanceToggle, ChunkManager& chunkManager)
 	{
 		{
 			ImGui::Begin("Debug");
@@ -30,6 +30,7 @@ namespace test {
 					chunks = 8;
 				else
 					chunks += 8;
+				chunkManager.SetChunkDistance(chunks);
 			}
 			ImGui::SameLine();
 			ImGui::Text("%d chunks", chunks);

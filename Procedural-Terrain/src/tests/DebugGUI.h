@@ -2,6 +2,7 @@
 
 #include "TestClearColour.h"
 #include "Test.h"
+#include "ChunkManager.h"
 
 namespace test {
 	class DebugGUI : Test
@@ -19,7 +20,7 @@ namespace test {
 
 		void OnRender();
 
-		void OnImGuiRender(bool &BatchToggle, bool& instanceToggle);
+		void OnImGuiRender(bool &BatchToggle, bool& instanceToggle, ChunkManager& chunkManager);
 
 		void WireFrame();
 
