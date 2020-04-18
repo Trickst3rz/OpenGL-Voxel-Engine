@@ -41,6 +41,7 @@ public:
 	bool isActive() { return m_ChunkActive; }
 
 	void SetActive(bool SetChunk) { m_ChunkActive = SetChunk; }
+
 private:
 	Block*** m_Blocks;
 	//Maybe in future change from array to vector to remove and add blocks, MAYBE CHANGE m_indices to 3d array? look at using blocks etc

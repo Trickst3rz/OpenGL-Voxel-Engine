@@ -2,6 +2,9 @@
 #include "Chunk.h"
 #include "Shader.h"
 #include <vector>
+#include <unordered_map>
+#include "glm/gtx/hash.hpp"
+#include <memory>
 
 class ChunkManager
 {
@@ -32,7 +35,8 @@ public:
 
 private:
 	Chunk** m_chunks;
-	//std::unordered_map<glm::vec3, Chunk*> m_ChunkList;
+	std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_ChunkList;
+	std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_ChunkListV2;
 	std::vector<Chunk>* m_LoadList;
 	std::vector<Chunk>* m_UnloadList;
 	std::vector<Chunk>* m_RebuildList;
@@ -40,6 +44,11 @@ private:
 	std::vector<Chunk>* m_RenderList;
 
 	int m_AmountOfChunks; //Amount of chunks in every direction just a test temp variable atm to see if it works REMOVE LATER ON MAYBE CHANGE TO STATIC?
+	int centreOfChunks;
+	int CameraPosX;
+	int CameraPosZ;
+
+	glm::ivec3 currentCameraPosition;
 
 	static const int SizeOfChunk = 16;
 

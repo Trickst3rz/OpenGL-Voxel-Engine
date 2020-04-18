@@ -1,16 +1,16 @@
 #include "Camera.h"
 
-glm::vec3 Camera::m_cameraPos = glm::vec3(16.0f, 0.0f, 64.0f);
+glm::vec3 Camera::m_cameraPos = glm::vec3(0.0f, 0.0f, 1.0f);
 //Camera Direction
 glm::vec3 Camera::m_cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 Camera::m_cameraDirection = glm::normalize(Camera::m_cameraPos - Camera::m_cameraTarget);
 //Right Axis
-glm::vec3 Camera::m_up = glm::vec3(0.0f, 10.0f, 0.0f);
+glm::vec3 Camera::m_up = glm::vec3(0.0f, 1.0f, 0.0f);
 glm::vec3 Camera::m_cameraRight = glm::normalize(glm::cross(Camera::m_up, Camera::m_cameraDirection));
-//Forward Axis
-glm::vec3 Camera::m_cameraFront = glm::normalize(glm::cross(Camera::m_cameraRight, Camera::m_up));
 //Up Axis
 glm::vec3 Camera::m_cameraUp = glm::cross(Camera::m_cameraDirection, Camera::m_cameraRight);
+//Forward Axis
+glm::vec3 Camera::m_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 //Camera Speed
 float Camera::m_cameraSpeed = 5.5f;
 
@@ -40,19 +40,21 @@ void Camera::processInput(GLFWwindow* window, float deltaTime)
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		m_cameraPos += m_cameraFront * (m_cameraSpeed * deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
-		m_cameraPos -= m_cameraUp * (m_cameraSpeed * deltaTime);
+		m_cameraPos -= m_up * (m_cameraSpeed * deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
-		m_cameraPos += m_cameraUp * (m_cameraSpeed * deltaTime);
+		m_cameraPos += m_up * (m_cameraSpeed * deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
 		m_cameraPos -= m_cameraFront * (m_cameraSpeed * deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-		m_cameraPos -= glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * (m_cameraSpeed * deltaTime);
+		m_cameraPos -= glm::normalize(glm::cross(m_cameraFront, m_up)) * (m_cameraSpeed * deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-		m_cameraPos += glm::normalize(glm::cross(m_cameraFront, m_cameraUp)) * (m_cameraSpeed * deltaTime);
+		m_cameraPos += glm::normalize(glm::cross(m_cameraFront, m_up)) * (m_cameraSpeed * deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
 		m_cameraSpeed = 10.5f;
 	else
 		m_cameraSpeed = 5.5f;
+
+	std::cout << "PosX:" << m_cameraPos.x << "PosY:" << m_cameraPos.y << "PosZ:" << m_cameraPos.z << std::endl;
 }
 
 void Camera::mouse_callback(GLFWwindow* window, double xPos, double yPos)

@@ -11,6 +11,7 @@
 #include <string>
 #include <sstream>
 #include <cstdlib>
+#include <memory>
 
 #include "Renderer.h"
 
@@ -115,7 +116,7 @@ int main(void)
 			GLCall(glDebugMessageCallback(glDebugOutput, nullptr));
 			GLCall(glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE));
 		}
-
+	
 		GLbyte vertices[] = {
 			//positions	//TexCoord
 			//Front 
@@ -186,7 +187,10 @@ int main(void)
 		//chunk->SetupAll();
 		//chunk->CreateMesh();
 
-		ChunkManager* chunkManager = new ChunkManager;
+		Camera::SetCameraPosition(glm::vec3(0.0f, 32.0f, 0.0f));
+
+		//Make this into a smart pointer in the future?
+		ChunkManager* chunkManager = new ChunkManager();
 		chunkManager->SetupVAO();
 		
 		VertexArray LightingVAO;
@@ -218,8 +222,8 @@ int main(void)
 		LightingVAO.Bind();
 		LightingVAO.AddBuffer(LightingVBO, layout);
 
-		glm::mat4 proj = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 1.0f, 150.0f);
-		glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -40.0f));
+		glm::mat4 proj = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 1.0f, 1000.0f);
+		glm::mat4 view = glm::mat4(1.0f);
 
 		Shader shader("resources/shaders/Basic.shader");
 		shader.Bind();
@@ -247,6 +251,8 @@ int main(void)
 		currentTest = testMenu;
 
 		testMenu->RegisterTest<test::TestClearColour>("Clear Colour");
+
+		Camera::SetCameraPosition(glm::vec3(18.0f, 32.0f, 18.0f));
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
@@ -284,6 +290,7 @@ int main(void)
 			shader.Bind();
 
 			view = glm::lookAt(Camera::GetCameraPosition(), Camera::GetCameraPosition() + Camera::GetCameraFront(), Camera::GetCameraUp());
+
 			int k = sizeof(vertices);
 			if (BatchToggle)
 			{

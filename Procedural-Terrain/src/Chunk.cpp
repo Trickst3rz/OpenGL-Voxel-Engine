@@ -192,43 +192,33 @@ void Chunk::SetupLandscape(double x, double z)
 	heightMapBuilder.SetSourceModule(PerlinModule);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
 	heightMapBuilder.SetDestSize(ChunkSize, ChunkSize);
-	upperX = (x + 1.0) * 1.0;
-	upperZ = (z + 1.0) * 1.0;
-	lowerX = upperX - 1.0;
-	lowerZ = upperZ - 1.0;
-	//heightMapBuilder.SetBounds(x, x + 4, z, z + 4);
-	heightMapBuilder.SetBounds(lowerX, upperX, -upperZ, -lowerZ);
-	//heightMapBuilder.SetBounds(0, 4, 4, 8);
-	//heightMapBuilder.EnableSeamless();
+	upperX = x + 1.0;
+	upperZ = z + 1.0;
+	lowerX = x;
+	lowerZ = z;
+	heightMapBuilder.SetBounds(lowerX, upperX, lowerZ, upperZ);
 	heightMapBuilder.Build();
 	
-	utils::RendererImage renderer;
-	utils::Image image;
-	renderer.SetSourceNoiseMap(heightMap);
-	renderer.SetDestImage(image);
-	//Change this depending on height to set different colour of voxels
-	renderer.ClearGradient();
-	renderer.AddGradientPoint(-1.0000, utils::Color(0, 0, 128, 255)); //Deep water
-	renderer.AddGradientPoint(-0.2500, utils::Color(0, 0, 255, 255)); //Shallow water
-	renderer.AddGradientPoint(0.0000, utils::Color(0, 128, 255, 255)); //Shore
-	renderer.AddGradientPoint(0.0625, utils::Color(240, 240, 64, 255)); //Sand
-	renderer.AddGradientPoint(0.1250, utils::Color(32, 160, 0, 255)); //Grass
-	renderer.AddGradientPoint(0.3750, utils::Color(224, 224, 0, 255)); //Dirt
-	renderer.AddGradientPoint(0.7500, utils::Color(128, 128, 128, 255)); //Rock
-	renderer.AddGradientPoint(1.0000, utils::Color(255, 255, 255, 255)); //Snow
-	renderer.EnableLight();
-	renderer.SetLightContrast(3.0); //Triple contrast
-	renderer.SetLightBrightness(2.0); // Double brightness
-	renderer.SetLightAzimuth(180.0); //Direction of light
-	renderer.SetLightElev(35.0);
-	renderer.Render();
-
-	const char test = x + z;
-
-	utils::WriterBMP writer;
-	writer.SetSourceImage(image);
-	writer.SetDestFilename(test + "testHeightMap2.bmp");
-	writer.WriteDestFile();
+	//utils::RendererImage renderer;
+	//utils::Image image;
+	//renderer.SetSourceNoiseMap(heightMap);
+	//renderer.SetDestImage(image);
+	////Change this depending on height to set different colour of voxels
+	//renderer.ClearGradient();
+	//renderer.AddGradientPoint(-1.0000, utils::Color(0, 0, 128, 255)); //Deep water
+	//renderer.AddGradientPoint(-0.2500, utils::Color(0, 0, 255, 255)); //Shallow water
+	//renderer.AddGradientPoint(0.0000, utils::Color(0, 128, 255, 255)); //Shore
+	//renderer.AddGradientPoint(0.0625, utils::Color(240, 240, 64, 255)); //Sand
+	//renderer.AddGradientPoint(0.1250, utils::Color(32, 160, 0, 255)); //Grass
+	//renderer.AddGradientPoint(0.3750, utils::Color(224, 224, 0, 255)); //Dirt
+	//renderer.AddGradientPoint(0.7500, utils::Color(128, 128, 128, 255)); //Rock
+	//renderer.AddGradientPoint(1.0000, utils::Color(255, 255, 255, 255)); //Snow
+	//renderer.EnableLight();
+	//renderer.SetLightContrast(3.0); //Triple contrast
+	//renderer.SetLightBrightness(2.0); // Double brightness
+	//renderer.SetLightAzimuth(180.0); //Direction of light
+	//renderer.SetLightElev(35.0);
+	//renderer.Render();
 	
 	for (int x = 0; x < ChunkSize; x++)
 	{

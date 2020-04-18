@@ -14,6 +14,8 @@ public:
 
 	static glm::vec3 GetCameraPosition() { return m_cameraPos; }
 
+	static void SetCameraPosition(glm::vec3 newPosition) { m_cameraPos = newPosition; }
+
 	static glm::vec3 GetCameraFront() { return m_cameraFront; }
 
 	static void SetCameraForward(glm::vec3 newCameraForward) { m_cameraFront = newCameraForward; }
