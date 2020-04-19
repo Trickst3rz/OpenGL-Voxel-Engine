@@ -36,7 +36,6 @@ public:
 private:
 	Chunk** m_chunks;
 	std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_ChunkList;
-	std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_ChunkListV2;
 	std::vector<Chunk>* m_LoadList;
 	std::vector<Chunk>* m_UnloadList;
 	std::vector<Chunk>* m_RebuildList;
@@ -45,13 +44,13 @@ private:
 
 	int m_AmountOfChunks; //Amount of chunks in every direction just a test temp variable atm to see if it works REMOVE LATER ON MAYBE CHANGE TO STATIC?
 	int centreOfChunks;
-	int CameraPosX;
-	int CameraPosZ;
+	int xPosInChunk; //Current x axis position in chunk coordinates
+	int zPosInChunk; //Current z axis position in chunk coordinates
 
 	glm::ivec3 currentCameraPosition;
 
-	static const int SizeOfChunk = 16;
+	static const int SizeOfChunk = 32;
 
 	//OpenGL
-	VertexArray* BatchVertexArray = new VertexArray[m_AmountOfChunks * m_AmountOfChunks];
+	std::unordered_map<glm::ivec3, std::shared_ptr<VertexArray>> BatchVertexArray;
 };

@@ -18,7 +18,7 @@ public:
 
 	~Chunk();
 
-	void Render(const VertexArray& va, const Shader& shader);
+	void Render(const std::shared_ptr<VertexArray> va, const Shader& shader);
 
 	void Update(float deltaTime);
 

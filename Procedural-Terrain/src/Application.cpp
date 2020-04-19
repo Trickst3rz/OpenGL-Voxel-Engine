@@ -300,7 +300,7 @@ int main(void)
 				shader.SetUniformMat4f("u_Model", model);
 				shader.SetUniformMat4f("u_View", view);
 				//chunk->Render(BatchVertexArray, shader);
-				chunkManager->Render(shader);
+				chunkManager->Update(shader);
 				//Renderer::Draw(BatchVertexArray, shader, chunk->GetElementCount());
 				//shader.SetUniform4f("u_Colour", 1.0f, 0.5f, 0.31f, 1.0f);
 				//Renderer::Draw(LightingVAO, shader, sizeof(vertices));

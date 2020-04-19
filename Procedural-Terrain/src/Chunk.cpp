@@ -31,12 +31,12 @@ Chunk::~Chunk()
 	delete[] vertex;
 }
 
-void Chunk::Render(const VertexArray& va, const Shader& shader)
+void Chunk::Render(const std::shared_ptr<VertexArray> va, const Shader& shader)
 {
 	if (!elements)
 		return;
 
-	Renderer::Draw(va, shader, GetElementCount());
+	Renderer::Draw(*va, shader, GetElementCount());
 
 	/*GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo));
 	GLCall(glEnableVertexAttribArray(0));
