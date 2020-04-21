@@ -53,8 +53,6 @@ void Camera::processInput(GLFWwindow* window, float deltaTime)
 		m_cameraSpeed = 10.5f;
 	else
 		m_cameraSpeed = 5.5f;
-
-	std::cout << "PosX:" << m_cameraPos.x << "PosY:" << m_cameraPos.y << "PosZ:" << m_cameraPos.z << std::endl;
 }
 
 void Camera::mouse_callback(GLFWwindow* window, double xPos, double yPos)
