@@ -2,6 +2,7 @@
 #include "noise/noise.h"
 #include "noise/noiseutils.h"
 #include "Renderer.h"
+#include "Timer.h";
 
 Chunk::Chunk() : m_ChunkActive(false)
 {
@@ -37,11 +38,6 @@ void Chunk::Render(const std::shared_ptr<VertexArray> va, const Shader& shader)
 		return;
 
 	Renderer::Draw(*va, shader, GetElementCount());
-
-	/*GLCall(glBindBuffer(GL_ARRAY_BUFFER, vbo));
-	GLCall(glEnableVertexAttribArray(0));
-	GLCall(glVertexAttribPointer(0, 3, GL_BYTE, GL_FALSE, 0, 0));
-	GLCall(glDrawArrays(GL_TRIANGLES, 0, elements));*/
 }
 
 void Chunk::Update(float deltaTime)
@@ -198,27 +194,6 @@ void Chunk::SetupLandscape(double x, double z)
 	lowerZ = z;
 	heightMapBuilder.SetBounds(lowerX, upperX, lowerZ, upperZ);
 	heightMapBuilder.Build();
-	
-	//utils::RendererImage renderer;
-	//utils::Image image;
-	//renderer.SetSourceNoiseMap(heightMap);
-	//renderer.SetDestImage(image);
-	////Change this depending on height to set different colour of voxels
-	//renderer.ClearGradient();
-	//renderer.AddGradientPoint(-1.0000, utils::Color(0, 0, 128, 255)); //Deep water
-	//renderer.AddGradientPoint(-0.2500, utils::Color(0, 0, 255, 255)); //Shallow water
-	//renderer.AddGradientPoint(0.0000, utils::Color(0, 128, 255, 255)); //Shore
-	//renderer.AddGradientPoint(0.0625, utils::Color(240, 240, 64, 255)); //Sand
-	//renderer.AddGradientPoint(0.1250, utils::Color(32, 160, 0, 255)); //Grass
-	//renderer.AddGradientPoint(0.3750, utils::Color(224, 224, 0, 255)); //Dirt
-	//renderer.AddGradientPoint(0.7500, utils::Color(128, 128, 128, 255)); //Rock
-	//renderer.AddGradientPoint(1.0000, utils::Color(255, 255, 255, 255)); //Snow
-	//renderer.EnableLight();
-	//renderer.SetLightContrast(3.0); //Triple contrast
-	//renderer.SetLightBrightness(2.0); // Double brightness
-	//renderer.SetLightAzimuth(180.0); //Direction of light
-	//renderer.SetLightElev(35.0);
-	//renderer.Render();
 	
 	for (int x = 0; x < ChunkSize; x++)
 	{

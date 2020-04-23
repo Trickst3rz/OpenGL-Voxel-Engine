@@ -181,17 +181,11 @@ int main(void)
 			}
 		}
 		
-		//Chunk* chunk = new Chunk;
-		//chunk.SetupSphere(); //SetupLandscape here for procedural generation
-		//chunk->SetupLandscape();
-		//chunk->SetupAll();
-		//chunk->CreateMesh();
-
 		Camera::SetCameraPosition(glm::vec3(0.0f, 32.0f, 0.0f));
 
 		//Make this into a smart pointer in the future?
-		ChunkManager* chunkManager = new ChunkManager();
-		chunkManager->SetupVAO();
+		ChunkManager chunkManager;
+		chunkManager.AsyncLoadChunks();
 		
 		VertexArray LightingVAO;
 		VertexArray InstanceVertexArray;
@@ -300,7 +294,8 @@ int main(void)
 				shader.SetUniformMat4f("u_Model", model);
 				shader.SetUniformMat4f("u_View", view);
 				//chunk->Render(BatchVertexArray, shader);
-				chunkManager->Update(shader);
+				chunkManager.SetupVAO(deltaTime);
+				chunkManager.Update(shader);
 				//Renderer::Draw(BatchVertexArray, shader, chunk->GetElementCount());
 				//shader.SetUniform4f("u_Colour", 1.0f, 0.5f, 0.31f, 1.0f);
 				//Renderer::Draw(LightingVAO, shader, sizeof(vertices));
@@ -315,7 +310,7 @@ int main(void)
 				Renderer::DrawInstanced(InstanceVertexArray, shader, sizeof(vertices), testChunk::TotalSize);
 			}
 
-			test::DebugGUI::GetInstance().OnImGuiRender(BatchToggle, instanceToggle, *chunkManager);
+			test::DebugGUI::GetInstance().OnImGuiRender(BatchToggle, instanceToggle, chunkManager);
 
 			Renderer::SetDrawCalls(0);
 			GLCall(glfwSwapBuffers(window));
