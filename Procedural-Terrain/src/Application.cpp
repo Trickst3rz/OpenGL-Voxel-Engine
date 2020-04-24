@@ -181,7 +181,7 @@ int main(void)
 			}
 		}
 		
-		Camera::SetCameraPosition(glm::vec3(50.0f, 32.0f, 0.0f));
+		Camera::SetCameraPosition(glm::vec3(0.0f, 32.0f, 0.0f));
 
 		//Make this into a smart pointer in the future?
 		ChunkManager chunkManager;
@@ -293,12 +293,7 @@ int main(void)
 				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
 				shader.SetUniformMat4f("u_Model", model);
 				shader.SetUniformMat4f("u_View", view);
-				//chunk->Render(BatchVertexArray, shader);
-				chunkManager.SetupVAO(deltaTime);
 				chunkManager.Update(shader);
-				//Renderer::Draw(BatchVertexArray, shader, chunk->GetElementCount());
-				//shader.SetUniform4f("u_Colour", 1.0f, 0.5f, 0.31f, 1.0f);
-				//Renderer::Draw(LightingVAO, shader, sizeof(vertices));
 			}
 			if(instanceToggle)
 			{
