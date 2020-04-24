@@ -181,7 +181,7 @@ int main(void)
 			}
 		}
 		
-		Camera::SetCameraPosition(glm::vec3(0.0f, 32.0f, 0.0f));
+		Camera::SetCameraPosition(glm::vec3(50.0f, 32.0f, 0.0f));
 
 		//Make this into a smart pointer in the future?
 		ChunkManager chunkManager;

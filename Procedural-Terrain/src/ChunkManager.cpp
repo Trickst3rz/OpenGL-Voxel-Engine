@@ -125,7 +125,7 @@ void ChunkManager::UpdateUnloadList()
 		for (int z = -centreOfChunks + zPosInChunk; z <= centreOfChunks + zPosInChunk; z++)
 		{
 			m_ChunkList.erase(glm::ivec3((-centreOfChunks + xPosInChunk) * SizeOfChunk, 0, z * SizeOfChunk));
-			BatchVertexArray.erase(glm::ivec3(-centreOfChunks * SizeOfChunk, 0, z * SizeOfChunk));
+			BatchVertexArray.erase(glm::ivec3((-centreOfChunks + xPosInChunk) * SizeOfChunk, 0, z * SizeOfChunk));
 		}
 	}
 
@@ -209,11 +209,6 @@ void ChunkManager::SetupVAO(float deltaTime)
 		BatchVertexArray[itr->first]->Unbind();
 		m_SetupList[itr->first] = itr->second;
 	}
-
-	for (auto itr = m_SetupList.begin(); itr != m_SetupList.end(); itr++)
-	{//remove all the elements that have been set up
-		m_LoadList.erase(itr->first);
-	}
 }
 
 void ChunkManager::Render(Shader& shader)
@@ -223,6 +218,7 @@ void ChunkManager::Render(Shader& shader)
 		shader.Bind();
 		shader.SetUniform3f("u_offset", itr->first.x, 0, itr->first.z);
 		itr->second->Render(BatchVertexArray[itr->first], shader);
+		m_LoadList.erase(itr->first); //Remove all chunks that have been setup
 	}
 }
 
