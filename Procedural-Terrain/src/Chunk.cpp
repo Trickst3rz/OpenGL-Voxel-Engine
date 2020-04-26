@@ -7,10 +7,10 @@
 Chunk::Chunk() : m_ChunkActive(false)
 {
 	//Creating the chunk with many blocks
-	m_Blocks = new Block**[ChunkSize];
+	m_Blocks = new Block** [ChunkSize];
 	for (int x = 0; x < ChunkSize; x++)
 	{
-		m_Blocks[x] = new Block*[ChunkSize];
+		m_Blocks[x] = new Block * [ChunkSize];
 		for (int y = 0; y < ChunkSize; y++)
 		{
 			m_Blocks[x][y] = new Block[ChunkSize];
@@ -19,7 +19,7 @@ Chunk::Chunk() : m_ChunkActive(false)
 }
 
 Chunk::~Chunk()
-{//Delete the blocks
+{//Delete the blocks, change this to a smart pointer in the future since looping through takes awhile to close program
 	for (int x = 0; x < ChunkSize; x++)
 	{
 		for (int y = 0; y < ChunkSize; y++)

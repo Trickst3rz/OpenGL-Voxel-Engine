@@ -2,6 +2,7 @@
 #include "Camera.h"
 #include "Timer.h"
 #include <condition_variable>
+#include <atomic>
 
 static std::mutex m_ChunksMutex;
 static std::mutex m_UnloadMutex;
@@ -24,11 +25,13 @@ static int zPosInChunk; //Current z axis position in chunk coordinates
 static std::vector<std::shared_ptr<std::future<void>>> m_Futures;
 static std::vector<std::shared_ptr<std::future<void>>> m_UpdateFutures;
 
+static std::atomic_bool WindowIsAlive(true);
+
 static glm::ivec3 currentCameraPosition;
 
 ChunkManager::ChunkManager()
 {
-	m_AmountOfChunks = 9;
+	m_AmountOfChunks = 33;
 	xPosInChunk = 0;
 	zPosInChunk = 0;
 	centreOfChunks = (m_AmountOfChunks - 1) / 2;
@@ -39,76 +42,45 @@ ChunkManager::ChunkManager()
 
 ChunkManager::~ChunkManager()
 {
+	WindowIsAlive = false;
 	m_ChunkList.clear();
 	BatchVertexArray.clear();
 	m_Futures.clear();
 	m_UpdateFutures.clear();
 }
 
-void ChunkManager::UpdateAllAsync()
-{
-	UpdateUnloadList();
-	//UpdateLoadList();
-	//UpdateRebuildList();
-}
-
 void ChunkManager::UpdateAsync()
 {
-	m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, UpdateAllAsync)));
+	
 }
 
 void ChunkManager::LoadChunksZDir(int OffsetZ, bool isLoadChunk) //if false delete chunk if true load chunk
 {
-	if (isLoadChunk)
+	std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> chunkList;
+	for (int x = -centreOfChunks + xPosInChunk; x <= centreOfChunks + xPosInChunk; x++)
 	{
+		if (!WindowIsAlive) return; //Terminates the thread if the window is closed
+		chunkList[glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk)] = std::make_shared<Chunk>();
+		chunkList[glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk)]->SetupLandscape(x, OffsetZ);
+		chunkList[glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk)]->CreateMesh();
 		std::lock_guard<std::mutex> lock(m_LoadMutex);
-		for (int x = -centreOfChunks + xPosInChunk; x <= centreOfChunks + xPosInChunk; x++)
-		{
-			m_ChunkList[glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk)] = std::make_shared<Chunk>();
-			m_ChunkList[glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk)]->SetupLandscape(x, OffsetZ);
-			m_ChunkList[glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk)]->CreateMesh();
-			m_LoadList[glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk)] = m_ChunkList[glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk)];
-			m_ChunkList.erase(glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk));
-		}
-	}
-	else
-	{
-		std::lock_guard<std::mutex> lock(m_UnloadMutex);
-		for (int x = -centreOfChunks + xPosInChunk; x <= centreOfChunks + xPosInChunk; x++)
-		{
-			m_SetupList.erase(glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk));
-			BatchVertexArray.erase(glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk));
-		}
+		m_LoadList[glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk)] = chunkList[glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk)];
+		chunkList.erase(glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk));
 	}
 }
 
 void ChunkManager::LoadChunksXDir(int OffsetX, bool isLoadChunk)
 {
-	switch (isLoadChunk)
+	std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> chunkList;
+	for (int z = -centreOfChunks + zPosInChunk; z <= centreOfChunks + zPosInChunk; z++)
 	{
-	case true:
-	{
-		std::lock_guard<std::mutex> lock(m_ChunksMutex);
-		for (int z = -centreOfChunks + zPosInChunk; z <= centreOfChunks + zPosInChunk; z++)
-		{
-			m_ChunkList[glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk)] = std::make_shared<Chunk>();
-			m_ChunkList[glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk)]->SetupLandscape(OffsetX, z);
-			m_ChunkList[glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk)]->CreateMesh();
-			m_LoadList[glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk)] = m_ChunkList[glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk)];
-			m_ChunkList.erase(glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk));
-		}
-		break;
-	}
-	case false:
-	{
-		std::lock_guard<std::mutex> lock(m_UnloadMutex);
-		for (int z = -centreOfChunks + zPosInChunk; z <= centreOfChunks + zPosInChunk; z++)
-		{
-			m_SetupList.erase(glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk));
-			BatchVertexArray.erase(glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk));
-		}
-		break;
-	}
+		if (!WindowIsAlive) return; //Terminates the thread if the window is closed
+		chunkList[glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk)] = std::make_shared<Chunk>();
+		chunkList[glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk)]->SetupLandscape(OffsetX, z);
+		chunkList[glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk)]->CreateMesh();
+		std::lock_guard<std::mutex> lock(m_LoadMutex);
+		m_LoadList[glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk)] = chunkList[glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk)];
+		chunkList.erase(glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk));
 	}
 }
 
@@ -117,37 +89,31 @@ void ChunkManager::UpdateLoadList()
 	int xDir = (Camera::GetCameraPosition().x) - (currentCameraPosition.x);
 	int zDir = (Camera::GetCameraPosition().z) - (currentCameraPosition.z);
 
-	bool isload = true;
-
 	if (xDir > SizeOfChunk)
 	{
-		Timer timer("ChunkManager::UpdateLoadList");
 		xPosInChunk++;
-		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksXDir, centreOfChunks + xPosInChunk, isload)));
+		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksXDir, centreOfChunks + xPosInChunk, true)));
 		currentCameraPosition.x += SizeOfChunk;
 	}
 
 	if (xDir < 0)
 	{
-		Timer timer("ChunkManager::UpdateLoadList");
 		xPosInChunk--;
-		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksXDir, -centreOfChunks + xPosInChunk, isload)));
+		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksXDir, -centreOfChunks + xPosInChunk, true)));
 		currentCameraPosition.x -= SizeOfChunk;
 	}
 
 	if (zDir > SizeOfChunk)
 	{
-		Timer timer("ChunkManager::UpdateLoadList");
 		zPosInChunk++;
-		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksZDir, centreOfChunks + zPosInChunk, isload)));
+		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksZDir, centreOfChunks + zPosInChunk, true)));
 		currentCameraPosition.z += SizeOfChunk;
 	}
 
 	if (zDir < 0)
 	{
-		Timer timer("ChunkManager::UpdateLoadList");
 		zPosInChunk--;
-		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksZDir, -centreOfChunks + zPosInChunk, isload)));
+		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksZDir, -centreOfChunks + zPosInChunk, true)));
 		currentCameraPosition.z -= SizeOfChunk;
 	}
 }
@@ -160,80 +126,110 @@ void ChunkManager::UpdateUnloadList()
 	
 	if (xDir > SizeOfChunk)
 	{
-		Timer timer("ChunkManager::UpdateUnloadList");
-		bool isUnload = false;
-		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksXDir, -centreOfChunks + xPosInChunk, isUnload)));
+		for (int z = -centreOfChunks + zPosInChunk; z <= centreOfChunks + zPosInChunk; z++)
+		{
+			m_SetupList.erase(glm::ivec3((-centreOfChunks + xPosInChunk) * SizeOfChunk, 0, z * SizeOfChunk));
+			BatchVertexArray.erase(glm::ivec3((-centreOfChunks + xPosInChunk) * SizeOfChunk, 0, z * SizeOfChunk));
+		}
 	}
 
 	if (xDir < 0)
 	{
-		Timer timer("ChunkManager::UpdateUnloadList");
-		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksXDir, centreOfChunks + xPosInChunk, false)));
+		for (int z = -centreOfChunks + zPosInChunk; z <= centreOfChunks + zPosInChunk; z++)
+		{
+			m_SetupList.erase(glm::ivec3((centreOfChunks + xPosInChunk) * SizeOfChunk, 0, z * SizeOfChunk));
+			BatchVertexArray.erase(glm::ivec3((centreOfChunks + xPosInChunk) * SizeOfChunk, 0, z * SizeOfChunk));
+		}
 	}
 
 	if (zDir > SizeOfChunk)
 	{
-		Timer timer("ChunkManager::UpdateUnloadList");
-		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksZDir, -centreOfChunks + zPosInChunk, false)));
+		for (int x = -centreOfChunks + xPosInChunk; x <= centreOfChunks + xPosInChunk; x++)
+		{
+			m_SetupList.erase(glm::ivec3(x * SizeOfChunk, 0, (-centreOfChunks + zPosInChunk) * SizeOfChunk));
+			BatchVertexArray.erase(glm::ivec3(x * SizeOfChunk, 0, (-centreOfChunks + zPosInChunk) * SizeOfChunk));
+		}
 	}
 
 	if (zDir < 0)
 	{
-		Timer timer("ChunkManager::UpdateUnloadList");
-		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksZDir, centreOfChunks + zPosInChunk, false)));
+		for (int x = -centreOfChunks + xPosInChunk; x <= centreOfChunks + xPosInChunk; x++)
+		{
+			m_SetupList.erase(glm::ivec3(x * SizeOfChunk, 0, (centreOfChunks + zPosInChunk) * SizeOfChunk));
+			BatchVertexArray.erase(glm::ivec3(x * SizeOfChunk, 0, (centreOfChunks + zPosInChunk) * SizeOfChunk));
+		}
 	}
 }
 
 void ChunkManager::UpdateRebuildList()
 {
-
+	//Update chunks that have been modified e.g. removed Voxel
 }
 
 void ChunkManager::UpdateVisibilityList()
 {
-
+	//Do frustum culling here
 }
 
-void ChunkManager::GenerateChunk(int x, int z)
+void ChunkManager::GenerateChunk()
 {
-	m_ChunkList[glm::ivec3(x * SizeOfChunk, 0, z * SizeOfChunk)] = std::make_shared<Chunk>();
-	std::lock_guard<std::mutex> lock(m_ChunksMutex);
-	m_ChunkList[glm::ivec3(x * SizeOfChunk, 0, z * SizeOfChunk)]->SetupLandscape(x, z);
-	m_ChunkList[glm::ivec3(x * SizeOfChunk, 0, z * SizeOfChunk)]->CreateMesh();
-	m_LoadList[glm::ivec3(x * SizeOfChunk, 0, z * SizeOfChunk)] = m_ChunkList[glm::ivec3(x * SizeOfChunk, 0, z * SizeOfChunk)];
-	m_ChunkList.erase(glm::ivec3(x * SizeOfChunk, 0, z * SizeOfChunk));
+
+	for (int x = -centreOfChunks; x <= centreOfChunks; x++)
+	{
+		for (int z = -centreOfChunks; z <= centreOfChunks; z++)
+		{
+			if (!WindowIsAlive) return; //Terminates the thread if the window is closed
+			std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> chunkList;
+			chunkList[glm::ivec3(x * SizeOfChunk, 0, z * SizeOfChunk)] = std::make_shared<Chunk>();
+			chunkList[glm::ivec3(x * SizeOfChunk, 0, z * SizeOfChunk)]->SetupLandscape(x, z);
+			chunkList[glm::ivec3(x * SizeOfChunk, 0, z * SizeOfChunk)]->CreateMesh();
+			std::lock_guard<std::mutex> lock(m_LoadMutex);
+			m_LoadList[glm::ivec3(x * SizeOfChunk, 0, z * SizeOfChunk)] = chunkList[glm::ivec3(x * SizeOfChunk, 0, z * SizeOfChunk)];
+			chunkList.erase(glm::ivec3(x * SizeOfChunk, 0, z * SizeOfChunk));
+		}
+	}
 }
 
 void ChunkManager::AsyncLoadChunks()
 {
-	for (int x = -centreOfChunks; x <= centreOfChunks; x++)
-	{
-		for (int z = -centreOfChunks; z <= centreOfChunks; z++)
-			m_Futures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, GenerateChunk, x, z)));// [glm::ivec3(x * SizeOfChunk, 0, z * SizeOfChunk)] = std::make_shared<std::future<void>>(std::async(std::launch::async, GenerateChunk, x, z));
-	}
+	m_Futures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, GenerateChunk)));
+}
+
+void ChunkManager::RemoveLoadedList()
+{
+	std::lock_guard<std::mutex> lock(m_LoadMutex);
+	for (auto itr = m_SetupList.begin(); itr != m_SetupList.end(); itr++)
+		m_LoadList.erase(itr->first); //Remove all chunks that have been setup
 }
 
 void ChunkManager::SetupVAO()
 {
+	Timer timer("ChunkManager::SetupVAO");
 	/*if (BatchVertexArray.size() == m_AmountOfChunks * m_AmountOfChunks)
 	{
 		m_Futures.clear();
+		m_LoadList.clear();
 		return;
 	}*/
 
 	for (auto itr = m_LoadList.begin(); itr != m_LoadList.end(); itr++)
 	{
-		VertexBuffer BatchVertexBuffer(itr->second->GetVertex(), itr->second->GetElementCount() * sizeof * itr->second->GetVertex());
-		VertexBufferLayout BatchLayout;
-		BatchLayout.Push<GLbyte>(3);
-		BatchLayout.Push<GLbyte>(3);
-		//BatchLayout.Push<GLbyte>(1);
-		BatchVertexArray[itr->first] = std::make_shared<VertexArray>();
-		BatchVertexArray[itr->first]->Bind();
-		BatchVertexArray[itr->first]->AddBuffer(BatchVertexBuffer, BatchLayout);
-		BatchVertexArray[itr->first]->Unbind();
-		m_SetupList[itr->first] = itr->second;
+		if (m_SetupList.find(itr->first) == m_SetupList.end())
+		{
+			VertexBuffer BatchVertexBuffer(itr->second->GetVertex(), itr->second->GetElementCount() * sizeof * itr->second->GetVertex());
+			VertexBufferLayout BatchLayout;
+			BatchLayout.Push<GLbyte>(3);
+			BatchLayout.Push<GLbyte>(3);
+			//BatchLayout.Push<GLbyte>(1);
+			BatchVertexArray[itr->first] = std::make_shared<VertexArray>();
+			BatchVertexArray[itr->first]->Bind();
+			BatchVertexArray[itr->first]->AddBuffer(BatchVertexBuffer, BatchLayout);
+			BatchVertexArray[itr->first]->Unbind();
+			m_SetupList[itr->first] = itr->second;
+		}
 	}
+
+	m_Futures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, RemoveLoadedList)));
 }
 
 void ChunkManager::Render(Shader& shader)
@@ -243,7 +239,6 @@ void ChunkManager::Render(Shader& shader)
 		shader.Bind();
 		shader.SetUniform3f("u_offset", itr->first.x, 0, itr->first.z);
 		itr->second->Render(BatchVertexArray[itr->first], shader);
-		m_LoadList.erase(itr->first); //Remove all chunks that have been setup
 	}
 }
 
@@ -252,16 +247,13 @@ void ChunkManager::Update(Shader& shader)
 	//Use Camera::GetPosition() in visablityList
 	//UpdateAsync();
 
+	UpdateUnloadList();
 
 	UpdateLoadList();
-
-	UpdateUnloadList();
 
 	SetupVAO();
 
 	//UpdateRebuildList();
-
-
 
 	//UpdateVisibilityList();
 

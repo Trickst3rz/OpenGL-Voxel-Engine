@@ -22,8 +22,6 @@ public:
 
 	~ChunkManager();
 
-	static void UpdateAllAsync();
-
 	void UpdateAsync(); //Future asynchronous of loading chunks
 
 	static void LoadChunksZDir(int OffsetZ, bool isLoadChunk);
@@ -39,7 +37,9 @@ public:
 	void UpdateVisibilityList(); //ADD CAMERA PARAMETER OR MAKE CAMERA A STATIC CLASS
 	//Update all the chunks in the list that could be rendered and seen by the camera 
 
-	static void GenerateChunk(int x, int z);
+	static void GenerateChunk();
+
+	static void RemoveLoadedList();
 
 	void AsyncLoadChunks();
 
