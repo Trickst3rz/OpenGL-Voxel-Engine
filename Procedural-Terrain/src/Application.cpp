@@ -25,6 +25,7 @@
 #include "Chunk.h"
 #include "ChunkManager.h"
 #include "Mesh.h"
+#include "Frustum.h"
 
 #include "imgui/imgui.h"
 #include <imgui/imgui_impl_opengl3.h>
@@ -36,6 +37,11 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 bool BatchToggle = true;
 bool instanceToggle = false;
+float width = 1280.0f;
+float height = 720.0f;
+float angle = 45.0f;
+float nearD = 1.0f;
+float farD = 2000.0f;
 
 typedef glm::tvec3<GLbyte> Byte3;
 
@@ -78,7 +84,7 @@ int main(void)
 	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(1280, 720, "Voxel World", NULL, NULL);
+	window = glfwCreateWindow(width, height, "Voxel World", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -216,7 +222,8 @@ int main(void)
 		LightingVAO.Bind();
 		LightingVAO.AddBuffer(LightingVBO, layout);
 
-		glm::mat4 proj = glm::perspective(glm::radians(45.0f), 1280.0f / 720.0f, 1.0f, 1000.0f);
+		glm::mat4 proj = glm::perspective(glm::radians(angle), width / height, nearD, farD);
+		Frustum::GetInstance().SetFrustum(angle, width / height, nearD, farD);
 		glm::mat4 view = glm::mat4(1.0f);
 
 		Shader shader("resources/shaders/Basic.shader");

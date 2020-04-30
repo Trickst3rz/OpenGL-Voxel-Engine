@@ -3,6 +3,7 @@
 #include "Timer.h"
 #include <condition_variable>
 #include <atomic>
+#include "Frustum.h"
 
 static std::mutex m_ChunksMutex;
 static std::mutex m_UnloadMutex;
@@ -28,10 +29,11 @@ static std::vector<std::shared_ptr<std::future<void>>> m_UpdateFutures;
 static std::atomic_bool WindowIsAlive(true);
 
 static glm::ivec3 currentCameraPosition;
+static glm::vec3 m_cameraPosition;
 
 ChunkManager::ChunkManager()
 {
-	m_AmountOfChunks = 33;
+	m_AmountOfChunks = 9;
 	xPosInChunk = 0;
 	zPosInChunk = 0;
 	centreOfChunks = (m_AmountOfChunks - 1) / 2;
@@ -161,15 +163,6 @@ void ChunkManager::UpdateUnloadList()
 	}
 }
 
-void ChunkManager::UpdateRebuildList()
-{
-	//Update chunks that have been modified e.g. removed Voxel
-}
-
-void ChunkManager::UpdateVisibilityList()
-{
-	//Do frustum culling here
-}
 
 void ChunkManager::GenerateChunk()
 {
@@ -204,13 +197,12 @@ void ChunkManager::RemoveLoadedList()
 
 void ChunkManager::SetupVAO()
 {
-	Timer timer("ChunkManager::SetupVAO");
-	/*if (BatchVertexArray.size() == m_AmountOfChunks * m_AmountOfChunks)
+	if (BatchVertexArray.size() == m_AmountOfChunks * m_AmountOfChunks)
 	{
 		m_Futures.clear();
 		m_LoadList.clear();
 		return;
-	}*/
+	}
 
 	for (auto itr = m_LoadList.begin(); itr != m_LoadList.end(); itr++)
 	{
@@ -232,9 +224,40 @@ void ChunkManager::SetupVAO()
 	m_Futures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, RemoveLoadedList)));
 }
 
+void ChunkManager::UpdateRebuildList()
+{
+	//Update chunks that have been modified e.g. removed Voxel
+}
+
+void ChunkManager::UpdateVisibilityList()
+{
+	m_VisibilityList.clear();
+
+	for (auto itr = m_SetupList.begin(); itr != m_SetupList.end(); itr++)
+	{
+		if (Frustum::GetInstance().CubeInFrustum(glm::vec3(itr->first), SizeOfChunk))
+		{
+			std::cout << Frustum::GetInstance().CubeInFrustum(glm::vec3(itr->first), SizeOfChunk) << std::endl;
+			m_VisibilityList[itr->first] = itr->second;
+		}
+	}
+}
+void ChunkManager::UpdateRenderList()
+{
+	//Clear render list each frame so the chunks that can be seen are only rendered
+	m_RenderList.clear();
+
+	Frustum::GetInstance().SetCamera(Camera::GetCameraPosition(), Camera::GetCameraDir(), Camera::GetCameraUp(), Camera::GetCameraRight());
+
+	for (auto itr = m_VisibilityList.begin(); itr != m_VisibilityList.end(); itr++)
+	{
+		m_RenderList[itr->first] = itr->second;
+	}
+}
+
 void ChunkManager::Render(Shader& shader)
 {
-	for (auto itr = m_SetupList.begin(); itr != m_SetupList.end(); itr++)
+	for (auto itr = m_RenderList.begin(); itr != m_RenderList.end(); itr++)
 	{
 		shader.Bind();
 		shader.SetUniform3f("u_offset", itr->first.x, 0, itr->first.z);
@@ -244,24 +267,23 @@ void ChunkManager::Render(Shader& shader)
 
 void ChunkManager::Update(Shader& shader)
 {
-	//Use Camera::GetPosition() in visablityList
 	//UpdateAsync();
 
-	UpdateUnloadList();
+	//UpdateUnloadList();
 
-	UpdateLoadList();
+	//UpdateLoadList();
 
 	SetupVAO();
 
 	//UpdateRebuildList();
 
-	//UpdateVisibilityList();
+	UpdateVisibilityList();
 
-	//if (cameraPosition != m_cameraPosition)
-	//{
-	//	//Do frustum culling to check if the chunk should be rendered
-	//	Render(shader);
-	//}
+	if (m_cameraPosition != Camera::GetCameraPosition())
+	{
+		UpdateRenderList();
+		m_cameraPosition = Camera::GetCameraPosition();
+	}
 
 	Render(shader);
 }

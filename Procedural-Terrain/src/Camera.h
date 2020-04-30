@@ -22,6 +22,10 @@ public:
 
 	static glm::vec3 GetCameraUp() { return m_cameraUp; }
 
+	static glm::vec3 GetCameraRight() { return m_cameraRight; }
+
+	static glm::vec3 GetCameraDir() { return m_cameraDirection; }
+
 private:
 	//Camera Position
 	static glm::vec3 m_cameraPos;

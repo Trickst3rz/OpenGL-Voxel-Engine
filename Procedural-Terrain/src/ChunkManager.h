@@ -12,11 +12,11 @@ class ChunkManager
 {
 public:
 
-	static ChunkManager& GetInstance()
+	/*static ChunkManager& GetInstance()
 	{
 		ChunkManager instance;
 		return instance;
-	}
+	}*/
 
 	ChunkManager();
 
@@ -45,7 +45,9 @@ public:
 
 	void SetupVAO(); //Set up the vao, vbo
 
-	void Render(Shader& shader); //Frustum culling, Occlusion culling 
+	void UpdateRenderList(); //Frustum culling, Occlusion culling 
+
+	void Render(Shader& shader);
 
 	void Update(Shader& shader); //Updates all the lists
 
