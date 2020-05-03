@@ -1,6 +1,11 @@
 #pragma once
 #include "glm/glm.hpp"
 #include "Plane.h"
+#include "VertexArray.h"
+#include "VertexBuffer.h"
+#include "VertexBufferLayout.h"
+#include "Renderer.h"
+#include "TypeDefines.h"
 
 class Frustum {
 public:
@@ -25,6 +30,8 @@ public:
 
 	int CubeInFrustum(const glm::vec3& pos, const int SizeOffset);
 
+	void DrawLines(const Shader& shader);
+
 public:
 
 	static enum {
@@ -46,10 +53,6 @@ public:
 
 	bool m_FirstLoad = true;
 
-private:
-
-	Frustum() {}
-
 	enum {
 		TOP = 0,
 		BOTTOM,
@@ -58,4 +61,17 @@ private:
 		NEARP,
 		FARP
 	};
+private:
+
+	Frustum() {}
+
+	VertexArray* vao = new VertexArray[6];
+
+	Byte3* NearVertex = new Byte3[4];
+	Byte3* FarVertex = new Byte3[4];
+	Byte3* TopVertex = new Byte3[4];
+	Byte3* LeftVertex = new Byte3[4];
+	Byte3* RightVertex = new Byte3[4];
+	Byte3* BottomVertex = new Byte3[4];
+
 };

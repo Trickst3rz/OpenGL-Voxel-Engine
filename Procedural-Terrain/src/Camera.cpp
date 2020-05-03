@@ -6,11 +6,11 @@ glm::vec3 Camera::m_cameraTarget = glm::vec3(0.0f, 0.0f, 0.0f);
 glm::vec3 Camera::m_cameraDirection = glm::normalize(Camera::m_cameraPos - Camera::m_cameraTarget);
 //Up Axis
 glm::vec3 Camera::m_up = glm::vec3(0.0f, 1.0f, 0.0f);
-//Right Axis
-glm::vec3 Camera::m_cameraRight = glm::normalize(glm::cross(Camera::m_up, Camera::m_cameraDirection));
-glm::vec3 Camera::m_cameraUp = glm::cross(Camera::m_cameraDirection, Camera::m_cameraRight);
-//Forward Axis
 glm::vec3 Camera::m_cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+//Right Axis
+glm::vec3 Camera::m_cameraRight = glm::normalize(glm::cross(Camera::m_up, Camera::m_cameraFront));
+glm::vec3 Camera::m_cameraUp = glm::cross(Camera::m_cameraFront, Camera::m_cameraRight);
+//Forward Axis
 //Camera Speed
 float Camera::m_cameraSpeed = 5.5f;
 

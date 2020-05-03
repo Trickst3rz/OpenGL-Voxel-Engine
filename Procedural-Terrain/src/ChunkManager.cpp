@@ -30,6 +30,7 @@ static std::atomic_bool WindowIsAlive(true);
 
 static glm::ivec3 currentCameraPosition;
 static glm::vec3 m_cameraPosition;
+static glm::vec3 m_cameraDirection;
 
 ChunkManager::ChunkManager()
 {
@@ -237,7 +238,6 @@ void ChunkManager::UpdateVisibilityList()
 	{
 		if (Frustum::GetInstance().CubeInFrustum(glm::vec3(itr->first), SizeOfChunk))
 		{
-			std::cout << Frustum::GetInstance().CubeInFrustum(glm::vec3(itr->first), SizeOfChunk) << std::endl;
 			m_VisibilityList[itr->first] = itr->second;
 		}
 	}
@@ -247,7 +247,7 @@ void ChunkManager::UpdateRenderList()
 	//Clear render list each frame so the chunks that can be seen are only rendered
 	m_RenderList.clear();
 
-	Frustum::GetInstance().SetCamera(Camera::GetCameraPosition(), Camera::GetCameraDir(), Camera::GetCameraUp(), Camera::GetCameraRight());
+	//Frustum::GetInstance().SetCamera(Camera::GetCameraPosition(), Camera::GetCameraPosition() + Camera::GetCameraFront(), Camera::GetCameraUp(), Camera::GetCameraRight());
 
 	for (auto itr = m_VisibilityList.begin(); itr != m_VisibilityList.end(); itr++)
 	{
@@ -279,10 +279,11 @@ void ChunkManager::Update(Shader& shader)
 
 	UpdateVisibilityList();
 
-	if (m_cameraPosition != Camera::GetCameraPosition())
+	if (m_cameraPosition != Camera::GetCameraPosition() || m_cameraDirection != Camera::GetCameraFront())
 	{
 		UpdateRenderList();
 		m_cameraPosition = Camera::GetCameraPosition();
+		m_cameraDirection = Camera::GetCameraFront();
 	}
 
 	Render(shader);

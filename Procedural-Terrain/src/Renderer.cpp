@@ -23,6 +23,14 @@ void Renderer::Draw(const VertexArray& va, const Shader& shader, const int& coun
 	m_DrawCalls++;
 }
 
+void Renderer::DrawLineLoop(const VertexArray& va, const Shader& shader, const int& count)
+{
+	shader.Bind();
+	va.Bind();
+	GLCall(glDrawArrays(GL_LINE_LOOP, 0, count));
+	m_DrawCalls++;
+}
+
 short Renderer::m_DrawCalls = 0;
 
 //Make this better later on but will do for now

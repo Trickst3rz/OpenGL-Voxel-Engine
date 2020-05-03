@@ -37,11 +37,11 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 bool BatchToggle = true;
 bool instanceToggle = false;
-float width = 1280.0f;
-float height = 720.0f;
-float angle = 45.0f;
-float nearD = 1.0f;
-float farD = 2000.0f;
+static float width = 1280.0f;
+static float height = 720.0f;
+static float angle = 90.0f;
+static float nearD = 1.0f;
+static float farD = 2000.0f;
 
 typedef glm::tvec3<GLbyte> Byte3;
 
@@ -301,6 +301,8 @@ int main(void)
 				shader.SetUniformMat4f("u_Model", model);
 				shader.SetUniformMat4f("u_View", view);
 				chunkManager.Update(shader);
+				Frustum::GetInstance().DrawLines(shader);
+
 			}
 			if(instanceToggle)
 			{

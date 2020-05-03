@@ -4,6 +4,7 @@
 #include <imgui\imgui_impl_glfw.h>
 #include "Renderer.h"
 #include "Camera.h"
+#include "Frustum.h"
 
 namespace test {
 
@@ -35,6 +36,10 @@ namespace test {
 			}
 			ImGui::SameLine();
 			ImGui::Text("%d chunks", chunks);
+			if (ImGui::Button("Frustum Camera"))
+			{
+				Frustum::GetInstance().SetCamera(Camera::GetCameraPosition(), Camera::GetCameraFront(), Camera::GetCameraUp(), Camera::GetCameraRight());
+			}
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::Text("Draw Calls: %d", Renderer::GetDrawCalls());
 			ImGui::End();
