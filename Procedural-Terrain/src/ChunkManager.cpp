@@ -198,12 +198,12 @@ void ChunkManager::RemoveLoadedList()
 
 void ChunkManager::SetupVAO()
 {
-	if (BatchVertexArray.size() == m_AmountOfChunks * m_AmountOfChunks)
+	/*if (BatchVertexArray.size() == m_AmountOfChunks * m_AmountOfChunks)
 	{
 		m_Futures.clear();
 		m_LoadList.clear();
 		return;
-	}
+	}*/
 
 	for (auto itr = m_LoadList.begin(); itr != m_LoadList.end(); itr++)
 	{
@@ -247,7 +247,7 @@ void ChunkManager::UpdateRenderList()
 	//Clear render list each frame so the chunks that can be seen are only rendered
 	m_RenderList.clear();
 
-	//Frustum::GetInstance().SetCamera(Camera::GetCameraPosition(), Camera::GetCameraPosition() + Camera::GetCameraFront(), Camera::GetCameraUp(), Camera::GetCameraRight());
+	//Frustum::GetInstance().SetCamera(Camera::GetCameraPosition(), Camera::GetCameraFront(), Camera::GetCameraUp(), Camera::GetCameraRight());
 
 	for (auto itr = m_VisibilityList.begin(); itr != m_VisibilityList.end(); itr++)
 	{

@@ -39,9 +39,9 @@ bool BatchToggle = true;
 bool instanceToggle = false;
 static float width = 1280.0f;
 static float height = 720.0f;
-static float angle = 90.0f;
+static float angle = 45.0f;
 static float nearD = 1.0f;
-static float farD = 2000.0f;
+static float farD = 300.0f;
 
 typedef glm::tvec3<GLbyte> Byte3;
 
@@ -224,7 +224,7 @@ int main(void)
 
 		glm::mat4 proj = glm::perspective(glm::radians(angle), width / height, nearD, farD);
 		Frustum::GetInstance().SetFrustum(angle, width / height, nearD, farD);
-		glm::mat4 view = glm::mat4(1.0f);
+		glm::mat4 view;
 
 		Shader shader("resources/shaders/Basic.shader");
 		shader.Bind();
@@ -253,7 +253,7 @@ int main(void)
 
 		testMenu->RegisterTest<test::TestClearColour>("Clear Colour");
 
-		Camera::SetCameraPosition(glm::vec3(18.0f, 32.0f, 18.0f));
+		//Camera::SetCameraPosition(glm::vec3(16.0f, 32.0f, 16.0f));
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
@@ -291,13 +291,13 @@ int main(void)
 			shader.Bind();
 
 			view = glm::lookAt(Camera::GetCameraPosition(), Camera::GetCameraPosition() + Camera::GetCameraFront(), Camera::GetCameraUp());
-
+			
 			int k = sizeof(vertices);
 			if (BatchToggle)
 			{
 				glm::mat4 model = glm::mat4(1.0f);
 				float angle = 0.0;
-				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
+				//model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
 				shader.SetUniformMat4f("u_Model", model);
 				shader.SetUniformMat4f("u_View", view);
 				chunkManager.Update(shader);

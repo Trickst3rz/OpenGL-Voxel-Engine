@@ -67,11 +67,11 @@ private:
 
 	VertexArray* vao = new VertexArray[6];
 
-	Byte3* NearVertex = new Byte3[4];
-	Byte3* FarVertex = new Byte3[4];
-	Byte3* TopVertex = new Byte3[4];
-	Byte3* LeftVertex = new Byte3[4];
-	Byte3* RightVertex = new Byte3[4];
-	Byte3* BottomVertex = new Byte3[4];
+	Float3 NearVertex[4];
+	Float3 FarVertex[4];
+	Float3 TopVertex[4];
+	Float3 LeftVertex[4];
+	Float3 RightVertex[4];
+	Float3 BottomVertex[4];
 
 };
