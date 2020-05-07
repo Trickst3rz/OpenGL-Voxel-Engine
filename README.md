@@ -23,6 +23,8 @@ Rendering Voxels Article - https://dev.to/superfola/lets-render-chunks-of-voxels
 
 Creating a Voxel Engine Documentation - https://sites.google.com/site/letsmakeavoxelengine/home
 
+Frustum culling - https://cgvr.cs.uni-bremen.de/teaching/cg_literatur/lighthouse3d_view_frustum_culling/index.html
+
 ## DevLog
 
 * [29/10/2019] - Setup IDE, linked glfw 3.3 successfully with Visual Studio 2017(IDE), 
