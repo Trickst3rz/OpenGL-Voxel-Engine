@@ -53,6 +53,8 @@ public:
 
 	bool m_FirstLoad = true;
 
+private:
+
 	enum {
 		TOP = 0,
 		BOTTOM,
@@ -61,7 +63,6 @@ public:
 		NEARP,
 		FARP
 	};
-private:
 
 	Frustum() {}
 

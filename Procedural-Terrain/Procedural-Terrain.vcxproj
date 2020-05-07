@@ -190,6 +190,7 @@
     <None Include="resources\shaders\Basic.shader" />
     <None Include="resources\shaders\Instancing.shader" />
     <None Include="resources\shaders\Lighting.shader" />
+    <None Include="resources\shaders\Lines.shader" />
     <None Include="src\vendor\glm\detail\func_common.inl" />
     <None Include="src\vendor\glm\detail\func_common_simd.inl" />
     <None Include="src\vendor\glm\detail\func_exponential.inl" />

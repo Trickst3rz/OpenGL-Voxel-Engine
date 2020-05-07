@@ -3,7 +3,7 @@
 
 Frustum::~Frustum()
 {
-
+	delete[] vao;
 }
 
 void Frustum::SetFrustum(float angle, float ratio, float nearD, float farD)
@@ -17,9 +17,6 @@ void Frustum::SetFrustum(float angle, float ratio, float nearD, float farD)
 		m_farDistance = farD;
 
 		//compute width and height of the near and far planes
-		float radAngle = glm::radians(angle);
-
-		m_tang = glm::tan(glm::radians(angle * 0.5f));
 		m_nearHeight = glm::tan(angle / 2) * m_nearDistance;
 		m_nearWidth = m_nearHeight * m_ratio;
 		m_farHeight = glm::tan(angle / 2) * m_farDistance;
@@ -28,28 +25,30 @@ void Frustum::SetFrustum(float angle, float ratio, float nearD, float farD)
 }
 
 void Frustum::SetCamera(const glm::vec3& pos, const glm::vec3& dir, const glm::vec3& up, const glm::vec3& right)
-{ //Check to see if position changes on mouse movement
+{ 
 	glm::vec3 nearCentre, farCentre;
+
+	//X axis of camera with given "up" vector and Z dir
+	glm::vec3 X = glm::normalize(glm::cross(dir, up));
+
+	//Y axis of camera is the cross product of Z dir and X dir
+	glm::vec3 Y = glm::cross(dir, X);
+
 	//Compute the centres of the near and far planes
-	glm::vec3 nPos = glm::normalize(pos);
-	glm::vec3 Z = pos + dir;
-	Z = glm::normalize(Z);
-
-
 	nearCentre = pos + (dir * m_nearDistance);
 	farCentre = pos + (dir * m_farDistance);
 
 	//Calculate the 4 corners of the frustum on the near plane
-	nearTopLeft = nearCentre + (up * m_nearHeight) + (right * m_nearWidth);
-	nearTopRight = nearCentre + (up * m_nearHeight) - (right * m_nearWidth);
-	nearBottomLeft = nearCentre - (up * m_nearHeight) + (right * m_nearWidth);
-	nearBottomRight = nearCentre - (up * m_nearHeight) - (right * m_nearWidth);
+	nearTopLeft = nearCentre + (Y * m_nearHeight) - (X * m_nearWidth);
+	nearTopRight = nearCentre + (Y * m_nearHeight) + (X * m_nearWidth);
+	nearBottomLeft = nearCentre - (Y * m_nearHeight) - (X * m_nearWidth);
+	nearBottomRight = nearCentre - (Y * m_nearHeight) + (X * m_nearWidth);
 
 	//Calculate the 4 corners of the frustum on the far plane
-	farTopLeft = farCentre + (up * m_farHeight) + (right * m_farWidth);
-	farTopRight = farCentre + (up * m_farHeight) - (right * m_farWidth);
-	farBottomLeft = farCentre - (up * m_farHeight) + (right * m_farWidth);
-	farBottomRight = farCentre - (up * m_farHeight) - (right * m_farWidth);
+	farTopLeft = farCentre + (Y * m_farHeight) - (X * m_farWidth);
+	farTopRight = farCentre + (Y * m_farHeight) + (X * m_farWidth);
+	farBottomLeft = farCentre - (Y * m_farHeight) - (X * m_farWidth);
+	farBottomRight = farCentre - (Y * m_farHeight) + (X * m_farWidth);
 
 	//Compute the six planes, the function set3Points assumes that the points are given in counter clockwise order
 	planes[TOP].Set3Points(nearTopRight, nearTopLeft, farTopLeft);
@@ -101,49 +100,56 @@ int Frustum::CubeInFrustum(const glm::vec3& pos, const int SizeOffset)
 		int out = 0;
 		int in = 0;
 
+
 		//Pos: Bottom Left Near
-		if (planes[i].Distance(pos) < 0)
+		if (planes[i].Distance(pos) > 0)
 			out++;
 		else
 			in++;
 
-		//Point: Bottom Right Near
-		if (planes[i].Distance(glm::ivec3(pos.x + SizeOffset, pos.y, pos.z)) < 0)
+		////Point: Bottom Right Near
+		if (planes[i].Distance(glm::vec3(pos.x + SizeOffset, pos.y, pos.z)) > 0)
 			out++;
 		else
 			in++;
 
 		//Point: Top Left Near
-		if (planes[i].Distance(glm::ivec3(pos.x, pos.y + SizeOffset, pos.z)) < 0)
+		if (planes[i].Distance(glm::vec3(pos.x, pos.y + SizeOffset, pos.z)) > 0)
 			out++;
 		else
 			in++;
 
 		//Point: Top Right Near
-		if (planes[i].Distance(glm::ivec3(pos.x + SizeOffset, pos.y + SizeOffset, pos.z)) < 0)
+		if (planes[i].Distance(glm::vec3(pos.x + SizeOffset, pos.y + SizeOffset, pos.z)) > 0)
 			out++;
 		else
 			in++;
+	
+		////If near corners are out
+		//if (!in)
+		//	return (FRUSTUM_OUTSIDE);
 
 		//Point: Bottom Left Far
-		if (planes[i].Distance(glm::ivec3(pos.x, pos.y, pos.z - SizeOffset)) < 0)
+		if (planes[i].Distance(glm::vec3(pos.x, pos.y, pos.z + SizeOffset)) > 0)
 			out++;
 		else
 			in++;
 
 		//Point: Bottom Right Far
-		if (planes[i].Distance(glm::ivec3(pos.x + SizeOffset, pos.y, pos.z - SizeOffset)) < 0)
+		if (planes[i].Distance(glm::vec3(pos.x + SizeOffset, pos.y, pos.z + SizeOffset)) > 0)
 			out++;
 		else
 			in++;
+
 
 		//Point: Top Left Far
-		if (planes[i].Distance(glm::ivec3(pos.x, pos.y + SizeOffset, pos.z - SizeOffset)) < 0)
+		if (planes[i].Distance(glm::vec3(pos.x, pos.y + SizeOffset, pos.z + SizeOffset)) > 0)
 			out++;
 		else
 			in++;
 
-		if (planes[i].Distance(glm::ivec3(pos.x + SizeOffset, pos.y + SizeOffset, pos.z - SizeOffset)) < 0)
+		//Point: Top Right Far
+		if (planes[i].Distance(glm::vec3(pos.x + SizeOffset, pos.y + SizeOffset, pos.z + SizeOffset)) > 0)
 			out++;
 		else
 			in++;
@@ -164,10 +170,6 @@ void Frustum::DrawLines(const Shader& shader)
 	NearVertex[1] = Float3(nearTopRight.x, nearTopRight.y, nearTopRight.z);
 	NearVertex[2] = Float3(nearBottomRight.x, nearBottomRight.y, nearBottomRight.z);
 	NearVertex[3] = Float3(nearBottomLeft.x, nearBottomLeft.y, nearBottomLeft.z);
-	/*NearVertex[0] = Float3(0.0f, 1.0f, -1.0f);
-	NearVertex[1] = Float3(1.0f, 1.0f, -1.0f);
-	NearVertex[2] = Float3(1.0f, 0.0f, -1.0f);
-	NearVertex[3] = Float3(0.0f, 0.0f, -1.0f);*/
 
 	VertexBuffer nearBuffer(&NearVertex, 4 * sizeof * NearVertex);
 	VertexBufferLayout nearLayout;

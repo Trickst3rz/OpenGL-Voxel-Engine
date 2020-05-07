@@ -34,7 +34,7 @@ static glm::vec3 m_cameraDirection;
 
 ChunkManager::ChunkManager()
 {
-	m_AmountOfChunks = 9;
+	m_AmountOfChunks = 17;
 	xPosInChunk = 0;
 	zPosInChunk = 0;
 	centreOfChunks = (m_AmountOfChunks - 1) / 2;
@@ -236,7 +236,7 @@ void ChunkManager::UpdateVisibilityList()
 
 	for (auto itr = m_SetupList.begin(); itr != m_SetupList.end(); itr++)
 	{
-		if (Frustum::GetInstance().CubeInFrustum(glm::vec3(itr->first), SizeOfChunk))
+		if (Frustum::GetInstance().CubeInFrustum(itr->first, SizeOfChunk) > 0)
 		{
 			m_VisibilityList[itr->first] = itr->second;
 		}
@@ -247,6 +247,7 @@ void ChunkManager::UpdateRenderList()
 	//Clear render list each frame so the chunks that can be seen are only rendered
 	m_RenderList.clear();
 
+	//Add toggle for auto frustum culling
 	//Frustum::GetInstance().SetCamera(Camera::GetCameraPosition(), Camera::GetCameraFront(), Camera::GetCameraUp(), Camera::GetCameraRight());
 
 	for (auto itr = m_VisibilityList.begin(); itr != m_VisibilityList.end(); itr++)
@@ -257,6 +258,7 @@ void ChunkManager::UpdateRenderList()
 
 void ChunkManager::Render(Shader& shader)
 {
+
 	for (auto itr = m_RenderList.begin(); itr != m_RenderList.end(); itr++)
 	{
 		shader.Bind();
@@ -269,9 +271,9 @@ void ChunkManager::Update(Shader& shader)
 {
 	//UpdateAsync();
 
-	//UpdateUnloadList();
+	UpdateUnloadList();
 
-	//UpdateLoadList();
+	UpdateLoadList();
 
 	SetupVAO();
 

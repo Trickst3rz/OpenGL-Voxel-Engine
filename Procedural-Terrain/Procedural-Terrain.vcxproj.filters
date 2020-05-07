@@ -506,6 +506,7 @@
     <None Include="resources\shaders\Lighting.shader" />
     <None Include="resources\shaders\Instancing.shader" />
     <None Include="resources\shaders\Basic.shader" />
+    <None Include="resources\shaders\Lines.shader" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Block.h">

@@ -173,7 +173,7 @@ void Chunk::SetupAll()
 		{
 			for (int z = 0; z < ChunkSize; z++)
 			{
-				m_Blocks[x][y][z].SetActive(true);
+				m_Blocks[0][0][z].SetActive(true);
 			}
 		}
 	}

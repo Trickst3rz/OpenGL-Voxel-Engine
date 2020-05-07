@@ -41,7 +41,7 @@ static float width = 1280.0f;
 static float height = 720.0f;
 static float angle = 45.0f;
 static float nearD = 1.0f;
-static float farD = 300.0f;
+static float farD = 2000.0f;
 
 typedef glm::tvec3<GLbyte> Byte3;
 
@@ -233,14 +233,20 @@ int main(void)
 		shader.SetUniform3f("u_lightColour", 1.0f, 1.0f, 1.0f);
 		shader.SetUniformMat4f("u_Projection", proj);
 
+		
 		Texture texture("resources/textures/Crate.png");
 		texture.Bind();
-		shader.SetUniform1i("u_Texture", 0);
+		//shader.SetUniform1i("u_Texture", 0);
 
 		LightingVAO.Unbind();
 		InstanceVertexArray.Unbind();
 		BatchVertexArray.Unbind();
 		shader.Unbind();
+
+		Shader DebugShader("resources/shaders/Lines.shader");
+		DebugShader.Bind();
+		DebugShader.SetUniform3f("u_Colour", 1.0f, 1.0f, 1.0f);
+		DebugShader.Unbind();
 
 		ImGui::CreateContext();
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
@@ -301,8 +307,9 @@ int main(void)
 				shader.SetUniformMat4f("u_Model", model);
 				shader.SetUniformMat4f("u_View", view);
 				chunkManager.Update(shader);
-				Frustum::GetInstance().DrawLines(shader);
-
+				DebugShader.Bind();
+				DebugShader.SetUniformMat4f("u_MVP", proj * view * model);
+				Frustum::GetInstance().DrawLines(DebugShader);
 			}
 			if(instanceToggle)
 			{
