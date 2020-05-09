@@ -18,8 +18,6 @@ public:
 		return instance;
 	}
 
-	~Frustum();
-
 	void SetFrustum(float angle, float ratio, float nearD, float farD);
 
 	void SetCamera(const glm::vec3& pos, const glm::vec3& dir, const glm::vec3& up, const glm::vec3& right);
@@ -55,6 +53,8 @@ public:
 
 private:
 
+	Frustum() {}
+
 	enum {
 		TOP = 0,
 		BOTTOM,
@@ -64,9 +64,8 @@ private:
 		FARP
 	};
 
-	Frustum() {}
 
-	VertexArray* vao = new VertexArray[6];
+	VertexArray vao[6];
 
 	Float3 NearVertex[4];
 	Float3 FarVertex[4];

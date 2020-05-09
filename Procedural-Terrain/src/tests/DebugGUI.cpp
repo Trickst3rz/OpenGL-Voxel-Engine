@@ -18,13 +18,16 @@ namespace test {
 		test.OnRender();
 	}
 
-	void DebugGUI::OnImGuiRender(bool &BatchToggle, bool &instanceToggle, ChunkManager& chunkManager)
+	void DebugGUI::OnImGuiRender(Shader& shader)
 	{
 		{
 			ImGui::Begin("Debug");
 			test.OnImGuiRender();
-			ImGui::Checkbox("Batch Rendering", &BatchToggle);
-			ImGui::Checkbox("Instance Rendering", &instanceToggle);
+			if (ImGui::Button("Set Light Position"))
+			{
+				shader.Bind();
+				shader.SetUniform3f("u_lightPos", Camera::GetCameraPosition().x, Camera::GetCameraPosition().y, Camera::GetCameraPosition().z);
+			}
 			ImGui::Checkbox("Toggle WireFrame", &isWireFrame);
 			if (ImGui::Button("Render Distance:")) //When I do frustum culling add this feature to change render distance
 			{
@@ -32,13 +35,24 @@ namespace test {
 					chunks = 8;
 				else
 					chunks += 8;
-				chunkManager.SetChunkDistance(chunks);
+				ChunkManager::SetChunkDistance(chunks);
 			}
 			ImGui::SameLine();
 			ImGui::Text("%d chunks", chunks);
+			{
+				if (ImGui::Button("Generate Terrain"))
+				{
+					//Delete terrain and start again
+		
+				}
+			}
+			ImGui::Checkbox("Auto Frustum Culling", &Global::ToggleFrustum);
 			if (ImGui::Button("Frustum Camera"))
 			{
+				Global::FrustumCamera = true;
 				Frustum::GetInstance().SetCamera(Camera::GetCameraPosition(), Camera::GetCameraFront(), Camera::GetCameraUp(), Camera::GetCameraRight());
+				ChunkManager::UpdateVisibilityList();
+				ChunkManager::UpdateRenderList();
 			}
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::Text("Draw Calls: %d", Renderer::GetDrawCalls());

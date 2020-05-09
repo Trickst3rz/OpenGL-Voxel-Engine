@@ -12,12 +12,6 @@ class ChunkManager
 {
 public:
 
-	/*static ChunkManager& GetInstance()
-	{
-		ChunkManager instance;
-		return instance;
-	}*/
-
 	ChunkManager();
 
 	~ChunkManager();
@@ -34,24 +28,24 @@ public:
 	
 	static void UpdateRebuildList(); //Updates the mesh when a block is removed or added to a chunk
 	
-	void UpdateVisibilityList(); //ADD CAMERA PARAMETER OR MAKE CAMERA A STATIC CLASS
+	static void UpdateVisibilityList(); //ADD CAMERA PARAMETER OR MAKE CAMERA A STATIC CLASS
 	//Update all the chunks in the list that could be rendered and seen by the camera 
 
 	static void GenerateChunk();
 
 	static void RemoveLoadedList();
 
-	void AsyncLoadChunks();
+	static void AsyncLoadChunks();
 
-	void SetupVAO(); //Set up the vao, vbo
+	static void SetupVAO(); //Set up the vao, vbo
 
-	void UpdateRenderList(); //Frustum culling, Occlusion culling 
+	static void UpdateRenderList(); //Frustum culling, Occlusion culling 
 
-	void Render(Shader& shader);
+	static void Render(Shader& shader);
 
-	void Update(Shader& shader); //Updates all the lists
+	static void Update(Shader& shader); //Updates all the lists
 
-	void SetChunkDistance(int numOfChunks);
+	static void SetChunkDistance(int numOfChunks);
 
 private:
 

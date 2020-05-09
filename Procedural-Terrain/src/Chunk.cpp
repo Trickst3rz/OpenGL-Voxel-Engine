@@ -53,7 +53,7 @@ void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array in
 	//If neighboring side is true meaning there is a cube there then don't render that side
 	int i = 0;
 
-	vertex = new Byte3[ChunkSize * ChunkSize * ChunkSize * 6 * 6];
+	vertex = new Byte3[ChunkSize * ChunkSize * ChunkSize * 6 * 6 * 6];
 
 	for (int x = 0; x < ChunkSize; x++)
 	{
@@ -90,57 +90,57 @@ void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array in
 				
 				if (!lXNegative) //Left Face
 				{	//pos										//normal						//Add get type of brick in the future
-					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(-1, 0, 0),
-					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0),
-					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(-1, 0, 0),
-					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(-1, 0, 0),
-					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0),
-					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(-1, 0, 0);
+					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(-1, 0, 0), vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0), vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(-1, 0, 0), vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(-1, 0, 0), vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0), vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(-1, 0, 0), vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}
 				if (!lXPositive) //Right Face
 				{	//pos										//normal						//Add get type of brick in the future
-					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(1, 0, 0),
-					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(1, 0, 0),
-					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(1, 0, 0),
-					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(1, 0, 0),
-					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(1, 0, 0),
-					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(1, 0, 0);
+					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
 				if (!lYNegative) //Bottom Face
 				{	//pos										//normal						//Add get type of brick in the future
-					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, -1, 0),
-					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, -1, 0),
-					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, -1, 0),
-					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, -1, 0),
-					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, -1, 0),
-					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, -1, 0);
+					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
 				if (!lYPositive) //Top Face
 				{	//pos										//normal						//Add get type of brick in the future
-					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 1, 0),
-					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 1, 0),
-					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(0, 1, 0),
-					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(0, 1, 0),
-					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 1, 0),
-					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 1, 0);
+					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
 				if (!lZNegative) //Front Face
 				{	//pos										//normal						//Add get type of brick in the future
-					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, 0, -1),
-					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 0, -1),
-					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, 0, -1),
-					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 0, -1),
-					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 0, -1),
-					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, 0, -1);
+					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
 				if (!lZPositive) //Back Face
 				{	//pos										//normal						//Add get type of brick in the future
-					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, 0, 1),
-					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 0, 1),
-					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, 0, 1),
-					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 0, 1),
-					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(0, 0, 1),
-					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, 0, 1);
+					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
 			}
 		}
@@ -179,10 +179,33 @@ void Chunk::SetupAll()
 	}
 }
 
+Byte3 Chunk::GetColourType(int typeEnum)
+{
+	switch (typeEnum)
+	{
+	case 0:
+		return Byte3(0, 0, 126);
+	case 1: 
+		return Byte3(0, 0, 40);
+	case 2:
+		return Byte3(0, 127, 46);
+	case 3:
+		return Byte3(127, 127, 64);
+	case 4:
+		return Byte3(32, 127, 0);
+	case 5:
+		return Byte3(127, 127, 0);
+	case 6:
+		return Byte3(64, 64, 64);
+	case 7:
+		return Byte3(127, 127, 127);
+	}
+}
+
 void Chunk::SetupLandscape(double x, double z)
 {
 	module::Perlin PerlinModule;
-	PerlinModule.SetSeed(0); //In the future change value from a hard coded value to random each time or change with gizmos e.g. seed?
+	PerlinModule.SetSeed(Global::GetSeed()); //In the future change value from a hard coded value to random each time or change with gizmos e.g. seed?
 	utils::NoiseMap heightMap;
 	utils::NoiseMapBuilderPlane heightMapBuilder;
 	heightMapBuilder.SetSourceModule(PerlinModule);
@@ -199,8 +222,8 @@ void Chunk::SetupLandscape(double x, double z)
 	{
 		for (int z = 0; z < ChunkSize; z++)
 		{
-			float Height = (heightMap.GetValue(x, z) + 1.0f) * 0.5f; //Get the height map x, z coordinates then convert range from -1-1 to 0-1
-			Height = (Height * (ChunkSize - 1) * 1.0f) * 1.0f;
+			float HeightValue = (heightMap.GetValue(x, z) + 1.0f) * 0.5f; //Get the height map x, z coordinates then convert range from -1-1 to 0-1
+			float Height = (HeightValue * (ChunkSize - 1) * 1.0f) * 1.0f;
 
 			if (Height > 31.0f)
 				Height = 31.0f;
@@ -211,6 +234,22 @@ void Chunk::SetupLandscape(double x, double z)
 			for (int y = 0; y < Height; y++)
 			{
 				m_Blocks[x][y][z].SetActive(true);
+				
+				if (HeightValue >= 0.375f && HeightValue < 0.5f)
+					m_Blocks[x][y][z].SetType(BLOCK_SHALLOW_WATER);
+				else if (HeightValue >= 0.5f && HeightValue < 0.532f)
+					m_Blocks[x][y][z].SetType(BLOCK_SHORE);
+				else if (HeightValue >= 0.532f && HeightValue < 0.563f)
+					m_Blocks[x][y][z].SetType(BLOCK_SAND);
+				else if (HeightValue >= 0.563f && HeightValue < 0.689f)
+					m_Blocks[x][y][z].SetType(BLOCK_GRASS);
+				else if (HeightValue >= 0.689f && HeightValue < 0.875f)
+					m_Blocks[x][y][z].SetType(BLOCK_DIRT);
+				else if (HeightValue >= 0.0875f && HeightValue < 0.95f)
+					m_Blocks[x][y][z].SetType(BLOCK_ROCK);
+				else if (HeightValue >= 0.95f)
+					m_Blocks[x][y][z].SetType(BLOCK_SNOW);
+
 			}
 		}
 	}

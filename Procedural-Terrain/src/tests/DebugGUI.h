@@ -20,7 +20,7 @@ namespace test {
 
 		void OnRender();
 
-		void OnImGuiRender(bool &BatchToggle, bool& instanceToggle, ChunkManager& chunkManager);
+		void OnImGuiRender(Shader& shader);
 
 		void WireFrame();
 

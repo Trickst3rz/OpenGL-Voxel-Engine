@@ -1,5 +1,6 @@
 #include "Renderer.h"
 
+short Renderer::m_DrawCalls = 0;
 
 void Renderer::Clear()
 {
@@ -30,42 +31,3 @@ void Renderer::DrawLineLoop(const VertexArray& va, const Shader& shader, const i
 	GLCall(glDrawArrays(GL_LINE_LOOP, 0, count));
 	m_DrawCalls++;
 }
-
-short Renderer::m_DrawCalls = 0;
-
-//Make this better later on but will do for now
-unsigned short Renderer::IndicesFront[] = {
-		//Front 
-		0, 1, 2,
-		2, 3, 0,
-};
-
-unsigned short Renderer::IndicesBack[] = {
-		//Back
-		4, 5, 6,
-		6, 7, 4,
-};
-
-unsigned short Renderer::IndicesRight[] = {
-		//Right
-		8, 9, 10,
-		10, 4, 8,
-};
-
-unsigned short Renderer::IndicesLeft[] = {
-		//Left
-		11, 2, 12,
-		12, 13, 11,
-};
-
-unsigned short Renderer::IndicesBottom[] = {
-		//Bottom
-		10, 14, 5,
-		5, 4, 10,
-};
-
-unsigned short Renderer::IndicesTop[] = {
-		//Top
-		3, 2, 11,
-		11, 15, 3
-};

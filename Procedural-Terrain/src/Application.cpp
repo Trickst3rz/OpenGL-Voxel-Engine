@@ -12,6 +12,7 @@
 #include <sstream>
 #include <cstdlib>
 #include <memory>
+#include <ctime>
 
 #include "Renderer.h"
 
@@ -26,6 +27,7 @@
 #include "ChunkManager.h"
 #include "Mesh.h"
 #include "Frustum.h"
+#include "Global.h"
 
 #include "imgui/imgui.h"
 #include <imgui/imgui_impl_opengl3.h>
@@ -43,17 +45,12 @@ static float angle = 45.0f;
 static float nearD = 1.0f;
 static float farD = 2000.0f;
 
-typedef glm::tvec3<GLbyte> Byte3;
-
-namespace testChunk {
-	const std::size_t Width = 32, Height = 32, Depth = 32;
-	const std::size_t TotalSize = Width * Height * Depth;
-}
-
 int main(void)
 {
+	srand(time(NULL));
+
 	GLFWwindow* window;
-	
+
 	bool show_demo_window = true;
 	bool show_another_window = false;
 	ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -123,104 +120,12 @@ int main(void)
 			GLCall(glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE));
 		}
 	
-		GLbyte vertices[] = {
-			//positions	//TexCoord
-			//Front 
-			0,  0,  0,  0, 0, //0
-			0,  1,  0,  1, 0, //1
-			1,  0,  0,  1, 1, //2
-			0,  1,  0,  1, 1, //2
-			1,  1,  0,  0, 1, //3
-			1,  0,  0,  0, 0, //0
-
-			//Back
-			1,  0,  1,  0, 0, //4
-			1,  1,  1,  1, 0, //5
-			0,  0,  1,  1, 1, //6
-			1,  1,  1,  1, 1, //6
-			0,  1,  1,  0, 1, //7
-			0,  0,  1,  0, 0, //4
-
-			//Right
-			1,  0,  0,  1, 0, //8
-			1,  1,  0,  1, 1, //9
-			1,  0,  1,  0, 1, //10 
-			1,  1,  0,  0, 1, //10 
-			1,  1,  1,  0, 0, //4
-			1,  0,  1,  1, 0, //8
-
-			//Left
-			0,  0,  0,  1, 0, //11
-			0,  0,  1,  1, 1, //2
-			0,  1,  0,  0, 1, //12
-			0,  1,  0,  0, 1, //12
-			0,  0,  1,  0, 0, //13
-			0,  1,  1,  1, 0, //11
-
-			//Bottom
-			0,  0,  0,  0, 1, //10
-			1,  0,  0,  1, 1, //14
-			1,  0,  1,  1, 0, //5
-			1,  0,  1,  1, 0, //5
-			0,  0,  1,  0, 0, //4
-			0,  0,  0,  0, 1, //10 
-
-			//Top
-			1,  1,  0,  0, 1, //3
-			0,  1,  0,  1, 1, //2
-			0,  1,  1,  1, 0, //11
-			0,  1,  1,  1, 0, //11
-			1,  1,  1,  0, 0, //15
-			1,  1,  0,  0, 1, //3
-		};
-		
-		Byte3* offsetTranslation = new Byte3[testChunk::TotalSize];
-		int offsetIndex = 0;
-		for (int x = 0; x < testChunk::Width; x++)
-		{
-			for (int y = 0; y < testChunk::Height; y++)
-			{
-				for (int z = 0; z < testChunk::Depth; z++)
-				{
-					offsetTranslation[offsetIndex++] = Byte3(x, y, z);
-				}
-			}
-		}
-		
+		Global::SetSeed();
 		Camera::SetCameraPosition(glm::vec3(0.0f, 32.0f, 0.0f));
 
-		//Make this into a smart pointer in the future?
 		ChunkManager chunkManager;
-		chunkManager.AsyncLoadChunks();
-		
-		VertexArray LightingVAO;
-		VertexArray InstanceVertexArray;
-		VertexArray BatchVertexArray;
 
-		VertexBuffer LightingVBO(&vertices, sizeof(vertices));
-		VertexBuffer InstanceVertexBuffer(&vertices, sizeof(vertices));
-		//VertexBuffer BatchVertexBuffer(chunk->GetVertex(), chunk->GetElementCount() * sizeof * chunk->GetVertex());
-		VertexBuffer instanceVBO(&offsetTranslation[0], offsetIndex * sizeof * offsetTranslation);
-
-		//VertexBufferLayout BatchLayout;
-		//BatchLayout.Push<GLbyte>(3);
-		//BatchLayout.Push<GLbyte>(3);
-		////BatchLayout.Push<GLbyte>(1);
-		//BatchVertexArray.Bind();
-		//BatchVertexArray.AddBuffer(BatchVertexBuffer, BatchLayout);
-
-		VertexBufferLayout layout;
-		layout.Push<GLbyte>(3);
-		layout.Push<GLbyte>(2);
-		InstanceVertexArray.Bind();
-		InstanceVertexArray.AddBuffer(InstanceVertexBuffer, layout);
-
-		VertexBufferLayout InstanceLayout;
-		InstanceLayout.Push<GLbyte>(3);
-		InstanceVertexArray.AddInstanceBuffer(instanceVBO, InstanceLayout, 3);
-
-		LightingVAO.Bind();
-		LightingVAO.AddBuffer(LightingVBO, layout);
+		ChunkManager::AsyncLoadChunks();
 
 		glm::mat4 proj = glm::perspective(glm::radians(angle), width / height, nearD, farD);
 		Frustum::GetInstance().SetFrustum(angle, width / height, nearD, farD);
@@ -228,19 +133,9 @@ int main(void)
 
 		Shader shader("resources/shaders/Basic.shader");
 		shader.Bind();
-		shader.SetUniform3f("u_Colour", 1.0f, 0.5f, 0.5f);
 		shader.SetUniform3f("u_lightPos", 50.0f, 50.0f, 2.0f);
 		shader.SetUniform3f("u_lightColour", 1.0f, 1.0f, 1.0f);
 		shader.SetUniformMat4f("u_Projection", proj);
-
-		
-		Texture texture("resources/textures/Crate.png");
-		texture.Bind();
-		//shader.SetUniform1i("u_Texture", 0);
-
-		LightingVAO.Unbind();
-		InstanceVertexArray.Unbind();
-		BatchVertexArray.Unbind();
 		shader.Unbind();
 
 		Shader DebugShader("resources/shaders/Lines.shader");
@@ -259,7 +154,7 @@ int main(void)
 
 		testMenu->RegisterTest<test::TestClearColour>("Clear Colour");
 
-		//Camera::SetCameraPosition(glm::vec3(16.0f, 32.0f, 16.0f));
+		Camera::SetCameraPosition(glm::vec3(16.0f, 32.0f, 16.0f));
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
@@ -298,30 +193,15 @@ int main(void)
 
 			view = glm::lookAt(Camera::GetCameraPosition(), Camera::GetCameraPosition() + Camera::GetCameraFront(), Camera::GetCameraUp());
 			
-			int k = sizeof(vertices);
-			if (BatchToggle)
-			{
-				glm::mat4 model = glm::mat4(1.0f);
-				float angle = 0.0;
-				//model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-				shader.SetUniformMat4f("u_Model", model);
-				shader.SetUniformMat4f("u_View", view);
-				chunkManager.Update(shader);
-				DebugShader.Bind();
-				DebugShader.SetUniformMat4f("u_MVP", proj * view * model);
-				Frustum::GetInstance().DrawLines(DebugShader);
-			}
-			if(instanceToggle)
-			{
-				glm::mat4 model = glm::mat4(1.0f);
-				float angle = 0.0;
-				model = glm::rotate(model, glm::radians(angle), glm::vec3(0.5f, 1.0f, 0.0f));
-				shader.SetUniformMat4f("u_Model", model);
-				shader.SetUniformMat4f("u_View", view);
-				Renderer::DrawInstanced(InstanceVertexArray, shader, sizeof(vertices), testChunk::TotalSize);
-			}
-
-			test::DebugGUI::GetInstance().OnImGuiRender(BatchToggle, instanceToggle, chunkManager);
+			glm::mat4 model = glm::mat4(1.0f);
+			shader.SetUniformMat4f("u_Model", model);
+			shader.SetUniformMat4f("u_View", view);
+			ChunkManager::Update(shader);
+			DebugShader.Bind();
+			DebugShader.SetUniformMat4f("u_MVP", proj * view * model);
+			Frustum::GetInstance().DrawLines(DebugShader);
+		
+			test::DebugGUI::GetInstance().OnImGuiRender(shader);
 
 			Renderer::SetDrawCalls(0);
 			GLCall(glfwSwapBuffers(window));
@@ -330,7 +210,6 @@ int main(void)
 			GLCall(glfwPollEvents());
 
 		}
-		delete[] offsetTranslation;
 		delete currentTest;
 		if (currentTest != testMenu)
 			delete testMenu;

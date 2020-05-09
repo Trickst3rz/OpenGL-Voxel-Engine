@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Global.h"
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
@@ -17,16 +18,8 @@ public:
 	static short GetDrawCalls() { return m_DrawCalls; }
 	static void SetDrawCalls(int reset) { m_DrawCalls = reset; }
 
-	//Indice Faces
-	//Maybe in future change from array to vector to remove and add blocks
-	static unsigned short IndicesFront[];
-	static unsigned short IndicesBack[];
-	static unsigned short IndicesRight[];
-	static unsigned short IndicesLeft[];
-	static unsigned short IndicesBottom[];
-	static unsigned short IndicesTop[];
-
 private:
 	static short m_DrawCalls;
+	static int m_seed;
 };
 

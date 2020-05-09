@@ -30,6 +30,8 @@ public:
 
 	void SetupAll();
 
+	Byte3 GetColourType(int typeEnum);
+
 	static const int ChunkSize = 32;
 
 	unsigned int GetVBO() { return vbo; }

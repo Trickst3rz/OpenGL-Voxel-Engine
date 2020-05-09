@@ -9,7 +9,6 @@ static std::mutex m_ChunksMutex;
 static std::mutex m_UnloadMutex;
 static std::mutex m_LoadMutex;
 static std::mutex m_RubuildMutex;
-static std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_ChunkList;
 static std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_LoadList;
 static std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_UnloadList;
 static std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_RebuildList;
@@ -26,15 +25,18 @@ static int zPosInChunk; //Current z axis position in chunk coordinates
 static std::vector<std::shared_ptr<std::future<void>>> m_Futures;
 static std::vector<std::shared_ptr<std::future<void>>> m_UpdateFutures;
 
-static std::atomic_bool WindowIsAlive(true);
-
 static glm::ivec3 currentCameraPosition;
 static glm::vec3 m_cameraPosition;
 static glm::vec3 m_cameraDirection;
 
+static std::atomic_bool WindowIsAlive = true;
+
+static bool firstLoad;
+
 ChunkManager::ChunkManager()
 {
-	m_AmountOfChunks = 17;
+	firstLoad = true;
+	m_AmountOfChunks = 9;
 	xPosInChunk = 0;
 	zPosInChunk = 0;
 	centreOfChunks = (m_AmountOfChunks - 1) / 2;
@@ -46,7 +48,6 @@ ChunkManager::ChunkManager()
 ChunkManager::~ChunkManager()
 {
 	WindowIsAlive = false;
-	m_ChunkList.clear();
 	BatchVertexArray.clear();
 	m_Futures.clear();
 	m_UpdateFutures.clear();
@@ -198,12 +199,13 @@ void ChunkManager::RemoveLoadedList()
 
 void ChunkManager::SetupVAO()
 {
-	/*if (BatchVertexArray.size() == m_AmountOfChunks * m_AmountOfChunks)
+	if (BatchVertexArray.size() == m_AmountOfChunks * m_AmountOfChunks)
 	{
 		m_Futures.clear();
 		m_LoadList.clear();
+		firstLoad = false;
 		return;
-	}*/
+	}
 
 	for (auto itr = m_LoadList.begin(); itr != m_LoadList.end(); itr++)
 	{
@@ -211,9 +213,9 @@ void ChunkManager::SetupVAO()
 		{
 			VertexBuffer BatchVertexBuffer(itr->second->GetVertex(), itr->second->GetElementCount() * sizeof * itr->second->GetVertex());
 			VertexBufferLayout BatchLayout;
-			BatchLayout.Push<GLbyte>(3);
-			BatchLayout.Push<GLbyte>(3);
-			//BatchLayout.Push<GLbyte>(1);
+			BatchLayout.Push<GLbyte>(3); //Position layout
+			BatchLayout.Push<GLbyte>(3); //Normal layout
+			BatchLayout.Push<GLubyte>(3); //Colour layout
 			BatchVertexArray[itr->first] = std::make_shared<VertexArray>();
 			BatchVertexArray[itr->first]->Bind();
 			BatchVertexArray[itr->first]->AddBuffer(BatchVertexBuffer, BatchLayout);
@@ -236,7 +238,7 @@ void ChunkManager::UpdateVisibilityList()
 
 	for (auto itr = m_SetupList.begin(); itr != m_SetupList.end(); itr++)
 	{
-		if (Frustum::GetInstance().CubeInFrustum(itr->first, SizeOfChunk) > 0)
+		if (Frustum::GetInstance().CubeInFrustum(itr->first, SizeOfChunk) > 0 || !Global::ToggleFrustum && !Global::FrustumCamera)
 		{
 			m_VisibilityList[itr->first] = itr->second;
 		}
@@ -247,8 +249,12 @@ void ChunkManager::UpdateRenderList()
 	//Clear render list each frame so the chunks that can be seen are only rendered
 	m_RenderList.clear();
 
-	//Add toggle for auto frustum culling
-	//Frustum::GetInstance().SetCamera(Camera::GetCameraPosition(), Camera::GetCameraFront(), Camera::GetCameraUp(), Camera::GetCameraRight());
+	//Toggle for auto frustum culling
+	if (Global::ToggleFrustum)
+	{
+		Frustum::GetInstance().SetCamera(Camera::GetCameraPosition(), Camera::GetCameraFront(), Camera::GetCameraUp(), Camera::GetCameraRight());
+		Global::FrustumCamera = false;
+	}
 
 	for (auto itr = m_VisibilityList.begin(); itr != m_VisibilityList.end(); itr++)
 	{
@@ -269,24 +275,21 @@ void ChunkManager::Render(Shader& shader)
 
 void ChunkManager::Update(Shader& shader)
 {
-	//UpdateAsync();
-
 	UpdateUnloadList();
 
 	UpdateLoadList();
 
 	SetupVAO();
 
-	//UpdateRebuildList();
-
 	UpdateVisibilityList();
 
-	if (m_cameraPosition != Camera::GetCameraPosition() || m_cameraDirection != Camera::GetCameraFront())
+
+	if (m_cameraPosition != Camera::GetCameraPosition() || m_cameraDirection != Camera::GetCameraFront() || firstLoad)
 	{
 		UpdateRenderList();
-		m_cameraPosition = Camera::GetCameraPosition();
-		m_cameraDirection = Camera::GetCameraFront();
 	}
+	m_cameraPosition = Camera::GetCameraPosition();
+	m_cameraDirection = Camera::GetCameraFront();
 
 	Render(shader);
 }

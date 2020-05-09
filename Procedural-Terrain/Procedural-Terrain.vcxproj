@@ -157,6 +157,7 @@
     <ClCompile Include="src\ChunkManager.cpp" />
     <ClCompile Include="src\Frustum.cpp" />
     <ClCompile Include="src\GLErrorManager.cpp" />
+    <ClCompile Include="src\Global.cpp" />
     <ClCompile Include="src\IndexBuffer.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
     <ClCompile Include="src\Plane.cpp" />
@@ -332,6 +333,7 @@
     <ClInclude Include="src\ChunkManager.h" />
     <ClInclude Include="src\Frustum.h" />
     <ClInclude Include="src\GLErrorManager.h" />
+    <ClInclude Include="src\Global.h" />
     <ClInclude Include="src\IndexBuffer.h" />
     <ClInclude Include="src\Mesh.h" />
     <ClInclude Include="src\Plane.h" />
