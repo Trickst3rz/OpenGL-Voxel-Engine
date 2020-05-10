@@ -12,7 +12,6 @@ static std::mutex m_CullMutex;
 static std::mutex m_RubuildMutex;
 static std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_LoadList;
 static std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_UnloadList;
-static std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_RebuildList;
 static std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_VisibilityList;
 static std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_CullList;
 static std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_SetupList;
@@ -28,7 +27,7 @@ static int CullListCount = 0;
 static std::vector<std::shared_ptr<std::future<void>>> m_Futures;
 static std::vector<std::shared_ptr<std::future<void>>> m_UpdateFutures;
 
-static glm::ivec3 currentCameraPosition;
+static glm::vec3 currentCameraPosition;
 static glm::vec3 m_cameraPosition;
 static glm::vec3 m_cameraDirection;
 
@@ -48,12 +47,22 @@ void ChunkManager::Start()
 	currentCameraPosition.z = Camera::GetCameraPosition().z;
 }
 
+void ChunkManager::Terminate()
+{ //Need to terminate before glfwTerminate is called to remove all the buffers
+	BatchVertexArray.clear();
+}
+
 ChunkManager::~ChunkManager()
 {
 	WindowIsAlive = false;
-	BatchVertexArray.clear();
 	m_Futures.clear();
 	m_UpdateFutures.clear();
+	m_LoadList.clear();
+	m_UnloadList.clear();
+	m_SetupList.clear();
+	m_VisibilityList.clear();
+	m_CullList.clear();
+	m_RenderList.clear();
 }
 
 void ChunkManager::LoadChunksZDir(int OffsetZ) //if false delete chunk if true load chunk
@@ -88,8 +97,8 @@ void ChunkManager::LoadChunksXDir(int OffsetX)
 
 void ChunkManager::UpdateLoadList()
 {
-	int xDir = (Camera::GetCameraPosition().x) - (currentCameraPosition.x);
-	int zDir = (Camera::GetCameraPosition().z) - (currentCameraPosition.z);
+	auto xDir = (Camera::GetCameraPosition().x) - (currentCameraPosition.x);
+	auto zDir = (Camera::GetCameraPosition().z) - (currentCameraPosition.z);
 
 	if (xDir > SizeOfChunk)
 	{
@@ -123,8 +132,8 @@ void ChunkManager::UpdateLoadList()
 void ChunkManager::UpdateUnloadList()
 {//Check if the current position is still inside the same chunk as the new position
 	//Make sure that the next chunk is plus the size of the chunk e.g. 32
-	int xDir = Camera::GetCameraPosition().x - currentCameraPosition.x;
-	int zDir = Camera::GetCameraPosition().z - currentCameraPosition.z;
+	auto xDir = Camera::GetCameraPosition().x - currentCameraPosition.x;
+	auto zDir = Camera::GetCameraPosition().z - currentCameraPosition.z;
 	
 	if (xDir > SizeOfChunk)
 	{
@@ -354,7 +363,7 @@ void ChunkManager::Render(Shader& shader)
 	for (auto itr = m_RenderList.begin(); itr != m_RenderList.end(); itr++)
 	{
 		shader.Bind();
-		shader.SetUniform3f("u_offset", itr->first.x, 0, itr->first.z);
+		shader.SetUniform3f("u_offset", (float)itr->first.x, 0, (float)itr->first.z);
 		itr->second->Render(BatchVertexArray[itr->first], shader);
 	}
 }

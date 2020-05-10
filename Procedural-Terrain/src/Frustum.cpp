@@ -1,7 +1,9 @@
 #include "Frustum.h"
 #include "Camera.h"
 
-
+Frustum::~Frustum()
+{
+}
 
 void Frustum::SetFrustum(float angle, float ratio, float nearD, float farD)
 {
@@ -121,10 +123,6 @@ int Frustum::CubeInFrustum(const glm::vec3& pos, const int SizeOffset)
 			out++;
 		else
 			in++;
-	
-		////If near corners are out
-		//if (!in)
-		//	return (FRUSTUM_OUTSIDE);
 
 		//Point: Bottom Left Far
 		if (planes[i].Distance(glm::vec3(pos.x, pos.y, pos.z + SizeOffset)) > 0)
@@ -164,71 +162,72 @@ void Frustum::DrawLines(const Shader& shader)
 {
 	if (Global::FrustumCamera && !Global::ToggleFrustum)
 	{
+		VertexArray vao[6];
 		VertexBufferLayout layout;
 		layout.Push<float>(3);
-
+		
 		//Near plane
-		NearVertex[0] = Float3(nearTopLeft.x, nearTopLeft.y, nearTopLeft.z);
-		NearVertex[1] = Float3(nearTopRight.x, nearTopRight.y, nearTopRight.z);
-		NearVertex[2] = Float3(nearBottomRight.x, nearBottomRight.y, nearBottomRight.z);
-		NearVertex[3] = Float3(nearBottomLeft.x, nearBottomLeft.y, nearBottomLeft.z);
+		Vertex[0] = Float3(nearTopLeft.x, nearTopLeft.y, nearTopLeft.z);
+		Vertex[1] = Float3(nearTopRight.x, nearTopRight.y, nearTopRight.z);
+		Vertex[2] = Float3(nearBottomRight.x, nearBottomRight.y, nearBottomRight.z);
+		Vertex[3] = Float3(nearBottomLeft.x, nearBottomLeft.y, nearBottomLeft.z);
 
-		VertexBuffer nearBuffer(&NearVertex, 4 * sizeof * NearVertex);
+		VertexBuffer nearBuffer(&Vertex, 4 * sizeof * Vertex);
 		vao[0].Bind();
 		vao[0].AddBuffer(nearBuffer, layout);
 		vao[0].Unbind();
 
 		//Far plane
-		FarVertex[0] = Float3(farTopLeft.x, farTopLeft.y, farTopLeft.z);
-		FarVertex[1] = Float3(farTopRight.x, farTopRight.y, farTopRight.z);
-		FarVertex[2] = Float3(farBottomRight.x, farBottomRight.y, farBottomRight.z);
-		FarVertex[3] = Float3(farBottomLeft.x, farBottomLeft.y, farBottomLeft.z);
+		Vertex[0] = Float3(farTopLeft.x, farTopLeft.y, farTopLeft.z);
+		Vertex[1] = Float3(farTopRight.x, farTopRight.y, farTopRight.z);
+		Vertex[2] = Float3(farBottomRight.x, farBottomRight.y, farBottomRight.z);
+		Vertex[3] = Float3(farBottomLeft.x, farBottomLeft.y, farBottomLeft.z);
 
-		VertexBuffer farBuffer(&FarVertex, 4 * sizeof * FarVertex);
+		VertexBuffer farBuffer(&Vertex, 4 * sizeof * Vertex);
 		vao[1].Bind();
 		vao[1].AddBuffer(farBuffer, layout);
 		vao[1].Unbind();
 
 		//Top plane 
-		TopVertex[0] = Float3(nearTopRight.x, nearTopRight.y, nearTopRight.z);
-		TopVertex[1] = Float3(nearTopLeft.x, nearTopLeft.y, nearTopLeft.z);
-		TopVertex[2] = Float3(farTopLeft.x, farTopLeft.y, farTopLeft.z);
-		TopVertex[3] = Float3(farTopRight.x, farTopRight.y, farTopRight.z);
+		Vertex[0] = Float3(nearTopRight.x, nearTopRight.y, nearTopRight.z);
+		Vertex[1] = Float3(nearTopLeft.x, nearTopLeft.y, nearTopLeft.z);
+		Vertex[2] = Float3(farTopLeft.x, farTopLeft.y, farTopLeft.z);
+		Vertex[3] = Float3(farTopRight.x, farTopRight.y, farTopRight.z);
 
-		VertexBuffer TopBuffer(&TopVertex, 4 * sizeof * TopVertex);
+		VertexBuffer TopBuffer(&Vertex, 4 * sizeof * Vertex);
 		vao[2].Bind();
 		vao[2].AddBuffer(TopBuffer, layout);
 		vao[2].Unbind();
 
 		//Bottom plane
-		BottomVertex[0] = Float3(nearBottomLeft.x, nearBottomLeft.y, nearBottomLeft.z);
-		BottomVertex[1] = Float3(nearBottomRight.x, nearBottomRight.y, nearBottomRight.z);
-		BottomVertex[2] = Float3(farBottomRight.x, farBottomRight.y, farBottomRight.z);
-		BottomVertex[3] = Float3(farBottomLeft.x, farBottomLeft.y, farBottomLeft.z);
+		Vertex[0] = Float3(nearBottomLeft.x, nearBottomLeft.y, nearBottomLeft.z);
+		Vertex[1] = Float3(nearBottomRight.x, nearBottomRight.y, nearBottomRight.z);
+		Vertex[2] = Float3(farBottomRight.x, farBottomRight.y, farBottomRight.z);
+		Vertex[3] = Float3(farBottomLeft.x, farBottomLeft.y, farBottomLeft.z);
 
-		VertexBuffer BottomBuffer(&BottomVertex, 4 * sizeof * BottomVertex);
+		VertexBuffer BottomBuffer(&Vertex, 4 * sizeof * Vertex);
 		vao[3].Bind();
 		vao[3].AddBuffer(BottomBuffer, layout);
 		vao[3].Bind();
 
 		//Left plane 
-		LeftVertex[0] = Float3(nearTopLeft.x, nearTopLeft.y, nearTopLeft.z);
-		LeftVertex[1] = Float3(nearBottomLeft.x, nearBottomLeft.y, nearBottomLeft.z);
-		LeftVertex[2] = Float3(farBottomLeft.x, farBottomLeft.y, farBottomLeft.z);
-		LeftVertex[3] = Float3(farTopLeft.x, farTopLeft.y, farTopLeft.z);
+		Vertex[0] = Float3(nearTopLeft.x, nearTopLeft.y, nearTopLeft.z);
+		Vertex[1] = Float3(nearBottomLeft.x, nearBottomLeft.y, nearBottomLeft.z);
+		Vertex[2] = Float3(farBottomLeft.x, farBottomLeft.y, farBottomLeft.z);
+		Vertex[3] = Float3(farTopLeft.x, farTopLeft.y, farTopLeft.z);
 
-		VertexBuffer LeftBuffer(&LeftVertex, 4 * sizeof * LeftVertex);
+		VertexBuffer LeftBuffer(&Vertex, 4 * sizeof * Vertex);
 		vao[4].Bind();
 		vao[4].AddBuffer(LeftBuffer, layout);
 		vao[4].Unbind();
 
 		//Right plane
-		RightVertex[0] = Float3(nearBottomRight.x, nearBottomRight.y, nearBottomRight.z);
-		RightVertex[1] = Float3(nearTopRight.x, nearTopRight.y, nearTopRight.z);
-		RightVertex[2] = Float3(farTopRight.x, farTopRight.y, farTopRight.z);
-		RightVertex[3] = Float3(farBottomRight.x, farBottomRight.y, farBottomRight.z);
+		Vertex[0] = Float3(nearBottomRight.x, nearBottomRight.y, nearBottomRight.z);
+		Vertex[1] = Float3(nearTopRight.x, nearTopRight.y, nearTopRight.z);
+		Vertex[2] = Float3(farTopRight.x, farTopRight.y, farTopRight.z);
+		Vertex[3] = Float3(farBottomRight.x, farBottomRight.y, farBottomRight.z);
 
-		VertexBuffer RightBuffer(&RightVertex, 4 * sizeof * RightVertex);
+		VertexBuffer RightBuffer(&Vertex, 4 * sizeof * Vertex);
 		vao[5].Bind();
 		vao[5].AddBuffer(RightBuffer, layout);
 		vao[5].Unbind();

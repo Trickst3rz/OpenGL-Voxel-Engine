@@ -16,7 +16,9 @@ public:
 	{
 		static Frustum instance;
 		return instance;
-	}
+	};
+
+	~Frustum();
 
 	void SetFrustum(float angle, float ratio, float nearD, float farD);
 
@@ -32,7 +34,7 @@ public:
 
 public:
 
-	static enum {
+	enum {
 		FRUSTUM_OUTSIDE = 0,
 		FRUSTUM_INTERSECT,
 		FRUSTUM_INSIDE
@@ -47,7 +49,7 @@ public:
 	float m_nearDistance, m_farDistance;
 	float m_nearWidth, m_nearHeight;
 	float m_farWidth, m_farHeight;
-	float m_angle, m_ratio, m_tang;
+	float m_angle, m_ratio;
 
 	bool m_FirstLoad = true;
 
@@ -64,14 +66,5 @@ private:
 		FARP
 	};
 
-
-	VertexArray vao[6];
-
-	Float3 NearVertex[4];
-	Float3 FarVertex[4];
-	Float3 TopVertex[4];
-	Float3 LeftVertex[4];
-	Float3 RightVertex[4];
-	Float3 BottomVertex[4];
-
+	Float3 Vertex[4];
 };

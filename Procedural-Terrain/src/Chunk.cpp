@@ -186,7 +186,7 @@ Byte3 Chunk::GetColourType(int typeEnum)
 	{
 	case 0:
 		return Byte3(0, 0, 126);
-	case 1: 
+	case 1:
 		return Byte3(0, 0, 40);
 	case 2:
 		return Byte3(0, 127, 46);
@@ -201,6 +201,8 @@ Byte3 Chunk::GetColourType(int typeEnum)
 	case 7:
 		return Byte3(127, 127, 127);
 	}
+	std::cout << "Error invalid colour type" << std::endl;
+	return Byte3(0, 0, 0);
 }
 
 void Chunk::SetupLandscape(double x, double z)
@@ -212,10 +214,10 @@ void Chunk::SetupLandscape(double x, double z)
 	heightMapBuilder.SetSourceModule(PerlinModule);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
 	heightMapBuilder.SetDestSize(ChunkSize, ChunkSize);
-	upperX = x + 1.0;
-	upperZ = z + 1.0;
-	lowerX = x;
-	lowerZ = z;
+	double upperX = x + 1.0;
+	double upperZ = z + 1.0;
+	double lowerX = x;
+	double lowerZ = z;
 	heightMapBuilder.SetBounds(lowerX, upperX, lowerZ, upperZ);
 	heightMapBuilder.Build();
 	

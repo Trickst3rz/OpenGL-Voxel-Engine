@@ -45,6 +45,7 @@ namespace test {
 			ImGui::SliderFloat("Height", &Global::Height, 200.0f, 2000.0f);
 			ImGui::SliderFloat("View Distance", &Global::farDistance, 10.0f, 3000.0f);
 			ImGui::Separator();
+			ImGui::Text("Terrain Generation");
 			if (ImGui::Button("Render Distance:")) //When I do frustum culling add this feature to change render distance
 			{
 				if (chunks == 32)
@@ -62,6 +63,7 @@ namespace test {
 		
 				}
 			}
+			ImGui::Separator();
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::Text("Draw Calls: %d", Renderer::GetDrawCalls());
 			ImGui::End();

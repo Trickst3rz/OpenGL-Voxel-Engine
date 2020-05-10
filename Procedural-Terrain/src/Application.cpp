@@ -41,7 +41,7 @@ static float nearD = 1.0f;
 
 int main(void)
 {
-	srand(time(NULL));
+	srand((unsigned int)time(NULL));
 
 	GLFWwindow* window;
 
@@ -75,7 +75,7 @@ int main(void)
 	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(Global::Width, Global::Height, "Voxel World", NULL, NULL);
+	window = glfwCreateWindow((int)Global::Width, (int)Global::Height, "Voxel World", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -116,7 +116,7 @@ int main(void)
 	
 		Global::SetSeed();
 		Camera::SetCameraPosition(glm::vec3(0.0f, 32.0f, 0.0f));
-
+		
 		ChunkManager::GetInstance().Start();
 		ChunkManager::GetInstance().AsyncLoadChunks();
 
@@ -153,7 +153,7 @@ int main(void)
 		while (!glfwWindowShouldClose(window))
 		{
 			//Delta Time of game loop
-			float currentFrame = glfwGetTime();
+			float currentFrame = (float)glfwGetTime();
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 
@@ -180,7 +180,7 @@ int main(void)
 			DebugShader.Bind();
 			DebugShader.SetUniformMat4f("u_MVP", proj * view * model);
 			Frustum::GetInstance().DrawLines(DebugShader);
-		
+
 			test::DebugGUI::GetInstance().OnImGuiRender(shader);
 
 			Renderer::SetDrawCalls(0);
@@ -197,6 +197,7 @@ int main(void)
 	
 	// Cleanup
 	test::DebugGUI::GetInstance().NewFrame();
+	ChunkManager::GetInstance().Terminate();
 
 	glfwTerminate();
 	return 0;

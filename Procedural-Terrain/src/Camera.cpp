@@ -59,15 +59,15 @@ void Camera::mouse_callback(GLFWwindow* window, double xPos, double yPos)
 {
 	if (m_firstMouse)
 	{
-		m_lastX = xPos;
-		m_lastY = yPos;
+		m_lastX = (float)xPos;
+		m_lastY = (float)yPos;
 		m_firstMouse = false;
 	}
 
-	float xOffset = xPos - m_lastX;
-	float yOffset = m_lastY - yPos; //Reset since y coordinates range from bottom to top
-	m_lastX = xPos;
-	m_lastY = yPos;
+	float xOffset = (float)xPos - m_lastX;
+	float yOffset = m_lastY - (float)yPos; //Reset since y coordinates range from bottom to top
+	m_lastX = (float)xPos;
+	m_lastY = (float)yPos;
 
 	const float sensitivity = 0.05f;
 	xOffset *= sensitivity;

@@ -55,9 +55,5 @@ private:
 	int elements = 0;
 	bool m_ChunkActive;
 	Byte3* vertex;
-	double lowerX;
-	double upperX;
-	double lowerZ;
-	double upperZ;
 };
 

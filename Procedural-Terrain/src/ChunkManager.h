@@ -21,7 +21,9 @@ public:
 		return instance;
 	};
 
-	static void Start();
+	void Start();
+
+	void Terminate();
 
 	~ChunkManager();
 
