@@ -29,13 +29,29 @@ namespace test {
 				shader.SetUniform3f("u_lightPos", Camera::GetCameraPosition().x, Camera::GetCameraPosition().y, Camera::GetCameraPosition().z);
 			}
 			ImGui::Checkbox("Toggle WireFrame", &isWireFrame);
+			ImGui::Separator();
+			ImGui::Text("Frustum Culling");
+			ImGui::Checkbox("Auto Frustum Culling", &Global::ToggleFrustum);
+			if (ImGui::Button("Frustum Camera"))
+			{
+				Global::FrustumCamera = true;
+				Frustum::GetInstance().SetCamera(Camera::GetCameraPosition(), Camera::GetCameraFront(), Camera::GetCameraUp(), Camera::GetCameraRight());
+				ChunkManager::GetInstance().UpdateVisibilityList();
+				ChunkManager::GetInstance().UpdateRenderList();
+				ChunkManager::GetInstance().UpdateCullingList();
+			}
+			ImGui::SliderFloat("Field of View", &Global::FOV, 10.0f, 120.0f);
+			ImGui::SliderFloat("Width", &Global::Width, 200.0f, 4000.0f);
+			ImGui::SliderFloat("Height", &Global::Height, 200.0f, 2000.0f);
+			ImGui::SliderFloat("View Distance", &Global::farDistance, 10.0f, 3000.0f);
+			ImGui::Separator();
 			if (ImGui::Button("Render Distance:")) //When I do frustum culling add this feature to change render distance
 			{
 				if (chunks == 32)
 					chunks = 8;
 				else
 					chunks += 8;
-				ChunkManager::SetChunkDistance(chunks);
+				ChunkManager::GetInstance().SetChunkDistance(chunks);
 			}
 			ImGui::SameLine();
 			ImGui::Text("%d chunks", chunks);
@@ -45,14 +61,6 @@ namespace test {
 					//Delete terrain and start again
 		
 				}
-			}
-			ImGui::Checkbox("Auto Frustum Culling", &Global::ToggleFrustum);
-			if (ImGui::Button("Frustum Camera"))
-			{
-				Global::FrustumCamera = true;
-				Frustum::GetInstance().SetCamera(Camera::GetCameraPosition(), Camera::GetCameraFront(), Camera::GetCameraUp(), Camera::GetCameraRight());
-				ChunkManager::UpdateVisibilityList();
-				ChunkManager::UpdateRenderList();
 			}
 			ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 			ImGui::Text("Draw Calls: %d", Renderer::GetDrawCalls());

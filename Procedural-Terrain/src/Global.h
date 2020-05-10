@@ -11,7 +11,10 @@ public:
 
 	static bool ToggleFrustum;
 	static bool FrustumCamera;
-private:
 	static float FOV;
+	static float Width;
+	static float Height;
+	static float farDistance;
+private:
 	static int Seed;
 };

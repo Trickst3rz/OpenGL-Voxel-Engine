@@ -49,6 +49,7 @@ void Chunk::Update(float deltaTime)
 void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array instead of 3D array as it is alot faster 
 {
 	//Create Mesh
+
 	//Check if you can see triangle if not don't render it
 	//If neighboring side is true meaning there is a cube there then don't render that side
 	int i = 0;
@@ -88,17 +89,17 @@ void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array in
 				if(z < ChunkSize - 1)
 					lZPositive = m_Blocks[x][y][z + 1].isActive();
 				
-				if (!lXNegative) //Left Face
-				{	//pos										//normal						//Add get type of brick in the future
-					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(-1, 0, 0), vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0), vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(-1, 0, 0), vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(-1, 0, 0), vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0), vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(-1, 0, 0), vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
+				if (!lXNegative && m_Blocks[x][y][z].GetFace(LEFT) == LEFT) //Left Face, check if to not render this face(e.g. occluded by another chunk
+				{	//pos										//normal						//Colour
+					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}
-				if (!lXPositive) //Right Face
-				{	//pos										//normal						//Add get type of brick in the future
+				if (!lXPositive && m_Blocks[x][y][z].GetFace(RIGHT) == RIGHT) //Right Face, check if to not render this face(e.g. occluded by another chunk
+				{	//pos										//normal						//Colour
 					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
@@ -106,8 +107,8 @@ void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array in
 					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
-				if (!lYNegative) //Bottom Face
-				{	//pos										//normal						//Add get type of brick in the future
+				if (!lYNegative && m_Blocks[x][y][z].GetFace(BOTTOM) == BOTTOM) //Bottom Face, check if to not render this face(e.g. occluded by another chunk
+				{	//pos										//normal						//Colour
 					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
@@ -115,8 +116,8 @@ void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array in
 					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
-				if (!lYPositive) //Top Face
-				{	//pos										//normal						//Add get type of brick in the future
+				if (!lYPositive && m_Blocks[x][y][z].GetFace(TOP) == TOP) //Top Face, check if to not render this face(e.g. occluded by another chunk
+				{	//pos										//normal						//Colour
 					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
@@ -124,8 +125,8 @@ void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array in
 					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
-				if (!lZNegative) //Front Face
-				{	//pos										//normal						//Add get type of brick in the future
+				if (!lZNegative && m_Blocks[x][y][z].GetFace(FRONT) == FRONT) //Front Face, check if to not render this face(e.g. occluded by another chunk
+				{	//pos										//normal						//Colour
 					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
@@ -133,8 +134,8 @@ void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array in
 					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
-				if (!lZPositive) //Back Face
-				{	//pos										//normal						//Add get type of brick in the future
+				if (!lZPositive && m_Blocks[x][y][z].GetFace(BACK) == BACK) //Back Face, check if to not render this face(e.g. occluded by another chunk
+				{	//pos										//normal						//Colour
 					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
@@ -173,7 +174,7 @@ void Chunk::SetupAll()
 		{
 			for (int z = 0; z < ChunkSize; z++)
 			{
-				m_Blocks[0][0][z].SetActive(true);
+				m_Blocks[x][y][z].SetActive(true);
 			}
 		}
 	}

@@ -44,6 +44,8 @@ public:
 
 	void SetActive(bool SetChunk) { m_ChunkActive = SetChunk; }
 
+	Block* GetBlock(int v1, int v2, int v3) { return &m_Blocks[v1][v2][v3]; }
+
 private:
 	Block*** m_Blocks;
 	//Maybe in future change from array to vector to remove and add blocks, MAYBE CHANGE m_indices to 3d array? look at using blocks etc

@@ -37,13 +37,7 @@
 
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
-bool BatchToggle = true;
-bool instanceToggle = false;
-static float width = 1280.0f;
-static float height = 720.0f;
-static float angle = 45.0f;
 static float nearD = 1.0f;
-static float farD = 2000.0f;
 
 int main(void)
 {
@@ -81,7 +75,7 @@ int main(void)
 	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(width, height, "Voxel World", NULL, NULL);
+	window = glfwCreateWindow(Global::Width, Global::Height, "Voxel World", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -123,13 +117,12 @@ int main(void)
 		Global::SetSeed();
 		Camera::SetCameraPosition(glm::vec3(0.0f, 32.0f, 0.0f));
 
-		ChunkManager chunkManager;
+		ChunkManager::GetInstance().Start();
+		ChunkManager::GetInstance().AsyncLoadChunks();
 
-		ChunkManager::AsyncLoadChunks();
-
-		glm::mat4 proj = glm::perspective(glm::radians(angle), width / height, nearD, farD);
-		Frustum::GetInstance().SetFrustum(angle, width / height, nearD, farD);
+		glm::mat4 proj;
 		glm::mat4 view;
+		glm::mat4 model = glm::mat4(1.0f);
 
 		Shader shader("resources/shaders/Basic.shader");
 		shader.Bind();
@@ -174,29 +167,16 @@ int main(void)
 
 			test::DebugGUI::GetInstance().NewFrame();
 
-			//For changing menu with button
-			/*if (currentTest)
-			{
-				currentTest->OnUpdate(deltaTime);
-				currentTest->OnRender();
-				ImGui::Begin("Test");
-				if (currentTest != testMenu && ImGui::Button("<-"))
-				{
-					delete currentTest;
-					currentTest = testMenu;
-				}
-				currentTest->OnImGuiRender();
-				ImGui::End();
-			}*/
-
 			shader.Bind();
 
+			proj = glm::perspective(glm::radians(Global::FOV), Global::Width / Global::Height, nearD, 5000.0f);
+			Frustum::GetInstance().SetFrustum(glm::radians(Global::FOV), Global::Width / Global::Height, nearD, Global::farDistance);
 			view = glm::lookAt(Camera::GetCameraPosition(), Camera::GetCameraPosition() + Camera::GetCameraFront(), Camera::GetCameraUp());
-			
-			glm::mat4 model = glm::mat4(1.0f);
+
 			shader.SetUniformMat4f("u_Model", model);
 			shader.SetUniformMat4f("u_View", view);
-			ChunkManager::Update(shader);
+			shader.SetUniformMat4f("u_Projection", proj);
+			ChunkManager::GetInstance().Update(shader);
 			DebugShader.Bind();
 			DebugShader.SetUniformMat4f("u_MVP", proj * view * model);
 			Frustum::GetInstance().DrawLines(DebugShader);
