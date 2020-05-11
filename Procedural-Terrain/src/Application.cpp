@@ -3,6 +3,7 @@
 
 #include "Renderer.h"
 #include "Shader.h"
+#include "FileParse.h"
 #include "Texture.h"
 #include "Camera.h"
 #include "ChunkManager.h"
@@ -21,6 +22,8 @@ static float nearD = 1.0f;
 int main(void)
 {
 	srand((unsigned int)time(NULL));
+
+	FileParse("resources/files/README.txt");
 
 	GLFWwindow* window;
 
