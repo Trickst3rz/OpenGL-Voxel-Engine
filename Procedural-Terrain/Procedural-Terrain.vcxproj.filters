@@ -99,6 +99,9 @@
     <ClCompile Include="src\vendor\noiseutils\noiseutils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\FileParse.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="src\vendor\glm\detail\func_common.inl">
@@ -1324,6 +1327,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FileParse.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
