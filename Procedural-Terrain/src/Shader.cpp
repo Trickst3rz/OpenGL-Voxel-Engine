@@ -40,7 +40,7 @@ ShaderProgramSource Shader::ParseShader(const std::string& filepath)
 			if (line.find("vertex") != std::string::npos)
 			{
 				type = ShaderType::VERTEX;
-				//set to vertex
+				//Set to vertex
 			}
 			else if (line.find("fragment") != std::string::npos)
 			{

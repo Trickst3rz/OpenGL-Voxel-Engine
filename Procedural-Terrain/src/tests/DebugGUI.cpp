@@ -19,48 +19,75 @@ namespace test {
 	}
 
 	void DebugGUI::OnImGuiRender(Shader& shader)
-	{
+	{ //ImGui render for toggles, buttons etc.
 		{
 			ImGui::Begin("Debug");
 			test.OnImGuiRender();
 			if (ImGui::Button("Set Light Position"))
 			{
 				shader.Bind();
-				shader.SetUniform3f("u_lightPos", Camera::GetCameraPosition().x, Camera::GetCameraPosition().y, Camera::GetCameraPosition().z);
+				shader.SetUniform3f("u_lightPos", Camera::GetInstance().GetCameraPosition().x, Camera::GetInstance().GetCameraPosition().y, Camera::GetInstance().GetCameraPosition().z);
 			}
+			ImGui::Checkbox("Occlusion Culling", &Global::GetInstance().OcclusionCulling);
 			ImGui::Checkbox("Toggle WireFrame", &isWireFrame);
 			ImGui::Separator();
 			ImGui::Text("Frustum Culling");
-			ImGui::Checkbox("Auto Frustum Culling", &Global::ToggleFrustum);
-			if (ImGui::Button("Frustum Camera"))
+			if (ImGui::Checkbox("Auto Frustum Culling", &Global::GetInstance().ToggleFrustum))
 			{
-				Global::FrustumCamera = true;
-				Frustum::GetInstance().SetCamera(Camera::GetCameraPosition(), Camera::GetCameraFront(), Camera::GetCameraUp(), Camera::GetCameraRight());
+				Frustum::GetInstance().SetCamera(Camera::GetInstance().GetCameraPosition(), Camera::GetInstance().GetCameraFront(), Camera::GetInstance().GetCameraUp());
 				ChunkManager::GetInstance().UpdateVisibilityList();
 				ChunkManager::GetInstance().UpdateRenderList();
-				ChunkManager::GetInstance().UpdateCullingList();
 			}
-			ImGui::SliderFloat("Field of View", &Global::FOV, 10.0f, 120.0f);
-			ImGui::SliderFloat("Width", &Global::Width, 200.0f, 4000.0f);
-			ImGui::SliderFloat("Height", &Global::Height, 200.0f, 2000.0f);
-			ImGui::SliderFloat("View Distance", &Global::farDistance, 10.0f, 3000.0f);
+			if (ImGui::Button("Frustum Camera"))
+			{
+				Global::GetInstance().FrustumCamera = true;
+				Frustum::GetInstance().SetCamera(Camera::GetInstance().GetCameraPosition(), Camera::GetInstance().GetCameraFront(), Camera::GetInstance().GetCameraUp());
+				ChunkManager::GetInstance().UpdateVisibilityList();
+				ChunkManager::GetInstance().UpdateRenderList();
+			}
+			if (ImGui::Button("Clear Frustum Camera"))
+			{
+				Global::GetInstance().FrustumCamera = false;
+				ChunkManager::GetInstance().UpdateVisibilityList();
+				ChunkManager::GetInstance().UpdateRenderList();
+			}
+			if (ImGui::SliderFloat("Field of View", &Global::GetInstance().FOV, 10.0f, 120.0f))
+			{
+				Frustum::GetInstance().SetCamera(Camera::GetInstance().GetCameraPosition(), Camera::GetInstance().GetCameraFront(), Camera::GetInstance().GetCameraUp());
+				ChunkManager::GetInstance().UpdateVisibilityList();
+				ChunkManager::GetInstance().UpdateRenderList();
+			}
+			ImGui::SliderFloat("Width", &Global::GetInstance().Width, 200.0f, 4000.0f);
+			ImGui::SliderFloat("Height", &Global::GetInstance().Height, 200.0f, 2000.0f);
+			if (ImGui::SliderFloat("View Distance", &Global::GetInstance().farDistance, 25.0f, 3000.0f))
+			{
+				Frustum::GetInstance().SetCamera(Camera::GetInstance().GetCameraPosition(), Camera::GetInstance().GetCameraFront(), Camera::GetInstance().GetCameraUp());
+				ChunkManager::GetInstance().UpdateVisibilityList();
+				ChunkManager::GetInstance().UpdateRenderList();
+			}
 			ImGui::Separator();
 			ImGui::Text("Terrain Generation");
+			if (ImGui::Button("Reset"))
+			{
+				Global::GetInstance().Frequency = 1.0;
+				Global::GetInstance().OctaveCount = 6;
+			}
+			ImGui::InputInt("Seed", &Global::GetInstance().Seed, 0, 3000);
+			ImGui::InputDouble("Frequency", &Global::GetInstance().Frequency, 0, 100);
+			ImGui::SliderInt("Octave Count", &Global::GetInstance().OctaveCount, 1, 30);
 			if (ImGui::Button("Render Distance:")) //When I do frustum culling add this feature to change render distance
 			{
-				if (chunks == 32)
-					chunks = 8;
+				if (Global::GetInstance().GetAmountOfChunks() == 33)
+					Global::GetInstance().SetAmountOfChunks(5);
 				else
-					chunks += 8;
-				ChunkManager::GetInstance().SetChunkDistance(chunks);
+					Global::GetInstance().SetAmountOfChunks((Global::GetInstance().GetAmountOfChunks() * 2) - 1);
 			}
 			ImGui::SameLine();
-			ImGui::Text("%d chunks", chunks);
+			ImGui::Text("%d chunks", (Global::GetInstance().GetAmountOfChunks() - 1) / 2);
 			{
 				if (ImGui::Button("Generate Terrain"))
 				{
-					//Delete terrain and start again
-		
+					ChunkManager::GetInstance().CreateNewTerrain();
 				}
 			}
 			ImGui::Separator();
@@ -74,7 +101,7 @@ namespace test {
 	}
 
 	void DebugGUI::WireFrame()
-	{
+	{ //Toggle to fill polygons or lines for wirefame
 		if (isWireFrame)
 		{
 			GLCall(glPolygonMode(GL_FRONT_AND_BACK, GL_LINE))

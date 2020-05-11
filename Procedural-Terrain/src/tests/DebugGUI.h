@@ -15,7 +15,6 @@ namespace test {
 			return instance;
 		};
 
-
 		void OnUpdate(float deltaTime);
 
 		void OnRender();

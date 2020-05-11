@@ -1,6 +1,7 @@
 #pragma once
 #include "glm/glm.hpp"
 #include "Plane.h"
+#include "Camera.h"
 #include "VertexArray.h"
 #include "VertexBuffer.h"
 #include "VertexBufferLayout.h"
@@ -22,7 +23,7 @@ public:
 
 	void SetFrustum(float angle, float ratio, float nearD, float farD);
 
-	void SetCamera(const glm::vec3& pos, const glm::vec3& dir, const glm::vec3& up, const glm::vec3& right);
+	void SetCamera(const glm::vec3& pos, const glm::vec3& dir, const glm::vec3& up);
 
 	int PointInFrustum(const glm::vec3& point);
 
@@ -44,14 +45,11 @@ public:
 
 	glm::vec3 nearTopLeft, nearTopRight, nearBottomLeft, nearBottomRight;
 	glm::vec3 farTopLeft, farTopRight, farBottomLeft, farBottomRight;
-	glm::vec3 currentPosition;
 
 	float m_nearDistance, m_farDistance;
 	float m_nearWidth, m_nearHeight;
 	float m_farWidth, m_farHeight;
 	float m_angle, m_ratio;
-
-	bool m_FirstLoad = true;
 
 private:
 

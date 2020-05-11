@@ -1,7 +1,5 @@
 #pragma once
 
-#include "GLErrorManager.h"
-
 enum BlockType
 {
 	BLOCK_DEEP_WATER = 0,
@@ -21,7 +19,7 @@ enum RenderFace
 	RIGHT,
 	FRONT,
 	BACK,
-	NONE //if set to none then don't render that face
+	NONE //If set to none then don't render that face
 };
 
 class Block

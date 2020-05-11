@@ -4,9 +4,6 @@
 #include "Block.h"
 #include "VertexArray.h"
 #include "Shader.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "Mesh.h"
 
 #include <vector>
 
@@ -19,8 +16,6 @@ public:
 	~Chunk();
 
 	void Render(const std::shared_ptr<VertexArray> va, const Shader& shader);
-
-	void Update(float deltaTime);
 
 	void CreateMesh();
 
@@ -36,7 +31,7 @@ public:
 
 	unsigned int GetVBO() { return vbo; }
 
-	int GetElementCount() { return elements; }
+ 	int GetElementCount() { return elements; }
 
 	Byte3* GetVertex() { return vertex; }
 
@@ -48,9 +43,6 @@ public:
 
 private:
 	Block*** m_Blocks;
-	//Maybe in future change from array to vector to remove and add blocks, MAYBE CHANGE m_indices to 3d array? look at using blocks etc
-	//Add in placing at certain location for block later on if I do add and remove blocks
-	//VertexBuffer testVBO();
 	unsigned int vbo = 0;
 	int elements = 0;
 	bool m_ChunkActive;

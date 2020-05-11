@@ -1,12 +1,17 @@
 #pragma once
 #include "Chunk.h"
-#include "Shader.h"
+#include "glm/gtx/hash.hpp"
+#include "Camera.h"
+#include "Timer.h"
+#include "Frustum.h"
+
 #include <vector>
 #include <unordered_map>
-#include "glm/gtx/hash.hpp"
 #include <memory>
 #include <future>
 #include <mutex>
+#include <condition_variable>
+#include <atomic>
 
 class ChunkManager
 {
@@ -25,28 +30,27 @@ public:
 
 	void Terminate();
 
+	void CreateNewTerrain();
+
 	~ChunkManager();
 
-	static void LoadChunksZDir(int OffsetZ);
+	void DeleteData();
 
-	static void LoadChunksXDir(int OffsetX);
+	static void LoadChunksZDir(int OffsetZ); //Asynchronously generate new chunks in Z direction
+
+	static void LoadChunksXDir(int OffsetX); //Asynchronously generate new chunks in Z direction
 	
-	static void GenerateChunk();
+	static void GenerateChunk(int offsetX, int offsetZ); 
 
 	static void RemoveLoadedList();
 
-	static void AsyncLoadChunks();
+	void AsyncLoadChunks(); //Asynchronously generate chunks
 
 	void UpdateLoadList(); //Loads a chunk
 	
 	void UpdateUnloadList(); //Unloads a chunk
 	
-	void UpdateVisibilityList(); //ADD CAMERA PARAMETER OR MAKE CAMERA A STATIC CLASS
-	//Update all the chunks in the list that could be rendered and seen by the camera 
-
-	static void CullingChunks(const glm::ivec3& key, std::shared_ptr<Chunk>& value);
-
-	static void UpdateCullingList(); //Cull occluded vertices between chunks
+	void UpdateVisibilityList(); //Update all the chunks in the list that could be rendered and seen by the camera 
 
 	void SetupVAO(); //Set up the vao, vbo
 
@@ -56,11 +60,39 @@ public:
 
 	void Render(Shader& shader);
 
-	void SetChunkDistance(int numOfChunks);
+	int GetPosInChunkX() { return xPosInChunk; }
+
+	int GetPosInChunkZ() { return zPosInChunk; }
 
 private:
 
 	ChunkManager() {};
 
 	static const int SizeOfChunk = 32;
+
+	static int xPosInChunk; //Current x axis position in chunk coordinates
+	static int zPosInChunk; //Current z axis position in chunk coordinates
+
+	static std::mutex m_LoadMutex;
+
+	static std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_LoadList;
+	static std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_UnloadList;
+	static std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_VisibilityList;
+	static std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_SetupList;
+	static std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> m_RenderList;
+
+	static std::unordered_map<glm::ivec3, std::shared_ptr<VertexArray>> BatchVertexArray;
+
+	static int centreOfChunks;
+
+	glm::vec3 currentCameraPosition = glm::vec3(0,0,0);
+	static glm::vec3 m_cameraPosition;
+	static glm::vec3 m_cameraDirection;
+
+	static std::atomic_bool WindowIsAlive;
+
+	static std::vector<std::shared_ptr<std::future<void>>> m_Futures;
+	static std::vector<std::shared_ptr<std::future<void>>> m_UpdateFutures;
+
+	bool firstLoad;
 };

@@ -4,7 +4,6 @@
 #include "VertexArray.h"
 #include "IndexBuffer.h"
 #include "Shader.h"
-#include "Chunk.h"
 
 class Renderer
 {
@@ -20,6 +19,5 @@ public:
 
 private:
 	static short m_DrawCalls;
-	static int m_seed;
 };
 

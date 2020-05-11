@@ -2,7 +2,7 @@
 #include "noise/noise.h"
 #include "noise/noiseutils.h"
 #include "Renderer.h"
-#include "Timer.h";
+#include "Timer.h"
 
 Chunk::Chunk() : m_ChunkActive(false)
 {
@@ -19,7 +19,7 @@ Chunk::Chunk() : m_ChunkActive(false)
 }
 
 Chunk::~Chunk()
-{//Delete the blocks, change this to a smart pointer in the future since looping through takes awhile to close program
+{//Delete the blocks
 	for (int x = 0; x < ChunkSize; x++)
 	{
 		for (int y = 0; y < ChunkSize; y++)
@@ -40,18 +40,11 @@ void Chunk::Render(const std::shared_ptr<VertexArray> va, const Shader& shader)
 	Renderer::Draw(*va, shader, GetElementCount());
 }
 
-void Chunk::Update(float deltaTime)
+void Chunk::CreateMesh()
 {
-	//Update removing and adding chunks use a displayList or VBO?
-}
-
-
-void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array instead of 3D array as it is alot faster 
-{
-	//Create Mesh
-
 	//Check if you can see triangle if not don't render it
 	//If neighboring side is true meaning there is a cube there then don't render that side
+
 	int i = 0;
 
 	vertex = new Byte3[ChunkSize * ChunkSize * ChunkSize * 6 * 6 * 6];
@@ -89,7 +82,7 @@ void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array in
 				if(z < ChunkSize - 1)
 					lZPositive = m_Blocks[x][y][z + 1].isActive();
 				
-				if (!lXNegative && m_Blocks[x][y][z].GetFace(LEFT) == LEFT) //Left Face, check if to not render this face(e.g. occluded by another chunk
+				if (!lXNegative && m_Blocks[x][y][z].GetFace(LEFT) == LEFT || !Global::GetInstance().OcclusionCulling) //Left Face, check if to not render this face(e.g. occluded by another chunk
 				{	//pos										//normal						//Colour
 					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
@@ -98,7 +91,7 @@ void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array in
 					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}
-				if (!lXPositive && m_Blocks[x][y][z].GetFace(RIGHT) == RIGHT) //Right Face, check if to not render this face(e.g. occluded by another chunk
+				if (!lXPositive && m_Blocks[x][y][z].GetFace(RIGHT) == RIGHT || !Global::GetInstance().OcclusionCulling) //Right Face, check if to not render this face(e.g. occluded by another chunk
 				{	//pos										//normal						//Colour
 					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
@@ -107,7 +100,7 @@ void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array in
 					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
-				if (!lYNegative && m_Blocks[x][y][z].GetFace(BOTTOM) == BOTTOM) //Bottom Face, check if to not render this face(e.g. occluded by another chunk
+				if (!lYNegative && m_Blocks[x][y][z].GetFace(BOTTOM) == BOTTOM || !Global::GetInstance().OcclusionCulling) //Bottom Face, check if to not render this face(e.g. occluded by another chunk
 				{	//pos										//normal						//Colour
 					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
@@ -116,7 +109,7 @@ void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array in
 					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
-				if (!lYPositive && m_Blocks[x][y][z].GetFace(TOP) == TOP) //Top Face, check if to not render this face(e.g. occluded by another chunk
+				if (!lYPositive && m_Blocks[x][y][z].GetFace(TOP) == TOP || !Global::GetInstance().OcclusionCulling) //Top Face, check if to not render this face(e.g. occluded by another chunk
 				{	//pos										//normal						//Colour
 					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
@@ -125,7 +118,7 @@ void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array in
 					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
-				if (!lZNegative && m_Blocks[x][y][z].GetFace(FRONT) == FRONT) //Front Face, check if to not render this face(e.g. occluded by another chunk
+				if (!lZNegative && m_Blocks[x][y][z].GetFace(FRONT) == FRONT || !Global::GetInstance().OcclusionCulling) //Front Face, check if to not render this face(e.g. occluded by another chunk
 				{	//pos										//normal						//Colour
 					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
@@ -134,7 +127,7 @@ void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array in
 					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
-				if (!lZPositive && m_Blocks[x][y][z].GetFace(BACK) == BACK) //Back Face, check if to not render this face(e.g. occluded by another chunk
+				if (!lZPositive && m_Blocks[x][y][z].GetFace(BACK) == BACK || !Global::GetInstance().OcclusionCulling) //Back Face, check if to not render this face(e.g. occluded by another chunk
 				{	//pos										//normal						//Colour
 					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
 					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
@@ -149,6 +142,7 @@ void Chunk::CreateMesh() //Might not be const? //MAKE THE m_blocks a 1D array in
 	elements = i;
 }
 
+//Creates a sphere
 void Chunk::SetupSphere()
 {
 	for (int z = 0; z < ChunkSize; z++)
@@ -166,6 +160,7 @@ void Chunk::SetupSphere()
 	}
 }
 
+//Creates a cube
 void Chunk::SetupAll()
 {
 	for (int x = 0; x < ChunkSize; x++)
@@ -184,21 +179,21 @@ Byte3 Chunk::GetColourType(int typeEnum)
 {
 	switch (typeEnum)
 	{
-	case 0:
+	case BLOCK_DEEP_WATER:
 		return Byte3(0, 0, 126);
-	case 1:
+	case BLOCK_SHALLOW_WATER:
 		return Byte3(0, 0, 40);
-	case 2:
+	case BLOCK_SHORE:
 		return Byte3(0, 127, 46);
-	case 3:
+	case BLOCK_SAND:
 		return Byte3(127, 127, 64);
-	case 4:
+	case BLOCK_GRASS:
 		return Byte3(32, 127, 0);
-	case 5:
+	case BLOCK_DIRT:
 		return Byte3(127, 127, 0);
-	case 6:
+	case BLOCK_ROCK:
 		return Byte3(64, 64, 64);
-	case 7:
+	case BLOCK_SNOW:
 		return Byte3(127, 127, 127);
 	}
 	std::cout << "Error invalid colour type" << std::endl;
@@ -206,18 +201,29 @@ Byte3 Chunk::GetColourType(int typeEnum)
 }
 
 void Chunk::SetupLandscape(double x, double z)
-{
+{	//Setup the landscape with Perlin noise
+	//Create a Perlin module, set the seed, frequency and Octaves
 	module::Perlin PerlinModule;
-	PerlinModule.SetSeed(Global::GetSeed()); //In the future change value from a hard coded value to random each time or change with gizmos e.g. seed?
+	PerlinModule.SetSeed(Global::GetInstance().Seed);
+	PerlinModule.SetFrequency(Global::GetInstance().Frequency);
+	PerlinModule.SetOctaveCount(Global::GetInstance().OctaveCount);
+
+	//Create a 2D heightmap
 	utils::NoiseMap heightMap;
 	utils::NoiseMapBuilderPlane heightMapBuilder;
+
+	//Set a heightmap with Perlin noise and set the size based on the chunk size
 	heightMapBuilder.SetSourceModule(PerlinModule);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
 	heightMapBuilder.SetDestSize(ChunkSize, ChunkSize);
+
+	//Create the x,z coordinates 
 	double upperX = x + 1.0;
 	double upperZ = z + 1.0;
 	double lowerX = x;
 	double lowerZ = z;
+
+	//Set the coordinates to the heightmap so the whole map is used for this chunk
 	heightMapBuilder.SetBounds(lowerX, upperX, lowerZ, upperZ);
 	heightMapBuilder.Build();
 	
@@ -228,16 +234,18 @@ void Chunk::SetupLandscape(double x, double z)
 			float HeightValue = (heightMap.GetValue(x, z) + 1.0f) * 0.5f; //Get the height map x, z coordinates then convert range from -1-1 to 0-1
 			float Height = (HeightValue * (ChunkSize - 1) * 1.0f) * 1.0f;
 
-			if (Height > 31.0f)
-				Height = 31.0f;
+			if (Height > ChunkSize - 1)
+				Height = ChunkSize;
 
 			if (Height < 0.0f)
 				Height = 0.1f;
 			
+			//From the height value coordinate set blocks active based on the height of the heightmap
 			for (int y = 0; y < Height; y++)
 			{
 				m_Blocks[x][y][z].SetActive(true);
 				
+				//Set the type of block based on the height
 				if (HeightValue >= 0.375f && HeightValue < 0.5f)
 					m_Blocks[x][y][z].SetType(BLOCK_SHALLOW_WATER);
 				else if (HeightValue >= 0.5f && HeightValue < 0.532f)
@@ -252,7 +260,6 @@ void Chunk::SetupLandscape(double x, double z)
 					m_Blocks[x][y][z].SetType(BLOCK_ROCK);
 				else if (HeightValue >= 0.95f)
 					m_Blocks[x][y][z].SetType(BLOCK_SNOW);
-
 			}
 		}
 	}

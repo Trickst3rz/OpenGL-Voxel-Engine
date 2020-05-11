@@ -1,5 +1,4 @@
 #include "Frustum.h"
-#include "Camera.h"
 
 Frustum::~Frustum()
 {
@@ -23,7 +22,7 @@ void Frustum::SetFrustum(float angle, float ratio, float nearD, float farD)
 	}
 }
 
-void Frustum::SetCamera(const glm::vec3& pos, const glm::vec3& dir, const glm::vec3& up, const glm::vec3& right)
+void Frustum::SetCamera(const glm::vec3& pos, const glm::vec3& dir, const glm::vec3& up)
 { 
 	glm::vec3 nearCentre, farCentre;
 
@@ -57,9 +56,6 @@ void Frustum::SetCamera(const glm::vec3& pos, const glm::vec3& dir, const glm::v
 	planes[NEARP].Set3Points(nearTopLeft, nearTopRight, nearBottomRight);
 	planes[FARP].Set3Points(farTopRight, farTopLeft, farBottomLeft);
 
-	currentPosition = Camera::GetCameraPosition();
-	m_FirstLoad = false;
-	
 }
 
 int Frustum::PointInFrustum(const glm::vec3& point)
@@ -136,7 +132,6 @@ int Frustum::CubeInFrustum(const glm::vec3& pos, const int SizeOffset)
 		else
 			in++;
 
-
 		//Point: Top Left Far
 		if (planes[i].Distance(glm::vec3(pos.x, pos.y + SizeOffset, pos.z + SizeOffset)) > 0)
 			out++;
@@ -160,8 +155,9 @@ int Frustum::CubeInFrustum(const glm::vec3& pos, const int SizeOffset)
 
 void Frustum::DrawLines(const Shader& shader)
 {
-	if (Global::FrustumCamera && !Global::ToggleFrustum)
+	if (Global::GetInstance().FrustumCamera && !Global::GetInstance().ToggleFrustum)
 	{
+		//Draw the frustum with Line loops
 		VertexArray vao[6];
 		VertexBufferLayout layout;
 		layout.Push<float>(3);

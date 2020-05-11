@@ -1,37 +1,16 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
-#include <noise/noise.h>
-
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <cstdlib>
-#include <memory>
-#include <ctime>
 
 #include "Renderer.h"
-
-#include "GLErrorManager.h"
-#include "VertexBuffer.h"
-#include "IndexBuffer.h"
-#include "VertexArray.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Camera.h"
-#include "Chunk.h"
 #include "ChunkManager.h"
-#include "Mesh.h"
 #include "Frustum.h"
-#include "Global.h"
 
 #include "imgui/imgui.h"
-#include <imgui/imgui_impl_opengl3.h>
-#include <imgui\imgui_impl_glfw.h>
+#include "imgui/imgui_impl_opengl3.h"
+#include "imgui\imgui_impl_glfw.h"
 
 #include "tests/DebugGUI.h"
 
@@ -75,7 +54,7 @@ int main(void)
 	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow((int)Global::Width, (int)Global::Height, "Voxel World", NULL, NULL);
+	window = glfwCreateWindow((int)Global::GetInstance().Width, (int)Global::GetInstance().Height, "Voxel World", NULL, NULL);
 	if (!window)
 	{
 		glfwTerminate();
@@ -88,7 +67,7 @@ int main(void)
 	glfwSwapInterval(0); // vsync = 0(off) 1(on)
 
 	//Mouse input callback
-	glfwSetCursorPosCallback(window, Camera::mouse_callback);
+	glfwSetCursorPosCallback(window, Camera::GetInstance().mouse_callback);
 
 	//Tells GLFW where to capture the mouse
 	glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -114,8 +93,7 @@ int main(void)
 			GLCall(glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE));
 		}
 	
-		Global::SetSeed();
-		Camera::SetCameraPosition(glm::vec3(0.0f, 32.0f, 0.0f));
+		Global::GetInstance().SetSeed();
 		
 		ChunkManager::GetInstance().Start();
 		ChunkManager::GetInstance().AsyncLoadChunks();
@@ -147,7 +125,7 @@ int main(void)
 
 		testMenu->RegisterTest<test::TestClearColour>("Clear Colour");
 
-		Camera::SetCameraPosition(glm::vec3(16.0f, 32.0f, 16.0f));
+		Camera::GetInstance().SetCameraPosition(glm::vec3(16.0f, 32.0f, 16.0f));
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))
@@ -157,7 +135,7 @@ int main(void)
 			deltaTime = currentFrame - lastFrame;
 			lastFrame = currentFrame;
 
-			Camera::processInput(window, deltaTime);
+			Camera::GetInstance().processInput(window, deltaTime);
 
 			/* Render here */
 			Renderer::Clear();
@@ -169,14 +147,15 @@ int main(void)
 
 			shader.Bind();
 
-			proj = glm::perspective(glm::radians(Global::FOV), Global::Width / Global::Height, nearD, 5000.0f);
-			Frustum::GetInstance().SetFrustum(glm::radians(Global::FOV), Global::Width / Global::Height, nearD, Global::farDistance);
-			view = glm::lookAt(Camera::GetCameraPosition(), Camera::GetCameraPosition() + Camera::GetCameraFront(), Camera::GetCameraUp());
+			proj = glm::perspective(glm::radians(Global::GetInstance().FOV), Global::GetInstance().Width / Global::GetInstance().Height, nearD, 5000.0f);
+			Frustum::GetInstance().SetFrustum(glm::radians(Global::GetInstance().FOV), Global::GetInstance().Width / Global::GetInstance().Height, nearD, Global::GetInstance().farDistance);
+			view = glm::lookAt(Camera::GetInstance().GetCameraPosition(), Camera::GetInstance().GetCameraPosition() + Camera::GetInstance().GetCameraFront(), Camera::GetInstance().GetCameraUp());
 
 			shader.SetUniformMat4f("u_Model", model);
 			shader.SetUniformMat4f("u_View", view);
 			shader.SetUniformMat4f("u_Projection", proj);
 			ChunkManager::GetInstance().Update(shader);
+
 			DebugShader.Bind();
 			DebugShader.SetUniformMat4f("u_MVP", proj * view * model);
 			Frustum::GetInstance().DrawLines(DebugShader);
