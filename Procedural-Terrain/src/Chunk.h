@@ -7,6 +7,13 @@
 
 #include <vector>
 
+struct Vertex
+{
+	Byte3 pos;
+	Byte3 normal;
+	uByte3 colour;
+};
+
 class Chunk
 {
 public: 
@@ -25,7 +32,7 @@ public:
 
 	void SetupAll();
 
-	Byte3 GetColourType(int typeEnum);
+	uByte3 GetColourType(int typeEnum);
 
 	static const int ChunkSize = 32;
 
@@ -33,7 +40,7 @@ public:
 
  	int GetElementCount() { return elements; }
 
-	Byte3* GetVertex() { return vertex; }
+	Vertex* GetVertex() { return vertex; }
 
 	bool isActive() { return m_ChunkActive; }
 
@@ -46,6 +53,6 @@ private:
 	unsigned int vbo = 0;
 	int elements = 0;
 	bool m_ChunkActive;
-	Byte3* vertex;
+	Vertex* vertex;
 };
 

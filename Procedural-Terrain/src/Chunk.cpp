@@ -47,7 +47,7 @@ void Chunk::CreateMesh()
 
 	int i = 0;
 
-	vertex = new Byte3[ChunkSize * ChunkSize * ChunkSize * 6 * 6 * 6];
+	vertex = new Vertex[ChunkSize * ChunkSize * ChunkSize * 6];
 
 	for (int x = 0; x < ChunkSize; x++)
 	{
@@ -83,58 +83,58 @@ void Chunk::CreateMesh()
 					lZPositive = m_Blocks[x][y][z + 1].isActive();
 				
 				if (!lXNegative && m_Blocks[x][y][z].GetFace(LEFT) == LEFT || !Global::GetInstance().OcclusionCulling) //Left Face, check if to not render this face(e.g. occluded by another chunk
-				{	//pos										//normal						//Colour
-					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(-1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
+				{	//pos										//normal							//Colour
+					vertex[i].pos = Byte3(x, y, z),				vertex[i].normal = Byte3(-1, 0, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x, y, z + 1),			vertex[i].normal = Byte3(-1, 0, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x, y + 1, z),			vertex[i].normal = Byte3(-1, 0, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x, y + 1, z),			vertex[i].normal = Byte3(-1, 0, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x, y, z + 1),			vertex[i].normal = Byte3(-1, 0, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x, y + 1, z + 1),		vertex[i].normal = Byte3(-1, 0, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType());
 				}
 				if (!lXPositive && m_Blocks[x][y][z].GetFace(RIGHT) == RIGHT || !Global::GetInstance().OcclusionCulling) //Right Face, check if to not render this face(e.g. occluded by another chunk
-				{	//pos										//normal						//Colour
-					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(1, 0, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
+				{	//pos										//normal							//Colour
+					vertex[i].pos = Byte3(x + 1, y, z),			vertex[i].normal = Byte3(1, 0, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x + 1, y + 1, z),		vertex[i].normal = Byte3(1, 0, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x + 1, y, z + 1),		vertex[i].normal = Byte3(1, 0, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x + 1, y + 1, z),		vertex[i].normal = Byte3(1, 0, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x + 1, y + 1, z + 1),	vertex[i].normal = Byte3(1, 0, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x + 1, y, z + 1),		vertex[i].normal = Byte3(1, 0, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
 				if (!lYNegative && m_Blocks[x][y][z].GetFace(BOTTOM) == BOTTOM || !Global::GetInstance().OcclusionCulling) //Bottom Face, check if to not render this face(e.g. occluded by another chunk
-				{	//pos										//normal						//Colour
-					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, -1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
+				{	//pos										//normal							//Colour
+					vertex[i].pos = Byte3(x, y, z),				vertex[i].normal = Byte3(0, -1, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x + 1, y, z),			vertex[i].normal = Byte3(0, -1, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x + 1, y, z + 1),		vertex[i].normal = Byte3(0, -1, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x + 1, y, z + 1),		vertex[i].normal = Byte3(0, -1, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x, y, z + 1),			vertex[i].normal = Byte3(0, -1, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x, y, z),				vertex[i].normal = Byte3(0, -1, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
 				if (!lYPositive && m_Blocks[x][y][z].GetFace(TOP) == TOP || !Global::GetInstance().OcclusionCulling) //Top Face, check if to not render this face(e.g. occluded by another chunk
-				{	//pos										//normal						//Colour
-					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 1, 0),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
+				{	//pos										//normal							//Colour
+					vertex[i].pos = Byte3(x + 1, y + 1, z),		vertex[i].normal = Byte3(0, 1, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x, y + 1, z),			vertex[i].normal = Byte3(0, 1, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x, y + 1, z + 1),		vertex[i].normal = Byte3(0, 1, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x, y + 1, z + 1),		vertex[i].normal = Byte3(0, 1, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x + 1, y + 1, z + 1),	vertex[i].normal = Byte3(0, 1, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x + 1, y + 1, z),		vertex[i].normal = Byte3(0, 1, 0),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
 				if (!lZNegative && m_Blocks[x][y][z].GetFace(FRONT) == FRONT || !Global::GetInstance().OcclusionCulling) //Front Face, check if to not render this face(e.g. occluded by another chunk
 				{	//pos										//normal						//Colour
-					vertex[i++] = Byte3(x, y, z),				vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y + 1, z),			vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x + 1, y + 1, z),		vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x + 1, y, z),			vertex[i++] = Byte3(0, 0, -1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
+					vertex[i].pos = Byte3(x, y, z),				vertex[i].normal = Byte3(0, 0, -1),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x, y + 1, z),			vertex[i].normal = Byte3(0, 0, -1),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x + 1, y, z),			vertex[i].normal = Byte3(0, 0, -1),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x, y + 1, z),			vertex[i].normal = Byte3(0, 0, -1),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x + 1, y + 1, z),		vertex[i].normal = Byte3(0, 0, -1),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x + 1, y, z),			vertex[i].normal = Byte3(0, 0, -1),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
 				if (!lZPositive && m_Blocks[x][y][z].GetFace(BACK) == BACK || !Global::GetInstance().OcclusionCulling) //Back Face, check if to not render this face(e.g. occluded by another chunk
-				{	//pos										//normal						//Colour
-					vertex[i++] = Byte3(x + 1, y, z + 1),		vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x + 1, y + 1, z + 1),	vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y + 1, z + 1),		vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType()),
-					vertex[i++] = Byte3(x, y, z + 1),			vertex[i++] = Byte3(0, 0, 1),	vertex[i++] = GetColourType(m_Blocks[x][y][z].GetType());
+				{	//pos										//normal							//Colour
+					vertex[i].pos = Byte3(x + 1, y, z + 1),		vertex[i].normal = Byte3(0, 0, 1),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x + 1, y + 1, z + 1),	vertex[i].normal = Byte3(0, 0, 1),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x, y, z + 1),			vertex[i].normal = Byte3(0, 0, 1),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x + 1, y + 1, z + 1),	vertex[i].normal = Byte3(0, 0, 1),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x, y + 1, z + 1),		vertex[i].normal = Byte3(0, 0, 1),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType()),
+					vertex[i].pos = Byte3(x, y, z + 1),			vertex[i].normal = Byte3(0, 0, 1),	vertex[i++].colour = GetColourType(m_Blocks[x][y][z].GetType());
 				}												
 			}
 		}
@@ -175,29 +175,29 @@ void Chunk::SetupAll()
 	}
 }
 
-Byte3 Chunk::GetColourType(int typeEnum)
+uByte3 Chunk::GetColourType(int typeEnum)
 {
 	switch (typeEnum)
 	{
 	case BLOCK_DEEP_WATER:
-		return Byte3(0, 0, 126);
+		return uByte3(0, 0, 128);
 	case BLOCK_SHALLOW_WATER:
-		return Byte3(0, 0, 40);
+		return uByte3(0, 0, 255);
 	case BLOCK_SHORE:
-		return Byte3(0, 127, 46);
+		return uByte3(0, 128, 255);
 	case BLOCK_SAND:
-		return Byte3(127, 127, 64);
+		return uByte3(240, 240, 64);
 	case BLOCK_GRASS:
-		return Byte3(32, 127, 0);
+		return uByte3(32, 160, 0);
 	case BLOCK_DIRT:
-		return Byte3(127, 127, 0);
+		return uByte3(92, 58, 0);
 	case BLOCK_ROCK:
-		return Byte3(64, 64, 64);
+		return uByte3(128, 128, 128);
 	case BLOCK_SNOW:
-		return Byte3(127, 127, 127);
+		return uByte3(255, 255, 255);
 	}
 	std::cout << "Error invalid colour type" << std::endl;
-	return Byte3(0, 0, 0);
+	return uByte3(0, 0, 0);
 }
 
 void Chunk::SetupLandscape(double x, double z)
@@ -207,6 +207,8 @@ void Chunk::SetupLandscape(double x, double z)
 	PerlinModule.SetSeed(Global::GetInstance().Seed);
 	PerlinModule.SetFrequency(Global::GetInstance().Frequency);
 	PerlinModule.SetOctaveCount(Global::GetInstance().OctaveCount);
+
+	std::cout << sizeof(m_Blocks[0][0][0]) << std::endl;
 
 	//Create a 2D heightmap
 	utils::NoiseMap heightMap;
@@ -246,19 +248,19 @@ void Chunk::SetupLandscape(double x, double z)
 				m_Blocks[x][y][z].SetActive(true);
 				
 				//Set the type of block based on the height
-				if (HeightValue >= 0.375f && HeightValue < 0.5f)
+				if (y >= 6.0f && y < 10.0f)
 					m_Blocks[x][y][z].SetType(BLOCK_SHALLOW_WATER);
-				else if (HeightValue >= 0.5f && HeightValue < 0.532f)
+				else if (y >= 10.0f && y < 14.0f)
 					m_Blocks[x][y][z].SetType(BLOCK_SHORE);
-				else if (HeightValue >= 0.532f && HeightValue < 0.563f)
+				else if (y >= 14.0f && y < 19.0f)
 					m_Blocks[x][y][z].SetType(BLOCK_SAND);
-				else if (HeightValue >= 0.563f && HeightValue < 0.689f)
+				else if (y >= 19.0f && y < 24.0f)
 					m_Blocks[x][y][z].SetType(BLOCK_GRASS);
-				else if (HeightValue >= 0.689f && HeightValue < 0.875f)
+				else if (y >= 24.0f && y < 27.0f)
 					m_Blocks[x][y][z].SetType(BLOCK_DIRT);
-				else if (HeightValue >= 0.0875f && HeightValue < 0.95f)
+				else if (y >= 27.0f && y < 30.0f)
 					m_Blocks[x][y][z].SetType(BLOCK_ROCK);
-				else if (HeightValue >= 0.95f)
+				else if (y >= 30.0f)
 					m_Blocks[x][y][z].SetType(BLOCK_SNOW);
 			}
 		}

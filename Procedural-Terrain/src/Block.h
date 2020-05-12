@@ -1,6 +1,10 @@
 #pragma once
+/*Enums are unsigned char since we don't need more than 0 - 255 and it makes each block very small,
+so each block is just 8 bytes compared to before 28 bytes with normal 4 byte enums.
+*/
 
-enum BlockType
+
+enum BlockType : unsigned char
 {
 	BLOCK_DEEP_WATER = 0,
 	BLOCK_SHALLOW_WATER,
@@ -11,7 +15,7 @@ enum BlockType
 	BLOCK_ROCK,
 	BLOCK_SNOW
 };
-enum RenderFace
+enum RenderFace : unsigned char 
 {
 	TOP = 0,
 	BOTTOM,
