@@ -68,8 +68,6 @@ private:
 
 	ChunkManager() {};
 
-	static const int SizeOfChunk = 32;
-
 	static int xPosInChunk; //Current x axis position in chunk coordinates
 	static int zPosInChunk; //Current z axis position in chunk coordinates
 

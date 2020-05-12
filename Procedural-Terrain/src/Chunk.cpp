@@ -4,25 +4,25 @@
 #include "Renderer.h"
 #include "Timer.h"
 
-Chunk::Chunk() : m_ChunkActive(false)
+Chunk::Chunk()
 {
 	//Creating the chunk with many blocks
-	m_Blocks = new Block** [ChunkSize];
-	for (int x = 0; x < ChunkSize; x++)
+	m_Blocks = new Block** [Global::GetInstance().GetChunkSize()];
+	for (int x = 0; x < Global::GetInstance().GetChunkSize(); x++)
 	{
-		m_Blocks[x] = new Block * [ChunkSize];
-		for (int y = 0; y < ChunkSize; y++)
+		m_Blocks[x] = new Block * [Global::GetInstance().GetChunkSize()];
+		for (int y = 0; y < Global::GetInstance().GetChunkSize(); y++)
 		{
-			m_Blocks[x][y] = new Block[ChunkSize];
+			m_Blocks[x][y] = new Block[Global::GetInstance().GetChunkSize()];
 		}
 	}
 }
 
 Chunk::~Chunk()
 {//Delete the blocks
-	for (int x = 0; x < ChunkSize; x++)
+	for (int x = 0; x < Global::GetInstance().GetChunkSize(); x++)
 	{
-		for (int y = 0; y < ChunkSize; y++)
+		for (int y = 0; y < Global::GetInstance().GetChunkSize(); y++)
 		{
 			delete[] m_Blocks[x][y];
 		}
@@ -47,13 +47,13 @@ void Chunk::CreateMesh()
 
 	int i = 0;
 
-	vertex = new Vertex[ChunkSize * ChunkSize * ChunkSize * 6];
+	vertex = new Vertex[Global::GetInstance().GetChunkSize() * Global::GetInstance().GetChunkSize() * Global::GetInstance().GetChunkSize() * 6 * 6];
 
-	for (int x = 0; x < ChunkSize; x++)
+	for (int x = 0; x < Global::GetInstance().GetChunkSize(); x++)
 	{
-		for (int y = 0; y < ChunkSize; y++)
+		for (int y = 0; y < Global::GetInstance().GetChunkSize(); y++)
 		{
-			for (int z = 0; z < ChunkSize; z++)
+			for (int z = 0; z < Global::GetInstance().GetChunkSize(); z++)
 			{
 				if (m_Blocks[x][y][z].isActive() == false)
  					continue;
@@ -63,7 +63,7 @@ void Chunk::CreateMesh()
 					lXNegative = m_Blocks[x - 1][y][z].isActive();
 
 				bool lXPositive = false;
-				if (x < ChunkSize - 1)
+				if (x < Global::GetInstance().GetChunkSize() - 1)
 					lXPositive = m_Blocks[x + 1][y][z].isActive();
 
 				bool lYNegative = false;
@@ -71,7 +71,7 @@ void Chunk::CreateMesh()
 					lYNegative = m_Blocks[x][y - 1][z].isActive();
 
 				bool lYPositive = false;
-				if (y < ChunkSize - 1)
+				if (y < Global::GetInstance().GetChunkSize() - 1)
 					lYPositive = m_Blocks[x][y + 1][z].isActive();
 
 				bool lZNegative = false;
@@ -79,7 +79,7 @@ void Chunk::CreateMesh()
 					lZNegative = m_Blocks[x][y][z - 1].isActive();
 
 				bool lZPositive = false;
-				if(z < ChunkSize - 1)
+				if(z < Global::GetInstance().GetChunkSize() - 1)
 					lZPositive = m_Blocks[x][y][z + 1].isActive();
 				
 				if (!lXNegative && m_Blocks[x][y][z].GetFace(LEFT) == LEFT || !Global::GetInstance().OcclusionCulling) //Left Face, check if to not render this face(e.g. occluded by another chunk
@@ -145,13 +145,13 @@ void Chunk::CreateMesh()
 //Creates a sphere
 void Chunk::SetupSphere()
 {
-	for (int z = 0; z < ChunkSize; z++)
+	for (int z = 0; z < Global::GetInstance().GetChunkSize(); z++)
 	{
-		for (int y = 0; y < ChunkSize; y++)
+		for (int y = 0; y < Global::GetInstance().GetChunkSize(); y++)
 		{
-			for (int x = 0; x < ChunkSize; x++)
+			for (int x = 0; x < Global::GetInstance().GetChunkSize(); x++)
 			{
-				if (sqrt((float)(x - ChunkSize / 2) * (x - ChunkSize / 2) + (y - ChunkSize / 2) * (y - ChunkSize / 2) + (z - ChunkSize / 2) * (z - ChunkSize / 2) <= ChunkSize/2))
+				if (sqrt((float)(x - Global::GetInstance().GetChunkSize() / 2) * (x - Global::GetInstance().GetChunkSize() / 2) + (y - Global::GetInstance().GetChunkSize() / 2) * (y - Global::GetInstance().GetChunkSize() / 2) + (z - Global::GetInstance().GetChunkSize() / 2) * (z - Global::GetInstance().GetChunkSize() / 2) <= Global::GetInstance().GetChunkSize() /2))
 				{
 					m_Blocks[x][y][z].SetActive(true);
 				}
@@ -163,11 +163,11 @@ void Chunk::SetupSphere()
 //Creates a cube
 void Chunk::SetupAll()
 {
-	for (int x = 0; x < ChunkSize; x++)
+	for (int x = 0; x < Global::GetInstance().GetChunkSize(); x++)
 	{
-		for (int y = 0; y < ChunkSize; y++)
+		for (int y = 0; y < Global::GetInstance().GetChunkSize(); y++)
 		{
-			for (int z = 0; z < ChunkSize; z++)
+			for (int z = 0; z < Global::GetInstance().GetChunkSize(); z++)
 			{
 				m_Blocks[x][y][z].SetActive(true);
 			}
@@ -208,8 +208,6 @@ void Chunk::SetupLandscape(double x, double z)
 	PerlinModule.SetFrequency(Global::GetInstance().Frequency);
 	PerlinModule.SetOctaveCount(Global::GetInstance().OctaveCount);
 
-	std::cout << sizeof(m_Blocks[0][0][0]) << std::endl;
-
 	//Create a 2D heightmap
 	utils::NoiseMap heightMap;
 	utils::NoiseMapBuilderPlane heightMapBuilder;
@@ -217,7 +215,7 @@ void Chunk::SetupLandscape(double x, double z)
 	//Set a heightmap with Perlin noise and set the size based on the chunk size
 	heightMapBuilder.SetSourceModule(PerlinModule);
 	heightMapBuilder.SetDestNoiseMap(heightMap);
-	heightMapBuilder.SetDestSize(ChunkSize, ChunkSize);
+	heightMapBuilder.SetDestSize(Global::GetInstance().GetChunkSize(), Global::GetInstance().GetChunkSize());
 
 	//Create the x,z coordinates 
 	double upperX = x + 1.0;
@@ -229,15 +227,15 @@ void Chunk::SetupLandscape(double x, double z)
 	heightMapBuilder.SetBounds(lowerX, upperX, lowerZ, upperZ);
 	heightMapBuilder.Build();
 	
-	for (int x = 0; x < ChunkSize; x++)
+	for (int x = 0; x < Global::GetInstance().GetChunkSize(); x++)
 	{
-		for (int z = 0; z < ChunkSize; z++)
+		for (int z = 0; z < Global::GetInstance().GetChunkSize(); z++)
 		{
 			float HeightValue = (heightMap.GetValue(x, z) + 1.0f) * 0.5f; //Get the height map x, z coordinates then convert range from -1-1 to 0-1
-			float Height = (HeightValue * (ChunkSize - 1) * 1.0f) * 1.0f;
+			float Height = (HeightValue * (Global::GetInstance().GetChunkSize() - 1) * 1.0f) * 1.0f;
 
-			if (Height > ChunkSize - 1)
-				Height = ChunkSize;
+			if (Height > Global::GetInstance().GetChunkSize() - 1)
+				Height = Global::GetInstance().GetChunkSize();
 
 			if (Height < 0.0f)
 				Height = 0.1f;
@@ -248,19 +246,19 @@ void Chunk::SetupLandscape(double x, double z)
 				m_Blocks[x][y][z].SetActive(true);
 				
 				//Set the type of block based on the height
-				if (y >= 6.0f && y < 10.0f)
+				if (y >= 6 && y < 10)
 					m_Blocks[x][y][z].SetType(BLOCK_SHALLOW_WATER);
-				else if (y >= 10.0f && y < 14.0f)
+				else if (y >= 10 && y < 14)
 					m_Blocks[x][y][z].SetType(BLOCK_SHORE);
-				else if (y >= 14.0f && y < 19.0f)
+				else if (y >= 14 && y < 19)
 					m_Blocks[x][y][z].SetType(BLOCK_SAND);
-				else if (y >= 19.0f && y < 24.0f)
+				else if (y >= 19 && y < 24)
 					m_Blocks[x][y][z].SetType(BLOCK_GRASS);
-				else if (y >= 24.0f && y < 27.0f)
+				else if (y >= 24 && y < 27)
 					m_Blocks[x][y][z].SetType(BLOCK_DIRT);
-				else if (y >= 27.0f && y < 30.0f)
+				else if (y >= 27 && y < 30)
 					m_Blocks[x][y][z].SetType(BLOCK_ROCK);
-				else if (y >= 30.0f)
+				else if (y >= 30)
 					m_Blocks[x][y][z].SetType(BLOCK_SNOW);
 			}
 		}

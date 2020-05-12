@@ -22,6 +22,8 @@ public:
 
 	void SetAmountOfChunks(int newSize) { AmountOfChunksX2 = newSize; }
 
+	unsigned char GetChunkSize() { return ChunkSize; }
+
 	bool ToggleFrustum = false;
 	bool FrustumCamera = false;
 	bool OcclusionCulling = true;
@@ -39,4 +41,6 @@ private:
 	Global() {}
 
 	int AmountOfChunksX2 = 9;
+
+	unsigned char ChunkSize = 32;
 };

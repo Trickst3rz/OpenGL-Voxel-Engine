@@ -66,11 +66,11 @@ void ChunkManager::LoadChunksZDir(int OffsetZ)
 	{//On another thread setup and create the mesh then add it to loadList when finished
 		if (!WindowIsAlive) return; //Terminates the thread if the window is closed
 		std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> chunkList;
-		chunkList[glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk)] = std::make_shared<Chunk>();
-		chunkList[glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk)]->SetupLandscape(x, OffsetZ);
-		chunkList[glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk)]->CreateMesh();
+		chunkList[glm::ivec3(x * Global::GetInstance().GetChunkSize(), 0, OffsetZ * Global::GetInstance().GetChunkSize())] = std::make_shared<Chunk>();
+		chunkList[glm::ivec3(x * Global::GetInstance().GetChunkSize(), 0, OffsetZ * Global::GetInstance().GetChunkSize())]->SetupLandscape(x, OffsetZ);
+		chunkList[glm::ivec3(x * Global::GetInstance().GetChunkSize(), 0, OffsetZ * Global::GetInstance().GetChunkSize())]->CreateMesh();
 		std::lock_guard<std::mutex> lock(m_LoadMutex); //Lock so no other threads can access m_LoadList while this thread accesses it
-		m_LoadList[glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk)] = chunkList[glm::ivec3(x * SizeOfChunk, 0, OffsetZ * SizeOfChunk)];
+		m_LoadList[glm::ivec3(x * Global::GetInstance().GetChunkSize(), 0, OffsetZ * Global::GetInstance().GetChunkSize())] = chunkList[glm::ivec3(x * Global::GetInstance().GetChunkSize(), 0, OffsetZ * Global::GetInstance().GetChunkSize())];
 		chunkList.clear();
 	}
 }
@@ -81,11 +81,11 @@ void ChunkManager::LoadChunksXDir(int OffsetX)
 	for (int z = -centreOfChunks + zPosInChunk; z <= centreOfChunks + zPosInChunk; z++)
 	{//On another thread setup and create the mesh then add it to loadList when finished
 		if (!WindowIsAlive) return; //Terminates the thread if the window is closed
-		chunkList[glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk)] = std::make_shared<Chunk>();
-		chunkList[glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk)]->SetupLandscape(OffsetX, z);
-		chunkList[glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk)]->CreateMesh();
+		chunkList[glm::ivec3(OffsetX * Global::GetInstance().GetChunkSize(), 0, z * Global::GetInstance().GetChunkSize())] = std::make_shared<Chunk>();
+		chunkList[glm::ivec3(OffsetX * Global::GetInstance().GetChunkSize(), 0, z * Global::GetInstance().GetChunkSize())]->SetupLandscape(OffsetX, z);
+		chunkList[glm::ivec3(OffsetX * Global::GetInstance().GetChunkSize(), 0, z * Global::GetInstance().GetChunkSize())]->CreateMesh();
 		std::lock_guard<std::mutex> lock(m_LoadMutex); //Lock so no other threads can access m_LoadList while this thread accesses it
-		m_LoadList[glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk)] = chunkList[glm::ivec3(OffsetX * SizeOfChunk, 0, z * SizeOfChunk)];
+		m_LoadList[glm::ivec3(OffsetX * Global::GetInstance().GetChunkSize(), 0, z * Global::GetInstance().GetChunkSize())] = chunkList[glm::ivec3(OffsetX * Global::GetInstance().GetChunkSize(), 0, z * Global::GetInstance().GetChunkSize())];
 		chunkList.clear();
 	}
 }
@@ -98,32 +98,32 @@ void ChunkManager::UpdateLoadList()
 	auto xDir = (Camera::GetInstance().GetCameraPosition().x) - (currentCameraPosition.x);
 	auto zDir = (Camera::GetInstance().GetCameraPosition().z) - (currentCameraPosition.z);
 
-	if (xDir > SizeOfChunk)
+	if (xDir > Global::GetInstance().GetChunkSize())
 	{
 		xPosInChunk++;
 		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksXDir, centreOfChunks + xPosInChunk)));
-		currentCameraPosition.x += SizeOfChunk;
+		currentCameraPosition.x += Global::GetInstance().GetChunkSize();
 	}
 
 	if (xDir < 0)
 	{
 		xPosInChunk--;
 		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksXDir, -centreOfChunks + xPosInChunk)));
-		currentCameraPosition.x -= SizeOfChunk;
+		currentCameraPosition.x -= Global::GetInstance().GetChunkSize();
 	}
 
-	if (zDir > SizeOfChunk)
+	if (zDir > Global::GetInstance().GetChunkSize())
 	{
 		zPosInChunk++;
 		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksZDir, centreOfChunks + zPosInChunk)));
-		currentCameraPosition.z += SizeOfChunk;
+		currentCameraPosition.z += Global::GetInstance().GetChunkSize();
 	}
 
 	if (zDir < 0)
 	{
 		zPosInChunk--;
 		m_UpdateFutures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, LoadChunksZDir, -centreOfChunks + zPosInChunk)));
-		currentCameraPosition.z -= SizeOfChunk;
+		currentCameraPosition.z -= Global::GetInstance().GetChunkSize();
 	}
 }
 
@@ -134,12 +134,12 @@ void ChunkManager::UpdateUnloadList()
 	auto xDir = Camera::GetInstance().GetCameraPosition().x - currentCameraPosition.x;
 	auto zDir = Camera::GetInstance().GetCameraPosition().z - currentCameraPosition.z;
 	
-	if (xDir > SizeOfChunk)
+	if (xDir > Global::GetInstance().GetChunkSize())
 	{
 		for (int z = -centreOfChunks + zPosInChunk; z <= centreOfChunks + zPosInChunk; z++)
 		{
-			m_SetupList.erase(glm::ivec3((-centreOfChunks + xPosInChunk) * SizeOfChunk, 0, z * SizeOfChunk));
-			BatchVertexArray.erase(glm::ivec3((-centreOfChunks + xPosInChunk) * SizeOfChunk, 0, z * SizeOfChunk));
+			m_SetupList.erase(glm::ivec3((-centreOfChunks + xPosInChunk) * Global::GetInstance().GetChunkSize(), 0, z * Global::GetInstance().GetChunkSize()));
+			BatchVertexArray.erase(glm::ivec3((-centreOfChunks + xPosInChunk) * Global::GetInstance().GetChunkSize(), 0, z * Global::GetInstance().GetChunkSize()));
 		}
 	}
 
@@ -147,17 +147,17 @@ void ChunkManager::UpdateUnloadList()
 	{
 		for (int z = -centreOfChunks + zPosInChunk; z <= centreOfChunks + zPosInChunk; z++)
 		{
-			m_SetupList.erase(glm::ivec3((centreOfChunks + xPosInChunk) * SizeOfChunk, 0, z * SizeOfChunk));
-			BatchVertexArray.erase(glm::ivec3((centreOfChunks + xPosInChunk) * SizeOfChunk, 0, z * SizeOfChunk));
+			m_SetupList.erase(glm::ivec3((centreOfChunks + xPosInChunk) * Global::GetInstance().GetChunkSize(), 0, z * Global::GetInstance().GetChunkSize()));
+			BatchVertexArray.erase(glm::ivec3((centreOfChunks + xPosInChunk) * Global::GetInstance().GetChunkSize(), 0, z * Global::GetInstance().GetChunkSize()));
 		}
 	}
 
-	if (zDir > SizeOfChunk)
+	if (zDir > Global::GetInstance().GetChunkSize())
 	{
 		for (int x = -centreOfChunks + xPosInChunk; x <= centreOfChunks + xPosInChunk; x++)
 		{
-			m_SetupList.erase(glm::ivec3(x * SizeOfChunk, 0, (-centreOfChunks + zPosInChunk) * SizeOfChunk));
-			BatchVertexArray.erase(glm::ivec3(x * SizeOfChunk, 0, (-centreOfChunks + zPosInChunk) * SizeOfChunk));
+			m_SetupList.erase(glm::ivec3(x * Global::GetInstance().GetChunkSize(), 0, (-centreOfChunks + zPosInChunk) * Global::GetInstance().GetChunkSize()));
+			BatchVertexArray.erase(glm::ivec3(x * Global::GetInstance().GetChunkSize(), 0, (-centreOfChunks + zPosInChunk) * Global::GetInstance().GetChunkSize()));
 		}
 	}
 
@@ -165,8 +165,8 @@ void ChunkManager::UpdateUnloadList()
 	{
 		for (int x = -centreOfChunks + xPosInChunk; x <= centreOfChunks + xPosInChunk; x++)
 		{
-			m_SetupList.erase(glm::ivec3(x * SizeOfChunk, 0, (centreOfChunks + zPosInChunk) * SizeOfChunk));
-			BatchVertexArray.erase(glm::ivec3(x * SizeOfChunk, 0, (centreOfChunks + zPosInChunk) * SizeOfChunk));
+			m_SetupList.erase(glm::ivec3(x * Global::GetInstance().GetChunkSize(), 0, (centreOfChunks + zPosInChunk) * Global::GetInstance().GetChunkSize()));
+			BatchVertexArray.erase(glm::ivec3(x * Global::GetInstance().GetChunkSize(), 0, (centreOfChunks + zPosInChunk) * Global::GetInstance().GetChunkSize()));
 		}
 	}
 }
@@ -180,11 +180,11 @@ void ChunkManager::GenerateChunk(int offsetX, int offsetZ)
 		{ //On another thread setup and create the mesh then add it to loadList when finished
 			if (!WindowIsAlive) return; //Terminates the thread if the window is closed
 			std::unordered_map<glm::ivec3, std::shared_ptr<Chunk>> chunkList;
-			chunkList[glm::ivec3((x + offsetX) * SizeOfChunk, 0, (z + offsetZ) * SizeOfChunk)] = std::make_shared<Chunk>();
-			chunkList[glm::ivec3((x + offsetX) * SizeOfChunk, 0, (z + offsetZ) * SizeOfChunk)]->SetupLandscape(x + (double)offsetX, z + (double)offsetZ);
-			chunkList[glm::ivec3((x + offsetX) * SizeOfChunk, 0, (z + offsetZ) * SizeOfChunk)]->CreateMesh();
+			chunkList[glm::ivec3((x + offsetX) * Global::GetInstance().GetChunkSize(), 0, (z + offsetZ) * Global::GetInstance().GetChunkSize())] = std::make_shared<Chunk>();
+			chunkList[glm::ivec3((x + offsetX) * Global::GetInstance().GetChunkSize(), 0, (z + offsetZ) * Global::GetInstance().GetChunkSize())]->SetupLandscape(x + (double)offsetX, z + (double)offsetZ);
+			chunkList[glm::ivec3((x + offsetX) * Global::GetInstance().GetChunkSize(), 0, (z + offsetZ) * Global::GetInstance().GetChunkSize())]->CreateMesh();
 			std::lock_guard<std::mutex> lock(m_LoadMutex); //Lock so no other threads can access m_LoadList while this thread accesses it
-			m_LoadList[glm::ivec3((x + offsetX) * SizeOfChunk, 0, (z + offsetZ) * SizeOfChunk)] = chunkList[glm::ivec3((x + offsetX) * SizeOfChunk, 0, (z + offsetZ) * SizeOfChunk)];
+			m_LoadList[glm::ivec3((x + offsetX) * Global::GetInstance().GetChunkSize(), 0, (z + offsetZ) * Global::GetInstance().GetChunkSize())] = chunkList[glm::ivec3((x + offsetX) * Global::GetInstance().GetChunkSize(), 0, (z + offsetZ) * Global::GetInstance().GetChunkSize())];
 			chunkList.clear();
 		}
 	}
@@ -212,6 +212,8 @@ void ChunkManager::SetupVAO()
 
 	for (auto itr = m_LoadList.begin(); itr != m_LoadList.end(); itr++)
 	{	//From the loadlist Setup the chunk e.g. create VBO, layout and bind it to a VAO
+		Chunk chunk;
+		std::cout << sizeof(chunk) << std::endl;
 		VertexBuffer BatchVertexBuffer(itr->second->GetVertex(), itr->second->GetElementCount() * sizeof * itr->second->GetVertex());
 		VertexBufferLayout BatchLayout;
 		BatchLayout.Push<GLbyte>(3); //Position layout
@@ -234,7 +236,7 @@ void ChunkManager::UpdateVisibilityList()
 	//Add all chunks to the list that are visual to the camera
 	for (auto itr = m_SetupList.begin(); itr != m_SetupList.end(); itr++)
 	{
-		if (Frustum::GetInstance().CubeInFrustum(itr->first, SizeOfChunk) > 0 || !Global::GetInstance().ToggleFrustum && !Global::GetInstance().FrustumCamera)
+		if (Frustum::GetInstance().CubeInFrustum(itr->first, Global::GetInstance().GetChunkSize()) > 0 || !Global::GetInstance().ToggleFrustum && !Global::GetInstance().FrustumCamera)
 		{
 			m_VisibilityList[itr->first] = itr->second;
 		}
