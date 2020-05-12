@@ -212,8 +212,6 @@ void ChunkManager::SetupVAO()
 
 	for (auto itr = m_LoadList.begin(); itr != m_LoadList.end(); itr++)
 	{	//From the loadlist Setup the chunk e.g. create VBO, layout and bind it to a VAO
-		Chunk chunk;
-		std::cout << sizeof(chunk) << std::endl;
 		VertexBuffer BatchVertexBuffer(itr->second->GetVertex(), itr->second->GetElementCount() * sizeof * itr->second->GetVertex());
 		VertexBufferLayout BatchLayout;
 		BatchLayout.Push<GLbyte>(3); //Position layout
