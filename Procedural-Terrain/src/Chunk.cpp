@@ -8,6 +8,7 @@ Chunk::Chunk()
 {
 	//Creating the chunk with many blocks
 	m_Blocks = new Block** [Global::GetInstance().GetChunkSize()];
+
 	for (int x = 0; x < Global::GetInstance().GetChunkSize(); x++)
 	{
 		m_Blocks[x] = new Block * [Global::GetInstance().GetChunkSize()];
@@ -47,7 +48,7 @@ void Chunk::CreateMesh()
 
 	int i = 0;
 
-	vertex = new Vertex[Global::GetInstance().GetChunkSize() * Global::GetInstance().GetChunkSize() * Global::GetInstance().GetChunkSize() * 6 * 6];
+	vertex = new Vertex[Global::GetInstance().GetChunkSize() * Global::GetInstance().GetChunkSize() * Global::GetInstance().GetChunkSize() * (unsigned char)6 * (unsigned char)6];
 
 	for (int x = 0; x < Global::GetInstance().GetChunkSize(); x++)
 	{

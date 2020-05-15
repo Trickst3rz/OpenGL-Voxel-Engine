@@ -98,6 +98,8 @@ int main(void)
 	
 		Global::GetInstance().SetSeed();
 		
+		Camera::GetInstance().SetCameraPosition(glm::vec3(16.0f, 32.0f, 16.0f));
+
 		ChunkManager::GetInstance().Start();
 		ChunkManager::GetInstance().AsyncLoadChunks();
 
@@ -127,8 +129,6 @@ int main(void)
 		currentTest = testMenu;
 
 		testMenu->RegisterTest<test::TestClearColour>("Clear Colour");
-
-		Camera::GetInstance().SetCameraPosition(glm::vec3(16.0f, 32.0f, 16.0f));
 
 		/* Loop until the user closes the window */
 		while (!glfwWindowShouldClose(window))

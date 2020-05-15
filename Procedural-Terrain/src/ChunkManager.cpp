@@ -90,6 +90,33 @@ void ChunkManager::LoadChunksXDir(int OffsetX)
 	}
 }
 
+void ChunkManager::UpdatePositionInChunk()
+{
+	while (Camera::GetInstance().GetCameraPosition().x - currentCameraPosition.x > Global::GetInstance().GetChunkSize())
+	{
+		xPosInChunk++;
+		currentCameraPosition.x += Global::GetInstance().GetChunkSize();
+	}
+
+	while (Camera::GetInstance().GetCameraPosition().x - currentCameraPosition.x < 0)
+	{
+		xPosInChunk--;
+		currentCameraPosition.x -= Global::GetInstance().GetChunkSize();
+	}
+
+	while (Camera::GetInstance().GetCameraPosition().z - currentCameraPosition.z > Global::GetInstance().GetChunkSize())
+	{
+		zPosInChunk++;
+		currentCameraPosition.z += Global::GetInstance().GetChunkSize();
+	}
+
+	while (Camera::GetInstance().GetCameraPosition().z - currentCameraPosition.z < 0)
+	{
+		zPosInChunk--;
+		currentCameraPosition.z -= Global::GetInstance().GetChunkSize();
+	}
+}
+
 void ChunkManager::UpdateLoadList()
 {	//Check if the current position is still inside the same chunk as the new position
 	//Make sure that the next chunk is plus the size of the chunk e.g. 32
@@ -192,6 +219,7 @@ void ChunkManager::GenerateChunk(int offsetX, int offsetZ)
 
 void ChunkManager::AsyncLoadChunks()
 {
+	UpdatePositionInChunk();
 	m_Futures.push_back(std::make_shared<std::future<void>>(std::async(std::launch::async, GenerateChunk, xPosInChunk, zPosInChunk)));
 }
 

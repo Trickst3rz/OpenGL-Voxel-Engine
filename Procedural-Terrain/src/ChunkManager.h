@@ -46,6 +46,8 @@ public:
 
 	void AsyncLoadChunks(); //Asynchronously generate chunks
 
+	void UpdatePositionInChunk();
+
 	void UpdateLoadList(); //Loads a chunk
 	
 	void UpdateUnloadList(); //Unloads a chunk
